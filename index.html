@@ -190,6 +190,20 @@ h2{font-size:1.45rem;line-height:1.2;margin:.2rem 0 .5rem;font-weight:800}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:440px){.word{font-size:2.4rem}.tile{font-size:1.6rem;min-width:2rem}h1{font-size:1.6rem}.chip{display:none}.answer-row{flex-direction:column}}
 .center-text{text-align:center;align-items:center}
+.w{border-radius:5px;transition:background .08s}
+.w.on{text-shadow:.03em 0 0 currentColor,-.03em 0 0 currentColor,0 .02em 0 currentColor;background:color-mix(in srgb,var(--sun) 32%,transparent)}
+.demo-stage{min-height:13rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;text-align:center}
+.demo-cap{text-align:center;font-weight:600;font-size:1.05rem;background:var(--bg);border-radius:14px;padding:.7rem .9rem;margin:0;min-height:3.2rem}
+.demo-tag{display:inline-flex;align-items:center;gap:.4rem;font-weight:800;color:var(--m);background:color-mix(in srgb,var(--m) 14%,var(--surface));border-radius:999px;padding:.3rem .8rem;align-self:center}
+.tile.ghost{color:transparent}
+.tile{transition:transform .2s,background .2s,border-color .2s}
+.tile.lit{border-color:var(--m);background:color-mix(in srgb,var(--m) 24%,var(--tile));transform:translateY(-5px)}
+.mock-input{min-width:10rem;font-size:1.6rem;font-weight:700;padding:.5rem 1rem;border:3px solid var(--m);border-radius:14px;background:var(--tile);color:var(--tile-ink);letter-spacing:.05em;min-height:3.2rem}
+.hl{background:color-mix(in srgb,var(--sun) 40%,transparent);border-radius:6px;padding:0 .15em}
+.dim{opacity:.35}
+.pulse{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.07)}}
+.part.lit{border-color:var(--m);transform:translateY(-5px)}
 .readme{background:var(--surface);border:2px solid var(--m,var(--cobalt));border-radius:12px;padding:.45rem .85rem;font-size:.9rem;font-weight:700;color:var(--ink)}
 .readme.speaking{background:color-mix(in srgb,var(--m,var(--cobalt)) 18%,var(--surface))}
 .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem}
@@ -383,11 +397,11 @@ function dayStr(off=0){const d=new Date();d.setDate(d.getDate()+off);return d.ge
 function niceDate(ds){const [y,m,d]=ds.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:"short",day:"numeric"});}
 function load(){
   let d=null;try{d=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
-  const s=Object.assign({xp:0,streak:0,lastDay:null,day:null,doneToday:{},reads:{},seen:{},scans:[],nextScan:null,skipScan:false,log:{},missed:{},missCount:{}},d||{});
-  ["seen","reads","log","missed","missCount","doneToday"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={};});
+  const s=Object.assign({xp:0,streak:0,lastDay:null,day:null,doneToday:{},reads:{},seen:{},scans:[],nextScan:null,skipScan:false,log:{},missed:{},missCount:{},demoSeen:{}},d||{});
+  ["seen","reads","log","missed","missCount","doneToday","demoSeen"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={};});
   if(!Array.isArray(s.scans))s.scans=[];
   if(!Array.isArray(s.pat)||s.pat.length!==PATTERNS.length)s.pat=PATTERNS.map((_,i)=>(Array.isArray(s.pat)&&s.pat[i])||{mastered:false,how:null,days:{}});
-  s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true,engine:"eleven"},(d&&d.settings)||{});
+  s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true,engine:"eleven",demo:"daily"},(d&&d.settings)||{});
   if(s.day!==dayStr()){s.day=dayStr();s.doneToday={};}
   if(s.lastDay&&s.lastDay!==dayStr()&&s.lastDay!==dayStr(-1))s.streak=0;
   const cutoff=dayStr(-90);Object.keys(s.log).forEach(k=>{if(k<cutoff)delete s.log[k];});
@@ -481,8 +495,9 @@ function elevenFailed(code){
   if(["not_configured","daily_limit","origin_not_allowed","elevenlabs_error","network"].includes(code))elevenOff=true;
   if(!elevenWarned){elevenWarned=true;toast("Using the built-in voice for now.");}
 }
-async function elevenSpeak(text,tok){
-  let url=ttsCache[text];
+async function elevenSpeak(text,tok,onEnd,spans){
+  let hit=ttsCache[text];if(typeof hit==="string")hit={url:hit};
+  let url=hit&&hit.url,words=hit&&hit.words;
   if(!url){
     const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),9000);
     let r,j={};
@@ -490,33 +505,77 @@ async function elevenSpeak(text,tok){
     catch(e){clearTimeout(timer);throw Object.assign(new Error("network"),{code:"network"});}
     clearTimeout(timer);
     if(!r.ok||!j.url)throw Object.assign(new Error(j.error||"tts"),{code:j.error||"tts"});
-    url=ttsCache[text]=j.url;saveTtsCache();
+    url=j.url;words=Array.isArray(j.words)?j.words:null;ttsCache[text]={url,words};saveTtsCache();
   }
   if(tok!==speakTok)return;
-  player.pause();player.src=url;
+  player.pause();player.onended=()=>{hlStop();if(tok===speakTok&&onEnd)onEnd();};player.src=url;
+  if(spans&&spans.length)hlTrackAudio(text,words,spans,tok);
   const r=S.settings.rate;player.playbackRate=r<=0.75?0.85:r>=1?1.12:1;
   try{player.preservesPitch=true;}catch(e){}
   await player.play();
 }
-function browserSpeak(text){
+function browserSpeak(text,onEnd,spans){
   try{
-    if(!("speechSynthesis" in window)){toast("Sound doesn't work in this browser. Ask a grown-up to read it to you.");return;}
-    speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=S.settings.rate;u.lang="en-US";speechSynthesis.speak(u);
-  }catch(e){}
+    if(!("speechSynthesis" in window)){toast("Sound doesn't work in this browser. Ask a grown-up to read it to you.");onEnd&&onEnd();return;}
+    speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=S.settings.rate;u.lang="en-US";
+    const done=()=>{hlStop();onEnd&&onEnd();};u.onend=done;u.onerror=done;
+    if(spans&&spans.length)hlTrackBrowser(u,text,spans);
+    speechSynthesis.speak(u);
+  }catch(e){onEnd&&onEnd();}
 }
-function stopAll(){try{player.pause();}catch(e){}try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}}
-function speak(text){
-  text=normTTS(text);if(!text)return;
-  const tok=++speakTok;stopAll();
+function stopAll(){hlStop();try{player.pause();}catch(e){}try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}}
+function speak(text,onEnd,spans){
+  text=normTTS(text);if(!text){onEnd&&onEnd();return;}
+  const tok=++speakTok;stopAll();player.onended=null;
   if(useEleven()){
-    elevenSpeak(text,tok).catch(err=>{
-      if(err&&err.name==="NotAllowedError")return; // browser blocked autoplay; the next tap will work
+    elevenSpeak(text,tok,onEnd,spans).catch(err=>{
+      hlStop();
+      if(err&&err.name==="NotAllowedError"){onEnd&&onEnd();return;} // browser blocked autoplay; the next tap will work
       elevenFailed(err&&err.code);
-      if(tok===speakTok)browserSpeak(text);
+      if(tok===speakTok)browserSpeak(text,onEnd,spans);
     });
-  }else browserSpeak(text);
+  }else browserSpeak(text,onEnd,spans);
 }
-function hush(){narrTok++;speakTok++;stopAll();}
+/* ---------- Read-along: bold each word as it's spoken ---------- */
+const HL={spans:null,i:-1,raf:0,timer:0};
+function wrapWords(t){return String(t).split(/\s+/).filter(Boolean).map(w=>`<span class="w">${esc(w)}</span>`).join(" ");}
+function wordStarts(text){const a=[];for(const m of text.matchAll(/\S+/g))a.push(m.index);return a;}
+function hlSet(i){if(!HL.spans||i===HL.i)return;if(HL.i>=0&&HL.spans[HL.i])HL.spans[HL.i].classList.remove("on");HL.i=i;if(i>=0&&HL.spans[i])HL.spans[i].classList.add("on");}
+function hlStop(){cancelAnimationFrame(HL.raf);clearInterval(HL.timer);if(HL.spans)HL.spans.forEach(el=>el.classList.remove("on"));HL.spans=null;HL.i=-1;}
+function hlBegin(spans){hlStop();HL.spans=spans;HL.i=-1;}
+// Estimate word position from how far through the text we are (used when exact timings aren't available)
+function idxAtFraction(text,frac){const st=wordStarts(text);const pos=frac*text.length;let i=0;for(let k=0;k<st.length;k++)if(st[k]<=pos)i=k;return i;}
+function hlTrackAudio(text,words,spans,tok){
+  hlBegin(spans);
+  const loop=()=>{
+    if(tok!==speakTok||!HL.spans)return;
+    const t=player.currentTime;let i=-1;
+    if(words&&words.length){for(let k=0;k<words.length;k++){if(words[k][0]<=t+0.03)i=k;else break;}}
+    else if(player.duration&&isFinite(player.duration)&&t>0)i=idxAtFraction(text,t/player.duration);
+    hlSet(Math.min(i,spans.length-1));
+    if(!player.ended)HL.raf=requestAnimationFrame(loop);
+  };
+  HL.raf=requestAnimationFrame(loop);
+}
+function hlTrackBrowser(u,text,spans){
+  hlBegin(spans);const st=wordStarts(text);let gotBoundary=false,t0=0;
+  u.onboundary=e=>{if(e.name&&e.name!=="word")return;gotBoundary=true;clearInterval(HL.timer);let i=0;for(let k=0;k<st.length;k++)if(st[k]<=e.charIndex)i=k;hlSet(Math.min(i,spans.length-1));};
+  u.onstart=()=>{t0=Date.now();hlSet(0);
+    // Some voices never report word boundaries; fall back to a steady estimate.
+    HL.timer=setInterval(()=>{if(gotBoundary){clearInterval(HL.timer);return;}if(Date.now()-t0<600)return;
+      const cps=14*(u.rate||1);const pos=(Date.now()-t0)/1000*cps;let i=0;for(let k=0;k<st.length;k++)if(st[k]<=pos)i=k;hlSet(Math.min(i,spans.length-1));},120);};
+}
+/* Speak and wait until finished (with a safety timer), for step-by-step demos */
+function sayWait(text,spans){
+  return new Promise(res=>{
+    let done=false;
+    const fin=()=>{if(done)return;done=true;clearTimeout(t);setTimeout(res,350);};
+    const t=setTimeout(fin,Math.max(2500,text.length*95)+(useEleven()?5000:1500));
+    speak(plain(text),fin,spans);
+  });
+}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function hush(){narrTok++;speakTok++;demoTok++;stopAll();}
 /* Narration: reads instructions out loud so reading skill isn't a barrier */
 const EXW={a:"apple",e:"egg",i:"itch",o:"octopus",u:"up",b:"ball",f:"fish",k:"kite",l:"lamp",n:"nose",p:"pig",s:"sun",t:"top",w:"wave",ch:"chip",sh:"ship",th:"thumb"};
 function phon(t){return String(t).replace(/(the )?\/(\w+)\/( sound)?/g,(m,a,x)=>EXW[x]?`the first sound in ${EXW[x]}`:x);}
@@ -585,7 +644,7 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 5</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 7</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.");
@@ -615,7 +674,7 @@ function home(){
     ${!scan?`<button class="link" id="scan-link">🔍 Take the Level Scan</button>`:""}
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 5</p>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 7</p>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   if(due)$("#rescan").onclick=scanIntro;
@@ -626,19 +685,21 @@ function home(){
 }
 
 /* ---------- Frame & rounds ---------- */
-function frame(id,body){
+function frame(id,body,opts={}){
   const m=mission(id);setColor(id);
   let prog="";
-  if(R&&R.i<R.items.length){
+  if(!opts.demo&&R&&R.i<R.items.length){
     const n=R.items.length;
     prog=`<p class="count">${R.label?esc(R.label)+": ":""}Question ${R.i+1} of ${n}</p><div class="dots" aria-hidden="true">${Array.from({length:n},(_,k)=>`<i class="${k<R.i?"on":k===R.i?"now":""}"></i>`).join("")}</div>`;
   }
-  const helpBtn=`<button class="readme" id="readme">🔊 Read to me</button>`+(MISSIONS.some(x=>x.id===id)?`<button class="help" id="help">❓ How to play</button>`:"");
+  const canShow=!opts.demo&&R&&!R.test&&R.mode===id&&DEMOS[id];
+  const helpBtn=`<button class="readme" id="readme">🔊 Read to me</button>`+(canShow?`<button class="help" id="showme">👀 Show me</button>`:"")+(!opts.demo&&MISSIONS.some(x=>x.id===id)?`<button class="help" id="help">❓ How to play</button>`:"");
   app.innerHTML=`<div class="bar"><button class="back" id="back">🏠 Home</button>
     <span class="bar-title"><span class="icon" style="background:${MCOLOR[id]}" aria-hidden="true">${m.icon}</span>${esc(m.name)}</span>${helpBtn}</div>
   ${prog}<div class="stage">${body}</div>`;
   $("#back").onclick=()=>{if(P&&!confirmLeave())return;home();};
   if($("#help"))$("#help").onclick=()=>showHelp(id);
+  if($("#showme"))$("#showme").onclick=()=>{const cur=R;runDemo(id,DEMOS[id](cur),()=>{R=cur;R.tries=0;R.view(R.items[R.i]);});};
   $("#readme").onclick=()=>speak(NARR);
   window.scrollTo(0,0);
 }
@@ -748,7 +809,7 @@ function swapView(it){
 }
 function buildSwap(){
   const n=roundSize("swap",8);
-  return withReview("swap",[...shuffle(SWAPS).slice(0,n-3),...shuffle(COUNTS).slice(0,3).map(c=>Object.assign({kind:"count"},c))],n);
+  return withReview("swap",[...shuffle(SWAPS.filter(x=>x.say!==DEMO_SWAP.say)).slice(0,n-3),...shuffle(COUNTS).slice(0,3).map(c=>Object.assign({kind:"count"},c))],n);
 }
 
 /* ---------- Spell It ---------- */
@@ -770,8 +831,9 @@ function spellPick(){
     const i=+b.dataset.p;const n=roundSize("spell",8);
     const rev=Object.values(S.missed.spell||{}).slice(0,3).map(x=>Object.assign({},x.it,{_rev:true}));
     const keys=new Set(rev.map(keyOf));
-    const items=shuffle([...rev,...shuffle(patWords(i).filter(w=>!keys.has(w.w))).slice(0,Math.max(0,n-rev.length))]);
-    startRound("spell",items,spellView,{pIdx:i});
+    const ex=demoWord(i).w;
+    const items=shuffle([...rev,...shuffle(patWords(i).filter(w=>!keys.has(w.w)&&w.w!==ex)).slice(0,Math.max(0,n-rev.length))]);
+    withDemo("spell","spell:"+i,()=>DEMOS.spell({pIdx:i}),()=>startRound("spell",items,spellView,{pIdx:i}));
   });
 }
 function spellCompare(v,t){
@@ -808,11 +870,11 @@ function flipPair(it){
 }
 function flipView(it){
   frame(fid("flip"),`<div class="card">${REV(it)}<p class="prompt">Which word fits in the blank?</p>
-  <p class="sentence">${esc(it.s).replace("___",'<span class="blank">?</span>')}</p>
+  <p class="sentence">${it.s.split(/\s+/).map(t=>`<span class="w">${esc(t).replace("___",'<span class="blank">?</span>')}</span>`).join(" ")}</p>
   ${R.test?"":`<div class="row center"><button class="btn hear" id="hear">🔊 Hear the sentence</button></div>`}
   <div class="choices">${shuffle([it.a,it.b]).map(w=>`<button class="choice wide" data-v="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>
   <div id="fb" class="fb" aria-live="polite"></div>`);
-  if(!R.test)$("#hear").onclick=()=>speak(it.s.replace("___",it.a));
+  if(!R.test)$("#hear").onclick=()=>speak(it.s.replace("___",it.a),null,[...document.querySelectorAll(".sentence .w")]);
   narrate(`Which word fits in the blank? Here's the sentence: ${it.s.replace("___","blank")} Look closely at the two words, and tap the one that fits.`);
   wireChoices(it,{
     isRight:v=>v===it.a,
@@ -878,10 +940,10 @@ function timedReader(p,{onDone,skipLabel,onSkip,listen=true}){
   const html=`<ol class="how3" id="how3"><li class="on"><b>▶️</b>Tap Start</li><li><b>🗣️</b>Read out loud</li><li><b>⏹️</b>Tap Done</li></ol>
   <div class="card"><div class="timer" id="timer" aria-live="off">0:00</div>
   <div class="row center"><button class="btn go big" id="go">▶️ Start</button>${listen?`<button class="btn ghost" id="listen">🔊 Listen first</button>`:""}${skipLabel?`<button class="btn ghost" id="skipread">${skipLabel}</button>`:""}</div></div>
-  <article class="passage">${p.text.split("\n").map(x=>`<p>${esc(x)}</p>`).join("")}</article>`;
+  <article class="passage">${p.text.split("\n").map(x=>`<p>${wrapWords(x)}</p>`).join("")}</article>`;
   function wire(){
     const steps=[...document.querySelectorAll("#how3 li")];const step=n=>steps.forEach((l,i)=>l.classList.toggle("on",i===n));
-    if(listen)$("#listen").onclick=()=>speak(p.text.replace(/\n/g," "));
+    if(listen)$("#listen").onclick=()=>speak(p.text.replace(/\n/g," "),null,[...document.querySelectorAll(".passage .w")]);
     if(skipLabel)$("#skipread").onclick=()=>{clearInterval(timer);onSkip();};
     const go=$("#go"),tEl=$("#timer");
     const fmt=s=>Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
@@ -895,8 +957,9 @@ function timedReader(p,{onDone,skipLabel,onSkip,listen=true}){
   }
   return {html,wire};
 }
-function speedView(p){
+function speedView(p,skipDemo){
   R=null;hush();
+  if(!skipDemo&&needDemo("speed:"+p.id))return runDemo("speed",DEMOS.speed({p}),()=>{markDemo("speed:"+p.id);speedView(p,true);});
   const tr=timedReader(p,{onDone:wpm=>{
     const arr=(S.reads[p.id]=(S.reads[p.id]||[]).concat(wpm).slice(-12));
     S.doneToday.speed=true;logAttempt("speed",true);award(15);
@@ -908,7 +971,8 @@ function speedView(p){
   }});
   frame("speed",`<h2>${SICON[p.id]||"📖"} ${esc(p.title)}</h2>${tr.html}
   <div id="fb" class="fb card" aria-live="polite">${barsHTML(S.reads[p.id]||[])}</div>
-  <div class="row center"><button class="btn ghost" id="other">📚 Pick another story</button></div>`);
+  <div class="row center"><button class="btn ghost" id="showme2">👀 Show me how</button><button class="btn ghost" id="other">📚 Pick another story</button></div>`);
+  $("#showme2").onclick=()=>runDemo("speed",DEMOS.speed({p}),()=>speedView(p,true));
   if(!(S.reads[p.id]||[]).length)$("#fb").innerHTML="";
   $("#other").onclick=speedPick;tr.wire();
   narrate(`${p.title}. Tap Start, then read the story out loud. Tap Done when you finish. If you want to hear it first, tap Listen first.`);
@@ -1061,15 +1125,16 @@ function settings(){
   <div class="set"><span>🔠 Text size</span>${seg("size",[["m","Medium"],["l","Big"],["xl","Bigger"]])}</div>
   <div class="set"><span>↔️ Space between letters</span>${seg("spaced",[[false,"Normal"],[true,"Extra"]])}</div>
   <div class="set"><span>🔊 Read instructions out loud</span>${seg("voice",[[true,"On"],[false,"Off"]])}</div>
+  <div class="set"><span>👀 Show an example first</span>${seg("demo",[["daily","Once a day"],["always","Every time"],["off","Off"]])}</div>
   <div class="set"><span>🎙️ Voice</span>${seg("engine",[["eleven","ElevenLabs"],["browser","Built-in"]])}</div>
   <p class="muted small" id="voice-status" style="margin:.4rem 0 0"></p>
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 5 (ElevenLabs voice)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 7 (read-along)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
-    const k=b.dataset.k,raw=b.dataset.val;S.settings[k]=(k==="size"||k==="engine")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
+    const k=b.dataset.k,raw=b.dataset.val;S.settings[k]=(k==="size"||k==="engine"||k==="demo")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
     save();applySettings();settings();
   });
   $("#test").onclick=()=>speak("Ready for today's missions!");
@@ -1088,11 +1153,95 @@ function settings(){
   };
 }
 
+
+/* ---------- Worked examples: "Watch me do one" ---------- */
+let demoTok=0;
+const DEMO_SWAP={say:"chop",ask:"Change /ch/ to /sh/.",ans:["shop"]};
+const DEMO_FLIP=FLIP.find(x=>x.a==="from"&&x.b==="form")||FLIP[0];
+const DEMO_FORGE=FORGE.find(x=>x.word==="portable")||FORGE[0];
+function demoWord(i){const p=PATTERNS[i];const w=p.eg.split(",")[0].trim();const hit=p.words.find(x=>x[0]===w)||p.words[0];return {w:hit[0],s:hit[1]};}
+function needDemo(key){const m=S.settings.demo;if(m==="off")return false;if(m==="always")return true;return S.demoSeen[key]!==dayStr();}
+function markDemo(key){S.demoSeen[key]=dayStr();save();}
+function withDemo(mode,key,stepsFn,start){if(!needDemo(key))return start();runDemo(mode,stepsFn(),()=>{markDemo(key);start();});}
+function runDemo(mode,steps,onDone){
+  hush();
+  frame(mode,`<div class="card"><span class="demo-tag">👀 Watch me do one</span>
+    <div class="demo-stage" id="demo-stage" aria-live="polite"></div>
+    <p class="demo-cap" id="demo-cap"></p>
+    <div class="row center"><button class="btn ghost" id="demo-again">🔁 Watch again</button><button class="btn go big" id="demo-go">My turn ▶</button></div></div>`,{demo:true});
+  NARR="";
+  $("#readme").onclick=()=>play();
+  $("#demo-again").onclick=()=>play();
+  $("#demo-go").onclick=()=>{hush();onDone();};
+  async function play(){
+    hush();const tok=demoTok;
+    for(const st of steps){
+      if(tok!==demoTok)return;
+      const stage=$("#demo-stage"),cap=$("#demo-cap");if(!stage)return;
+      stage.innerHTML=st.html;cap.innerHTML=wrapWords(plain(st.say));
+      if(st.fx)st.fx(stage,()=>tok===demoTok);
+      await sayWait(st.say,[...(st.spansSel?stage.querySelectorAll(st.spansSel):cap.querySelectorAll(".w"))]);
+      if(tok!==demoTok)return;
+      if(st.pause)await sleep(st.pause);
+    }
+    const g=$("#demo-go");if(g&&tok===demoTok){g.classList.add("pulse");g.focus();}
+  }
+  setTimeout(play,150);
+}
+function litSeq(sel,gap,start=0){return (stage,alive)=>{[...stage.querySelectorAll(sel)].forEach((el,i)=>setTimeout(()=>{if(alive())el.classList.add("lit");},start+i*gap));};}
+const tileRow=(parts,cls=[])=>`<div class="tiles">${parts.map((p,i)=>`<span class="tile ${cls[i]||""}">${esc(p)}</span>`).join("")}</div>`;
+const DEMOS={
+  swap:()=>{const d=DEMO_SWAP;return [
+    {html:`<p class="word">${d.say}</p>`,say:`Watch me do one. My word is ${d.say}.`},
+    {html:tileRow(["ch","o","p"]),fx:litSeq(".tile",750,500),say:"I say it slowly, and tap a finger for each sound. One, two, three. Chop has three sounds."},
+    {html:tileRow(["ch","o","p"],["lit"])+`<p class="prompt"><span class="do">🔄 ${esc(d.ask)}</span></p>`,say:"The job says: change the first sound in chip to the first sound in ship."},
+    {html:tileRow(["sh","o","p"],["swap"]),say:"So I swap the first sound. Out goes the chip sound. In goes the ship sound."},
+    {html:tileRow(["sh","o","p"],["ok","ok","ok"])+`<div class="mock-input">shop</div>`,say:"Then I blend the sounds back together: shop. I type shop, and tap Check."},
+    {html:tileRow([..."shop"],["ok","ok","ok","ok"])+`<p class="msg good">✅ Nice!</p>`,say:"Green means right! Now it's your turn."}
+  ];},
+  spell:(ctx)=>{const i=ctx.pIdx,p=PATTERNS[i],{w,s:sen}=demoWord(i),L=[...w];
+    let a=1;while(a<L.length-2&&L[a]===L[a+1])a++;const bad=L.slice();[bad[a],bad[a+1]]=[bad[a+1],bad[a]];
+    return [
+    {html:`<div class="rule" style="width:100%"><span class="rule-name">💡 ${esc(p.name)}</span><p>${esc(p.rule)}</p></div>`,say:`Watch me spell one. Spelling trick: ${p.name}. ${p.rule}`},
+    {html:`<p class="word">🔊</p><div class="mock-input"></div>`,say:`First, I listen. The word is ${w}. ${sen} ${w}.`},
+    {html:`<div class="tiles">${L.map(c=>`<span class="tile ghost">${esc(c)}</span>`).join("")}</div>`,
+     fx:(stage,alive)=>{[...stage.querySelectorAll(".tile")].forEach((el,k)=>setTimeout(()=>{if(alive()){el.classList.remove("ghost");el.classList.add("lit");}},900+k*650));},
+     say:`Now I say each letter out loud as I type it. ${spellOut(w)}.`},
+    {html:tileRow(L,L.map(()=>"ok"))+`<p class="msg good">✅ All green!</p>`,say:"All green! Every letter is in the right spot. That's what right looks like."},
+    {html:tileRow(bad,bad.map((c,k)=>k===a||k===a+1?"swap":"ok"))+`<div class="legend"><span><i style="border-color:var(--sun)"></i>Wrong spot</span></div>`,say:"If I mix up the order, like this, the yellow letters show which ones are in the wrong spot. I'd switch them and try again."},
+    {html:tileRow(L,L.map(()=>"ok")),say:"Now it's your turn!"}
+  ];},
+  flip:()=>{const d=DEMO_FLIP;const filled=esc(d.s).replace("___",`<span class="hl">${esc(d.a)}</span>`);return [
+    {html:`<p class="sentence">${esc(d.s).replace("___",'<span class="blank">?</span>')}</p>`,say:`Watch me do one. I read the sentence: ${d.s.replace("___","blank")}`},
+    {html:`<div class="pair"><span class="lbl">${esc(d.a)}</span>${tileRow([...d.a])}<span class="lbl">${esc(d.b)}</span>${tileRow([...d.b])}</div>`,say:`I look closely at both words. ${d.a} is spelled ${spellOut(d.a)}. ${d.b} is spelled ${spellOut(d.b)}. Same letters, different order.`},
+    {html:`<p class="sentence">${filled}</p>`,say:`I try the word in the sentence. ${d.s.replace("___",d.a)} That makes sense!`},
+    {html:`<div class="choices"><span class="choice wide ok">${esc(d.a)}</span><span class="choice wide dim">${esc(d.b)}</span></div><p class="msg good">✅ Good catch!</p>`,say:`So I tap ${d.a}. Now it's your turn!`}
+  ];},
+  forge:()=>{const d=DEMO_FORGE;const extra=[["re","again"],["ion","act of"]];const bank=[d.parts[1],extra[0],d.parts[0],extra[1]];
+    const part=(p,cls="")=>`<span class="part ${cls}"><b>${esc(p[0])}</b><small>${esc(p[1])}</small></span>`;
+    const bankHTML=(used=[],lit=[])=>`<div class="bank">${bank.map(p=>part(p,(used.includes(p[0])?"dim ":"")+(lit.includes(p[0])?"lit":""))).join("")}</div>`;
+    return [
+    {html:`<p class="sentence">"${esc(d.def)}"</p>${bankHTML()}`,say:`Watch me do one. I need a word that means: ${d.def}.`},
+    {html:`<p class="sentence">"${esc(d.def)}"</p>${bankHTML([],d.parts.map(p=>p[0]))}`,say:`I read the small meaning under each piece. ${d.parts.map(p=>`${p[0]} means ${p[1]}`).join(". ")}.`},
+    {html:`<div class="slots">${part(d.parts[0])}</div><p class="preview">${esc(d.parts[0][0])}</p>${bankHTML([d.parts[0][0]])}`,say:`Carry comes first, so I tap ${d.parts[0][0]}.`},
+    {html:`<div class="slots">${d.parts.map(p=>part(p)).join("")}</div><p class="preview">${esc(d.word)}</p>${bankHTML(d.parts.map(p=>p[0]))}`,say:`Then I tap ${d.parts[1][0]}. ${d.parts.map(p=>p[0]).join(" plus ")} makes ${d.word}. It means something that can be carried.`},
+    {html:`<div class="built">${esc(d.word)}</div><p class="msg good">✅ Forged!</p>`,say:"I tap Check. Now it's your turn!"}
+  ];},
+  speed:(ctx)=>{const p=ctx.p;const sents=p.text.replace(/\n/g," ").split(/(?<=[.!?])\s+/);const s1=sents[0]||"",s2=sents[1]||"";
+    const ex=(hl)=>`<article class="passage" style="font-size:1.1rem"><p>${[s1,s2].map((x,k)=>k===hl?`<span class="rd">${wrapWords(x)}</span>`:esc(x)).join(" ")} …</p></article>`;
+    return [
+    {html:`<div class="timer">0:00</div><span class="btn go big pulse">▶️ Start</span>`,say:"Watch how I do it. First, I tap Start."},
+    {html:ex(-1),say:"Then I read out loud, nice and smooth, like I'm talking to a friend. Listen."},
+    {html:ex(0),say:s1,spansSel:".rd .w"},
+    {html:ex(1),say:s2,spansSel:".rd .w"},
+    {html:`<div class="timer">⏹️</div>`,say:"See? Not too fast, not too slow. If I get stuck on a word, I sound it out and keep going. When I finish the story, I tap Done. Now it's your turn!"}
+  ];}
+};
 const GO={
-  swap:()=>enter("swap",()=>startRound("swap",buildSwap(),swapView)),
+  swap:()=>enter("swap",()=>withDemo("swap","swap",()=>DEMOS.swap(),()=>startRound("swap",buildSwap(),swapView))),
   spell:()=>enter("spell",spellPick),
-  flip:()=>enter("flip",()=>{const n=roundSize("flip",8);startRound("flip",withReview("flip",FLIP,n),flipView);}),
-  forge:()=>enter("forge",()=>{const n=roundSize("forge",6);startRound("forge",withReview("forge",FORGE,n),forgeView);}),
+  flip:()=>enter("flip",()=>withDemo("flip","flip",()=>DEMOS.flip(),()=>{const n=roundSize("flip",8);startRound("flip",withReview("flip",FLIP.filter(x=>x.s!==DEMO_FLIP.s),n),flipView);})),
+  forge:()=>enter("forge",()=>withDemo("forge","forge",()=>DEMOS.forge(),()=>{const n=roundSize("forge",6);startRound("forge",withReview("forge",FORGE.filter(x=>x.word!==DEMO_FORGE.word),n),forgeView);})),
   speed:()=>enter("speed",speedPick)
 };
 $("#brand").onclick=()=>{if(P&&!confirmLeave())return;home();};
