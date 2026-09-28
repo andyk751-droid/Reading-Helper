@@ -189,6 +189,49 @@ h2{font-size:1.45rem;line-height:1.2;margin:.2rem 0 .5rem;font-weight:800}
 .toast{position:fixed;left:50%;bottom:calc(1rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:.7rem 1.1rem;border-radius:12px;font-size:.95rem;font-weight:600;max-width:90vw;z-index:20}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:440px){.word{font-size:2.4rem}.tile{font-size:1.6rem;min-width:2rem}h1{font-size:1.6rem}.chip{display:none}.answer-row{flex-direction:column}}
+.center-text{text-align:center;align-items:center}
+.readme{background:var(--surface);border:2px solid var(--m,var(--cobalt));border-radius:12px;padding:.45rem .85rem;font-size:.9rem;font-weight:700;color:var(--ink)}
+.readme.speaking{background:color-mix(in srgb,var(--m,var(--cobalt)) 18%,var(--surface))}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem}
+.icon.xl{width:4.4rem;height:4.4rem;font-size:2.3rem;border-radius:20px}
+.part-tag{display:inline-block;font-weight:800;font-size:.85rem;color:var(--m);background:color-mix(in srgb,var(--m) 14%,var(--surface));border-radius:999px;padding:.2rem .7rem}
+.parent-note{background:var(--bg);border-radius:14px;padding:.7rem .9rem;font-size:.9rem;text-align:left}
+.parent-note b{display:block;margin-bottom:.15rem}
+.scorebtns{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.scorebtns .btn{font-size:1.1rem}
+.btn.no{background:var(--coral);color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--coral) 60%,#000)}
+.area-row{display:grid;grid-template-columns:2rem 1fr auto;gap:.3rem .7rem;align-items:center;padding:.55rem 0;border-bottom:2px solid var(--line)}
+.area-row:last-child{border-bottom:0}
+.area-row .ai{font-size:1.3rem;grid-row:span 2}
+.area-row .an{font-weight:700}
+.meter{grid-column:2 / 4;height:.75rem;background:var(--line);border-radius:999px;overflow:hidden}
+.meter span{display:block;height:100%;border-radius:999px}
+.lvl{font-size:.78rem;font-weight:800;padding:.2rem .6rem;border-radius:999px;white-space:nowrap}
+.lvl.strong{color:var(--mint);background:color-mix(in srgb,var(--mint) 16%,var(--surface))}
+.lvl.mid{color:color-mix(in srgb,var(--sun) 80%,var(--ink));background:color-mix(in srgb,var(--sun) 20%,var(--surface))}
+.lvl.focus{color:var(--coral);background:color-mix(in srgb,var(--coral) 14%,var(--surface))}
+.lvl.skip{color:var(--muted);background:var(--bg)}
+.delta{font-size:.78rem;font-weight:700;color:var(--mint);margin-left:.3rem}
+.delta.down{color:var(--coral)}
+.chip.focus{background:color-mix(in srgb,var(--coral) 16%,var(--surface));color:var(--coral)}
+.plan{margin:0;padding-left:1.4rem;display:flex;flex-direction:column;gap:.3rem;font-weight:600}
+.pat-list{display:flex;flex-direction:column;gap:.4rem;margin:0;padding:0;list-style:none}
+.pat-list li{display:flex;justify-content:space-between;gap:.6rem;background:var(--bg);border-radius:12px;padding:.5rem .8rem;font-size:.92rem}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:30rem}
+.tbl th,.tbl td{padding:.45rem .5rem;text-align:center;border-bottom:2px solid var(--line)}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.cal{display:flex;gap:.3rem;flex-wrap:wrap}
+.cal span{width:1.5rem;height:1.5rem;border-radius:6px;background:var(--line);display:grid;place-items:center;font-size:.65rem;font-weight:700;color:var(--muted)}
+.cal span.on{background:var(--mint);color:#fff}
+.words{display:flex;flex-wrap:wrap;gap:.4rem}
+.words span{background:var(--bg);border-radius:10px;padding:.25rem .6rem;font-weight:600;font-size:.92rem}
+.words span small{color:var(--coral);font-weight:800;margin-left:.3rem}
+.banner{display:flex;align-items:center;gap:.8rem;background:color-mix(in srgb,var(--c-swap) 12%,var(--surface));border:2px solid var(--c-swap);border-radius:18px;padding:.8rem 1rem;margin-top:1rem}
+.banner p{margin:0;flex:1;font-weight:600}
+.rev{display:inline-block;font-size:.8rem;font-weight:800;background:color-mix(in srgb,var(--sun) 25%,var(--surface));border-radius:999px;padding:.15rem .6rem;margin:0 auto}
+.section-h{font-size:1.05rem;font-weight:800;margin:0}
+.recommend{border:3px solid var(--m);background:color-mix(in srgb,var(--m) 8%,var(--surface))}
 </style>
 </head>
 <body>
@@ -294,7 +337,19 @@ const PASSAGES=[
  {id:"deep",title:"Lights in the Deep",text:"Far below the waves, the sea is dark and cold. Sunlight fades as you go down, and deep enough there is no light at all. Yet the deep sea is not empty.\nSome fish make their own light. They glow blue or green to find food, trick enemies, or signal each other. The anglerfish dangles a glowing lure in front of its mouth like a fishing pole. Small fish swim toward the light and get snapped up.\nScientists explore these depths with robot subs built to handle the crushing weight of the water. On almost every trip down, they find something new. Much of the deep ocean has still never been seen by anyone."},
  {id:"skate",title:"The Skate Park Plan",text:"The town wanted to tear down the old tennis courts. Jalen had a better idea. He walked the courts and drew a map of where ramps, rails, and a small bowl could go.\nThen he counted how many kids skated in the parking lot behind the store. On Monday, there were fourteen. On Friday, there were twenty-two. He put the numbers on a poster and brought it to the town meeting.\nHis hands shook when he stood up to speak. He read his plan slowly and clearly. When he finished, the room was quiet. Then the mayor asked a question. How much would it cost? Jalen flipped the poster over. He had already done the math."}
 ];
-
+/* ---------- Level scan content ---------- */
+const PLACE={
+  spell:[["grasp","Grasp the rope with both hands.",0],["scrub","Scrub the pan until it shines.",0],["slope","We sledded down the slope.",1],["brave","The firefighter was brave.",1],["cream","Add cream to the soup.",2],["toast","I ate toast for breakfast.",2],["smart","That was a smart move.",3],["churn","The waves churn in the storm.",3],["option","Pizza is one option for dinner.",4],["mention","Did he mention the test?",4],["tapping","She kept tapping her pencil.",5],["slipped","I slipped on the ice.",5]],
+  decode:[["blim","b-l-i-m"],["frap","f-r-a-p"],["strod","s-t-r-o-d"],["glent","g-l-e-n-t"],["plame","p-l-a-me, long a"],["zote","z-o-te, long o"],["sloaf","s-l-oa-f, long o"],["dreap","d-r-ea-p, long e"],["sporn","s-p-or-n"],["murth","m-ur-th"]],
+  passage:{title:"The Lost Signal",text:"Theo's radio had been quiet for an hour. He and his dad were camping deep in the hills, and the storm had knocked out the signal.\nTheo turned the dial slowly. Static. More static. Then a faint voice. He held his breath and turned the dial back a tiny bit. The voice grew clear. It was the ranger station, warning that the creek was rising fast.\nTheo woke his dad. They packed the tent in the dark and moved to higher ground. By morning, their old campsite was under water. Theo kept the radio in his lap the whole ride home."}
+};
+const AREAS=[
+  {id:"sounds",name:"Hearing sounds",icon:"🎧",mission:"swap"},
+  {id:"spell",name:"Spelling patterns",icon:"✏️",mission:"spell"},
+  {id:"order",name:"Letter order",icon:"🔀",mission:"flip"},
+  {id:"parts",name:"Word parts",icon:"🧩",mission:"forge"},
+  {id:"decode",name:"Sounding out new words",icon:"🗣️",mission:"speed"}
+];
 const MISSIONS=[
  {id:"swap",name:"Sound Swap",icon:"🎧",desc:"Change one sound to make a new word.",min:"5 min",
   steps:["🔊 Listen to the word","🔄 Change, remove, or add the sound it tells you","⌨️ Type the new word"],
@@ -312,27 +367,35 @@ const MISSIONS=[
   steps:["▶️ Tap Start","🗣️ Read the whole story out loud","⏹️ Tap Done when you finish"],
   ex:["Tip","Read the same story 3 times. Your bar gets taller each time. Smooth reading beats rushing."]}
 ];
-const MCOLOR={swap:"var(--c-swap)",spell:"var(--c-spell)",flip:"var(--c-flip)",forge:"var(--c-forge)",speed:"var(--c-speed)"};
-const mission=id=>MISSIONS.find(m=>m.id===id);
+const SCAN={id:"scan",name:"Level Scan",icon:"🔍"};
+const PARENT={id:"parent",name:"Grown-up view",icon:"📊"};
+const MCOLOR={swap:"var(--c-swap)",spell:"var(--c-spell)",flip:"var(--c-flip)",forge:"var(--c-forge)",speed:"var(--c-speed)",scan:"var(--c-swap)",parent:"var(--cobalt)"};
+const mission=id=>MISSIONS.find(m=>m.id===id)||(id==="scan"?SCAN:PARENT);
 const YAY=["Nice! 🎉","You got it! ✅","Awesome! ⭐","Nailed it! 💪","Great job! 🙌","Boom! 💥"];
 const yay=()=>YAY[Math.floor(Math.random()*YAY.length)];
+const RESCAN_DAYS=21;
 
 /* ---------- State ---------- */
 const $=s=>document.querySelector(s);
 const app=$("#app");
 const KEY="decode-v1";
 function dayStr(off=0){const d=new Date();d.setDate(d.getDate()+off);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function niceDate(ds){const [y,m,d]=ds.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:"short",day:"numeric"});}
 function load(){
   let d=null;try{d=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
-  const s=Object.assign({xp:0,streak:0,lastDay:null,day:null,doneToday:{},reads:{},seen:{}},d||{});
-  s.seen=s.seen||{};
-  s.settings=Object.assign({size:"m",spaced:false,rate:0.85},(d&&d.settings)||{});
+  const s=Object.assign({xp:0,streak:0,lastDay:null,day:null,doneToday:{},reads:{},seen:{},scans:[],nextScan:null,skipScan:false,log:{},missed:{},missCount:{}},d||{});
+  ["seen","reads","log","missed","missCount","doneToday"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={};});
+  if(!Array.isArray(s.scans))s.scans=[];
+  if(!Array.isArray(s.pat)||s.pat.length!==PATTERNS.length)s.pat=PATTERNS.map((_,i)=>(Array.isArray(s.pat)&&s.pat[i])||{mastered:false,how:null,days:{}});
+  s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true},(d&&d.settings)||{});
   if(s.day!==dayStr()){s.day=dayStr();s.doneToday={};}
   if(s.lastDay&&s.lastDay!==dayStr()&&s.lastDay!==dayStr(-1))s.streak=0;
+  const cutoff=dayStr(-90);Object.keys(s.log).forEach(k=>{if(k<cutoff)delete s.log[k];});
   return s;
 }
 let S=load();
 let R=null;
+let P=null;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function renderHud(){$("#hud-streak").textContent=S.streak;$("#hud-streak-l").textContent=S.streak===1?"day":"days";$("#hud-xp").textContent=S.xp;}
 function award(n){
@@ -347,11 +410,55 @@ function applySettings(){
   document.body.classList.toggle("spaced",!!S.settings.spaced);
 }
 
+/* ---------- Tracking ---------- */
+function keyOf(it){return String(it.w||it.s||it.def||it.say||it.word);}
+function labelOf(mode,it){return mode==="flip"?`${it.a} / ${it.b}`:mode==="swap"?(it.kind==="count"?it.word:`${it.say} to ${it.ans[0]}`):(it.w||it.word||"");}
+function clean(it){const c=Object.assign({},it);delete c._rq;delete c._rev;return c;}
+function addMissed(mode,it){
+  const k=keyOf(it);S.missed[mode]=S.missed[mode]||{};S.missed[mode][k]={it:clean(it),hits:0};
+  const mk=mode+":"+k;const cur=S.missCount[mk]||{label:labelOf(mode,it),mode,n:0};cur.n++;S.missCount[mk]=cur;
+}
+function reviewHit(mode,it){
+  const m=S.missed[mode];const k=keyOf(it);if(!m||!m[k])return;
+  m[k].hits++;if(m[k].hits>=2)delete m[k];
+}
+function logAttempt(mode,ok,p){
+  const d=dayStr();S.log[d]=S.log[d]||{};const e=S.log[d][mode]=S.log[d][mode]||{c:0,t:0};e.t++;if(ok)e.c++;
+  if(mode==="spell"&&typeof p==="number"){const pd=S.pat[p].days;pd[d]=pd[d]||{c:0,t:0};pd[d].t++;if(ok)pd[d].c++;}
+}
+function resolve(it,firstTry){
+  if(it._rq)return;logAttempt(R.mode,firstTry,it.p);
+  if(firstTry)reviewHit(R.mode,it);else addMissed(R.mode,it);save();
+}
+function recent(mode,days){let c=0,t=0;for(let i=0;i<days;i++){const e=(S.log[dayStr(-i)]||{})[mode];if(e){c+=e.c;t+=e.t;}}return {c,t};}
+function checkMastery(p){
+  const st=S.pat[p];if(st.mastered)return false;
+  const good=Object.values(st.days).filter(d=>d.t>=6&&d.c/d.t>=0.9).length;
+  if(good>=2){st.mastered=true;st.how="practice";save();return true;}return false;
+}
+function currentPattern(){return S.pat.findIndex(p=>!p.mastered);}
+function lastScan(){return S.scans[S.scans.length-1]||null;}
+function areaScore(aid){
+  const sc=lastScan();let p=sc?sc.scores[aid]:null;
+  const m=AREAS.find(a=>a.id===aid).mission;
+  if(aid!=="decode"){const r=recent(m,7);if(r.t>=15){const rp=Math.round(r.c/r.t*100);p=p==null?rp:Math.round((p+rp)/2);}}
+  return p;
+}
+function focusMissions(){
+  const list=AREAS.map(a=>({m:a.mission,s:areaScore(a.id)})).filter(x=>x.s!=null).sort((a,b)=>a.s-b.s);
+  if(!list.length)return [];
+  const f=list.filter(x=>x.s<60).map(x=>x.m).slice(0,3);
+  if(!f.length&&list[0].s<85)f.push(list[0].m);
+  return f;
+}
+function planOrder(){const f=focusMissions();return [...f.map(mission),...MISSIONS.filter(m=>!f.includes(m.id))];}
+
 /* ---------- Helpers ---------- */
 function esc(t){return String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function tiles(parts,cls=[],sm=false){return `<div class="tiles${sm?" sm":""}">${parts.map((p,i)=>`<span class="tile ${cls[i]||""}">${esc(p)}</span>`).join("")}</div>`;}
 function okTiles(word,sm=true){return tiles([...word],[...word].map(()=>"ok"),sm);}
+function sameLetters(a,b){return a!==b&&[...a].sort().join("")===[...b].sort().join("");}
 let toastT;
 function toast(msg){let t=$(".toast");if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}t.textContent=msg;clearTimeout(toastT);toastT=setTimeout(()=>t.remove(),3000);}
 function speak(text){
@@ -360,89 +467,176 @@ function speak(text){
     speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=S.settings.rate;u.lang="en-US";speechSynthesis.speak(u);
   }catch(e){}
 }
-function hush(){try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}}
+function hush(){narrTok++;try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}}
+/* Narration: reads instructions out loud so reading skill isn't a barrier */
+const EXW={a:"apple",e:"egg",i:"itch",o:"octopus",u:"up",b:"ball",f:"fish",k:"kite",l:"lamp",n:"nose",p:"pig",s:"sun",t:"top",w:"wave",ch:"chip",sh:"ship",th:"thumb"};
+function phon(t){return String(t).replace(/(the )?\/(\w+)\/( sound)?/g,(m,a,x)=>EXW[x]?`the first sound in ${EXW[x]}`:x);}
+function plain(t){return phon(String(t).replace(/<[^>]*>/g," ").replace(/[\p{Extended_Pictographic}\uFE0F\u200D\u20E3]/gu,"").replace(/\+/g," plus ").replace(/\s+/g," ").replace(/([:.!?])\s*\./g,"$1").trim());}
+function spellOut(w){return [...w].join(", ");}
+let NARR="",userActed=false,narrTok=0;
+document.addEventListener("pointerdown",()=>{userActed=true;},{once:true,capture:true});
+document.addEventListener("keydown",()=>{userActed=true;},{once:true,capture:true});
+function narrate(text,{auto=true,fallback=""}={}){
+  const txt=NARR=plain(text);const tok=++narrTok;
+  const b=document.getElementById("readme");if(b)b.onclick=()=>speak(NARR);
+  if(!auto)return;
+  setTimeout(()=>{
+    if(tok!==narrTok)return;
+    if(S.settings.voice&&userActed)speak(txt);
+    else if(fallback&&userActed)speak(fallback);
+  },220);
+}
+const SAY=t=>`<span class="sr" aria-hidden="true" data-say="${esc(t)}"></span>`;
+function speakFb(){
+  narrTok++;if(!S.settings.voice)return;const fb=document.getElementById("fb");if(!fb)return;
+  const parts=[...fb.querySelectorAll(".msg,[data-say]")].map(e=>e.dataset.say||e.textContent).filter(Boolean);
+  if(parts.length)speak(plain(parts.join(". ").replace(/\.\s*\./g,".")));
+}
 function setColor(id){document.documentElement.style.setProperty("--m",id?MCOLOR[id]:"var(--cobalt)");}
+const fid=id=>(R&&R.test)?"scan":id;
+function withReview(mode,items,n){
+  const rev=Object.values(S.missed[mode]||{}).slice(0,3).map(x=>Object.assign({},x.it,{_rev:true}));
+  const keys=new Set(rev.map(keyOf));
+  return shuffle([...rev,...shuffle(items.filter(i=>!keys.has(keyOf(i)))).slice(0,Math.max(0,n-rev.length))]);
+}
+const roundSize=(mode,base)=>focusMissions().includes(mode)?base+2:base;
+const REV=it=>it._rev?`<span class="rev">🔁 Review word</span>`:"";
 
 /* ---------- How to play ---------- */
 function showHelp(id,onClose){
   const m=mission(id);S.seen[id]=true;save();
   const o=document.createElement("div");o.className="overlay";
-  o.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="help-t">
+  o.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="help-t" style="--m:${MCOLOR[id]}">
     <span class="icon" style="background:${MCOLOR[id]}">${m.icon}</span>
     <h2 id="help-t">How to play ${esc(m.name)}</h2>
     <ol>${m.steps.map((s,i)=>`<li><span class="n">${i+1}</span><span>${esc(s)}</span></li>`).join("")}</ol>
     <div class="example"><b>${esc(m.ex[0])}</b>${esc(m.ex[1])}</div>
-    <button class="btn go big" id="help-ok">Got it, let's go!</button>
+    <div class="row center"><button class="btn ghost" id="help-read">🔊 Read to me</button><button class="btn go big" id="help-ok">Got it, let's go!</button></div>
   </div>`;
   document.body.appendChild(o);
   const close=()=>{o.remove();document.removeEventListener("keydown",k);onClose&&onClose();};
   const k=e=>{if(e.key==="Escape")close();};
   document.addEventListener("keydown",k);
-  $("#help-ok").onclick=close;$("#help-ok").focus();
+  const helpText=plain(`How to play ${m.name}. `+m.steps.map((s,i)=>`Step ${i+1}: ${s}.`).join(" ")+` ${m.ex[0]}: ${m.ex[1]} When you're ready, tap the green button.`);
+  $("#help-read").onclick=()=>speak(helpText);
+  if(S.settings.voice&&userActed)setTimeout(()=>speak(helpText),200);
+  $("#help-ok").onclick=()=>{hush();close();};$("#help-ok").focus();
 }
 function enter(id,fn){setColor(id);if(!S.seen[id]){showHelp(id,fn);}else fn();}
 
-/* ---------- Screens ---------- */
+/* ---------- Home ---------- */
 function home(){
-  R=null;hush();setColor(null);
+  R=null;P=null;hush();setColor(null);
+  const scan=lastScan();
+  if(!scan&&!S.skipScan){
+    app.innerHTML=`<div class="hero" style="--m:var(--c-swap)">
+      <div class="hero-top"><h1>Welcome to Decode! 👋</h1><button class="readme" id="readme">🔊 Read to me</button></div><div>
+      <p class="muted">Start with a quick <b>Level Scan</b>. It figures out what you're already good at and what to practice first, so you don't waste time on easy stuff.</p></div>
+      <button class="go-big" id="scan-go"><span>🔍</span> Start the Level Scan</button>
+      <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
+    </div>
+    <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>`;
+    $("#scan-go").onclick=scanIntro;
+    $("#skip").onclick=()=>{S.skipScan=true;save();home();};
+    narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.");
+    window.scrollTo(0,0);return;
+  }
+  const plan=planOrder(),focus=focusMissions();
   const done=MISSIONS.filter(m=>S.doneToday[m.id]).length;
-  const next=MISSIONS.find(m=>!S.doneToday[m.id]);
+  const next=plan.find(m=>!S.doneToday[m.id]);
+  const due=scan&&S.nextScan&&dayStr()>=S.nextScan;
+  const cp=currentPattern();
   app.innerHTML=`<div class="hero" style="--m:${next?MCOLOR[next.id]:"var(--mint)"}">
+    <div class="hero-top"><span></span><button class="readme" id="readme">🔊 Read to me</button></div>
     <div><h1>${done===0?"Hey! Ready to train? 👋":done===5?"All done for today! 🎉":"Keep it going! 🚀"}</h1>
-    <p class="muted">${done===5?"You finished all 5 missions. Come back tomorrow to keep your streak alive. 🔥":`You've done <b>${done} of 5</b> missions today. Just tap the big button.`}</p></div>
+    <p class="muted">${done===5?"You finished all 5 missions. Come back tomorrow to keep your streak alive. 🔥":`You've done <b>${done} of 5</b> missions today.${scan?" Your plan starts with the stuff that will help you most.":""}`}</p></div>
     ${next?`<button class="go-big" id="next-up"><span>${next.icon}</span> Start ${esc(next.name)}</button>`:""}
   </div>
-  <p class="list-h">All missions</p>
-  <ol class="missions">${MISSIONS.map((m,i)=>`<li><button class="mission" style="--m:${MCOLOR[m.id]}" data-go="${m.id}">
+  ${due?`<div class="banner"><span style="font-size:1.6rem">🔍</span><p>Time for a Level Scan re-check. See how much you've grown!</p><button class="btn" id="rescan">Start</button></div>`:""}
+  <p class="list-h">${scan?"Your plan for today":"All missions"}</p>
+  <ol class="missions">${plan.map((m,i)=>{
+    const isF=focus.includes(m.id);const chip=S.doneToday[m.id]?`<span class="chip done">✓ Done</span>`:isF?`<span class="chip focus">🎯 Focus</span>`:`<span class="chip">${m.min}</span>`;
+    const desc=m.id==="spell"&&cp>=0?`Your trick right now: ${PATTERNS[cp].name}`:m.desc;
+    return `<li><button class="mission" style="--m:${MCOLOR[m.id]}" data-go="${m.id}">
     <span class="icon" aria-hidden="true">${m.icon}</span>
-    <span class="mtext"><span class="mname">${i+1}. ${esc(m.name)}</span><span class="mdesc">${esc(m.desc)}</span></span>
-    <span class="chip ${S.doneToday[m.id]?"done":""}">${S.doneToday[m.id]?"✓ Done":m.min}</span></button></li>`).join("")}</ol>
-  <button class="link" id="to-settings">⚙️ Settings</button>`;
+    <span class="mtext"><span class="mname">${i+1}. ${esc(m.name)}</span><span class="mdesc">${esc(desc)}</span></span>${chip}</button></li>`;}).join("")}</ol>
+  <div class="row" style="justify-content:space-between">
+    <button class="link" id="to-settings">⚙️ Settings</button>
+    ${!scan?`<button class="link" id="scan-link">🔍 Take the Level Scan</button>`:""}
+    <button class="link" id="to-parent">📊 Grown-up view</button>
+  </div>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
-  $("#to-settings").onclick=settings;window.scrollTo(0,0);
+  if(due)$("#rescan").onclick=scanIntro;
+  if(!scan)$("#scan-link").onclick=scanIntro;
+  $("#to-settings").onclick=settings;$("#to-parent").onclick=parentView;window.scrollTo(0,0);
+  narrate(done===5?"All done for today! You finished all 5 missions. Come back tomorrow to keep your streak going."
+    :`Hi! You've done ${done} of 5 missions today. Tap the big button to start ${next.name}.${due?" It's also time for a Level Scan re-check. Tap Start in the purple box when you're ready.":""}`);
 }
+
+/* ---------- Frame & rounds ---------- */
 function frame(id,body){
   const m=mission(id);setColor(id);
   let prog="";
   if(R&&R.i<R.items.length){
     const n=R.items.length;
-    prog=`<p class="count">Question ${R.i+1} of ${n}</p><div class="dots" aria-hidden="true">${Array.from({length:n},(_,k)=>`<i class="${k<R.i?"on":k===R.i?"now":""}"></i>`).join("")}</div>`;
+    prog=`<p class="count">${R.label?esc(R.label)+": ":""}Question ${R.i+1} of ${n}</p><div class="dots" aria-hidden="true">${Array.from({length:n},(_,k)=>`<i class="${k<R.i?"on":k===R.i?"now":""}"></i>`).join("")}</div>`;
   }
+  const helpBtn=`<button class="readme" id="readme">🔊 Read to me</button>`+(MISSIONS.some(x=>x.id===id)?`<button class="help" id="help">❓ How to play</button>`:"");
   app.innerHTML=`<div class="bar"><button class="back" id="back">🏠 Home</button>
-    <span class="bar-title"><span class="icon" style="background:${MCOLOR[id]}" aria-hidden="true">${m.icon}</span>${esc(m.name)}</span>
-    <button class="help" id="help">❓ How to play</button></div>
+    <span class="bar-title"><span class="icon" style="background:${MCOLOR[id]}" aria-hidden="true">${m.icon}</span>${esc(m.name)}</span>${helpBtn}</div>
   ${prog}<div class="stage">${body}</div>`;
-  $("#back").onclick=home;$("#help").onclick=()=>showHelp(id);window.scrollTo(0,0);
+  $("#back").onclick=()=>{if(P&&!confirmLeave())return;home();};
+  if($("#help"))$("#help").onclick=()=>showHelp(id);
+  $("#readme").onclick=()=>speak(NARR);
+  window.scrollTo(0,0);
 }
+let leaveArmed=0;
+function confirmLeave(){if(Date.now()-leaveArmed<4000)return true;leaveArmed=Date.now();toast("Leaving stops the scan. Tap Home again to leave.");return false;}
 function startRound(mode,items,view,extra={}){R=Object.assign({mode,items,i:0,tries:0,first:0,total:items.length,xp:0,view},extra);showItem();}
 function showItem(){if(R.i>=R.items.length)return finish();R.tries=0;R.view(R.items[R.i]);}
 function nextItem(){hush();R.i++;showItem();}
 function requeue(it){if(!it._rq)R.items.push(Object.assign({},it,{_rq:true}));}
 function finish(){
+  if(R.test){const cb=R.onDone;R=null;cb();return;}
   S.doneToday[R.mode]=true;save();const r=R;
+  let mastered="";
+  if(r.mode==="spell"&&typeof r.pIdx==="number"&&checkMastery(r.pIdx)){
+    const nx=currentPattern();
+    mastered=`<div class="rule" style="--m:var(--mint)"><span class="rule-name">🏅 You mastered ${esc(PATTERNS[r.pIdx].name)}!</span><p>${nx>=0?`Next trick: ${esc(PATTERNS[nx].name)}.`:"That was the last trick. You've mastered them all!"}</p></div>`;
+  }
   const pct=r.first/r.total,stars=pct>=.9?3:pct>=.6?2:1;
-  const next=MISSIONS.find(m=>!S.doneToday[m.id]);
+  const next=planOrder().find(m=>!S.doneToday[m.id]);
   frame(r.mode,`<div class="card finish"><div class="trophy">🏆</div><h2>Mission complete!</h2>
   <div class="stars" aria-label="${stars} of 3 stars">${"⭐".repeat(stars)}${"☆".repeat(3-stars)}</div>
   <p class="big">You got ${r.first} out of ${r.total}</p>
-  <p class="gain">+${r.xp} points</p>
+  <p class="gain">+${r.xp} points</p>${mastered}
   <div class="row">${next?`<button class="btn go big" id="nx">${next.icon} Next: ${esc(next.name)}</button>`:`<button class="btn go big" id="nx">🎉 See today's wins</button>`}
   <button class="btn ghost" id="again">🔁 Play again</button></div></div>`);
   $("#nx").onclick=()=>next?GO[next.id]():home();$("#again").onclick=()=>GO[r.mode]();$("#nx").focus();
+  narrate(`Mission complete! You got ${r.first} out of ${r.total}, and earned ${r.xp} points. ${mastered?plain(mastered)+" ":""}${next?`Tap the green button to go to your next mission, ${next.name}.`:"Tap the green button to see today's wins."}`);
 }
 function endWith(html,disable){
   disable();const fb=$("#fb");
   fb.innerHTML=html+`<div class="row"><button class="btn go big" id="next">Next ▶</button></div>`;
   const n=$("#next");n.onclick=nextItem;n.focus();
+  speakFb();
+}
+function testRecord(it,ok,v){
+  P.results[R.section].push({ok,it,v});
+  if(R.section==="spell"&&!ok&&v&&sameLetters(v,it.w))P.orderErrs++;
+  const fb=$("#fb");if(fb)fb.innerHTML=`<p class="msg">✔ Saved</p>`;
+  setTimeout(nextItem,450);
 }
 function wireTyped(it,{isRight,rightHTML,wrongHTML,revealHTML}){
   const inp=$("#ans"),chk=$("#check"),fb=$("#fb");let over=false;
   const disable=()=>{over=true;inp.disabled=true;chk.disabled=true;};
   function check(){
     if(over)return;const v=inp.value.trim().toLowerCase();if(!v){toast("Type your answer first 🙂");inp.focus();return;}
-    if(isRight(v)){const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+rightHTML(v)+`<p class="gain">+${xp} points</p>`,disable);}
-    else{R.tries++;if(R.tries>=2){requeue(it);endWith(wrongHTML(v,true)+revealHTML(),disable);}else{fb.innerHTML=wrongHTML(v,false)+`<p class="muted small">You get one more try.</p>`;inp.select();}}
+    const ok=isRight(v);
+    if(R.test){disable();testRecord(it,ok,v);return;}
+    if(ok){resolve(it,R.tries===0);const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+rightHTML(v)+`<p class="gain">+${xp} points</p>`,disable);}
+    else{R.tries++;if(R.tries>=2){resolve(it,false);requeue(it);endWith(wrongHTML(v,true)+revealHTML(),disable);}else{fb.innerHTML=wrongHTML(v,false)+`<p class="muted small" data-say="You get one more try.">You get one more try.</p>`;inp.select();speakFb();}}
   }
   chk.onclick=check;inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();check();}});
   setTimeout(()=>inp.focus(),60);
@@ -452,120 +646,143 @@ function wireChoices(it,{isRight,rightHTML,wrongHTML,revealHTML}){
   const disable=()=>btns.forEach(b=>b.disabled=true);
   btns.forEach(b=>b.onclick=()=>{
     const v=b.dataset.v;
-    if(isRight(v)){b.classList.add("ok");const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+rightHTML(v)+`<p class="gain">+${xp} points</p>`,disable);}
+    if(R.test){disable();b.style.outline="3px solid var(--m)";testRecord(it,isRight(v),v);return;}
+    if(isRight(v)){b.classList.add("ok");resolve(it,R.tries===0);const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+rightHTML(v)+`<p class="gain">+${xp} points</p>`,disable);}
     else{
       b.classList.add("bad");b.disabled=true;R.tries++;
-      if(R.tries>=2||btns.filter(x=>!x.disabled).length<=1){requeue(it);const r=btns.find(x=>isRight(x.dataset.v));if(r)r.classList.add("ok");endWith(wrongHTML(v)+revealHTML(),disable);}
-      else fb.innerHTML=wrongHTML(v)+`<p class="muted small">You get one more try.</p>`;
+      if(R.tries>=2||btns.filter(x=>!x.disabled).length<=1){resolve(it,false);requeue(it);const r=btns.find(x=>isRight(x.dataset.v));if(r)r.classList.add("ok");endWith(wrongHTML(v)+revealHTML(),disable);}
+      else{fb.innerHTML=wrongHTML(v)+`<p class="muted small" data-say="You get one more try.">You get one more try.</p>`;speakFb();}
     }
   });
 }
-const COMEBACK=`<p class="muted small">No worries. This one comes back at the end so you can practice it again.</p>`;
+const COMEBACK=`<p class="muted small" data-say="No worries. This one comes back later.">No worries. This one comes back later so you can practice it again.</p>`;
 const TYPEBOX=(ph)=>`<label class="sr" for="ans">${ph}</label>
-  <div class="answer-row"><input id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${ph}"><button class="btn" id="check">✅ Check</button></div>`;
+  <div class="answer-row"><input id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${ph}"><button class="btn" id="check">✅ ${R&&R.test?"Save":"Check"}</button></div>`;
 
-/* Sound Swap */
+/* ---------- Sound Swap ---------- */
 function swapView(it){
   if(it.kind==="count"){
-    frame("swap",`<div class="card"><p class="prompt">How many <b>sounds</b> do you hear?</p>
+    frame(fid("swap"),`<div class="card">${REV(it)}<p class="prompt">How many <b>sounds</b> do you hear?</p>
     <p class="word">${esc(it.word)}</p>
     <div class="row center"><button class="btn hear" id="hear">🔊 Hear it</button></div>
     <p class="muted small" style="text-align:center;margin:0">Say it slowly. Tap one finger for each sound. Sounds, not letters!</p>
     <div class="choices">${[2,3,4,5,6].map(n=>`<button class="choice" data-v="${n}">${n}</button>`).join("")}</div></div>
     <div id="fb" class="fb" aria-live="polite"></div>`);
-    $("#hear").onclick=()=>speak(it.word);setTimeout(()=>speak(it.word),250);
+    $("#hear").onclick=()=>speak(it.word);
+    narrate(`How many sounds do you hear in the word: ${it.word}? Say it slowly, and tap one finger for each sound. Then tap the number.`,{fallback:it.word});
     const breakdown=()=>`<p class="muted small" style="margin:0">Here are the sounds:</p>`+tiles(it.sounds,it.sounds.map(()=>"ok"),true)+(it.note?`<p class="small" style="margin:0">💡 ${esc(it.note)}</p>`:"");
     wireChoices(it,{
       isRight:v=>+v===it.sounds.length,
-      rightHTML:()=>breakdown(),
+      rightHTML:()=>breakdown()+(it.note?SAY(it.note):""),
       wrongHTML:()=>`<p class="msg">Almost! 🙂 Say it slowly and count again.</p>`,
-      revealHTML:()=>`<p class="msg">It has ${it.sounds.length} sounds.</p>`+breakdown()+COMEBACK
+      revealHTML:()=>`<p class="msg">It has ${it.sounds.length} sounds.</p>`+breakdown()+(it.note?SAY(it.note):"")+COMEBACK
     });
     return;
   }
-  frame("swap",`<div class="card"><p class="prompt">Start with this word:</p>
+  frame(fid("swap"),`<div class="card">${REV(it)}<p class="prompt">Start with this word:</p>
   <p class="word">${esc(it.say)}</p>
   <div class="row center"><button class="btn hear" id="hear">🔊 Hear it</button></div>
   <p class="prompt"><span class="do">🔄 ${esc(it.ask)}</span></p>
   <p class="muted small" style="text-align:center;margin:0">What new word do you get?</p>
   ${TYPEBOX("New word")}</div>
   <div id="fb" class="fb" aria-live="polite"></div>`);
-  $("#hear").onclick=()=>speak(it.say);setTimeout(()=>speak(it.say),250);
+  $("#hear").onclick=()=>speak(it.say);
+  narrate(`Start with this word: ${it.say}. ${it.ask} What new word do you get? Type it, then tap ${R.test?"Save":"Check"}.`,{fallback:it.say});
   wireTyped(it,{
     isRight:v=>it.ans.includes(v),
-    rightHTML:v=>`<p class="small" style="margin:0">${esc(it.say)} turned into ${esc(v)}</p>`+okTiles(v),
+    rightHTML:v=>`<p class="small" style="margin:0" data-say="${esc(it.say)} turned into ${esc(v)}.">${esc(it.say)} turned into ${esc(v)}</p>`+okTiles(v),
     wrongHTML:()=>`<p class="msg">Almost! 🙂 Say the new word out loud, then spell it.</p>`,
-    revealHTML:()=>`<p class="small" style="margin:0">The new word is:</p>`+okTiles(it.ans[0])+COMEBACK
+    revealHTML:()=>`<p class="small" style="margin:0">The new word is:</p>`+okTiles(it.ans[0])+SAY(`The new word is ${it.ans[0]}, spelled ${spellOut(it.ans[0])}.`)+COMEBACK
   });
 }
-function buildSwap(){return shuffle([...shuffle(SWAPS).slice(0,5),...shuffle(COUNTS).slice(0,3).map(c=>Object.assign({kind:"count"},c))]);}
+function buildSwap(){
+  const n=roundSize("swap",8);
+  return withReview("swap",[...shuffle(SWAPS).slice(0,n-3),...shuffle(COUNTS).slice(0,3).map(c=>Object.assign({kind:"count"},c))],n);
+}
 
-/* Spell It */
+/* ---------- Spell It ---------- */
 const PICON=["🧱","🤫","👯","👑","🎬","✌️"];
+const patWords=i=>PATTERNS[i].words.map(([w,s])=>({w,s,p:i}));
 function spellPick(){
   R=null;hush();
-  frame("spell",`<div class="card"><p class="prompt">Which spelling trick do you want to practice?</p>
-  <div class="picks">${PATTERNS.map((p,i)=>`<button class="pick" data-p="${i}"><span class="e" aria-hidden="true">${PICON[i]||"✏️"}</span><span class="t"><span class="mname">${esc(p.name)}</span><span class="mdesc">Like: ${esc(p.eg)}</span></span></button>`).join("")}</div>
-  <p class="muted small" style="margin:0">Tip: stick with one trick for a few days before trying the next one.</p></div>`);
-  app.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const p=PATTERNS[+b.dataset.p];startRound("spell",shuffle(p.words).map(([w,s])=>({w,s})),spellView,{pattern:p});});
+  const cp=currentPattern();
+  const status=i=>S.pat[i].mastered?"✅ Mastered":i===cp?"🎯 Now":"";
+  frame("spell",`<div class="card">
+  ${cp>=0?`<p class="prompt">Your trick right now</p>
+  <button class="pick recommend" data-p="${cp}"><span class="e" aria-hidden="true">${PICON[cp]}</span><span class="t"><span class="mname">${esc(PATTERNS[cp].name)}</span><span class="mdesc">Like: ${esc(PATTERNS[cp].eg)}</span></span></button>
+  <p class="muted small" style="margin:0;text-align:center">Get 90% right on two different days to master it and unlock the next one.</p>`:`<p class="prompt">🏅 You've mastered every trick! Pick any one to keep it sharp.</p>`}
+  </div>
+  <div class="card"><p class="section-h">${cp>=0?"Or practice a different trick":"All tricks"}</p>
+  <div class="picks">${PATTERNS.map((p,i)=>i===cp?"":`<button class="pick" data-p="${i}"><span class="e" aria-hidden="true">${PICON[i]||"✏️"}</span><span class="t"><span class="mname">${esc(p.name)}</span><span class="mdesc">${status(i)||"Like: "+esc(p.eg)}</span></span></button>`).join("")}</div></div>`);
+  narrate(cp>=0?`Your spelling trick right now is ${PATTERNS[cp].name}. Tap it to start. Or pick a different trick lower down.`:"You've mastered every spelling trick! Pick any one to keep it sharp.");
+  app.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.p;const n=roundSize("spell",8);
+    const rev=Object.values(S.missed.spell||{}).slice(0,3).map(x=>Object.assign({},x.it,{_rev:true}));
+    const keys=new Set(rev.map(keyOf));
+    const items=shuffle([...rev,...shuffle(patWords(i).filter(w=>!keys.has(w.w))).slice(0,Math.max(0,n-rev.length))]);
+    startRound("spell",items,spellView,{pIdx:i});
+  });
 }
-function spellCompare(v,t,last){
-  const same=[...v].sort().join("")===[...t].sort().join("");
+function spellCompare(v,t){
+  const same=sameLetters(v,t);
   const cls=[...v].map((c,i)=>c===t[i]?"ok":(same?"swap":"bad"));
-  return `<p class="msg">${same?"So close! 👀 You have all the right letters. Some are in the wrong spot.":"Almost! 🙂 Listen again and tap each sound."}</p>`+
+  return `<p class="msg">${same?"So close! 👀 You have all the right letters. Some are in the wrong spot.":"Almost! 🙂 Listen again and tap each sound."}</p>`+(same?SAY("Yellow letters are in the wrong spot."):"")+
   `<p class="muted small" style="margin:0">What you typed:</p>`+tiles([...v],cls,true)+
   `<div class="legend"><span><i style="border-color:var(--mint)"></i>Right spot</span>${same?`<span><i style="border-color:var(--sun)"></i>Wrong spot</span>`:`<span><i style="border-color:var(--coral)"></i>Check this one</span>`}</div>`;
 }
 function spellView(it){
-  const p=R.pattern;
-  frame("spell",`<div class="rule"><span class="rule-name">💡 ${esc(p.name)}</span><p>${esc(p.rule)}</p></div>
-  <div class="card"><p class="prompt">Listen, then spell the word.</p>
+  const p=PATTERNS[it.p]||PATTERNS[0];
+  frame(fid("spell"),`${R.test?"":`<div class="rule"><span class="rule-name">💡 ${esc(p.name)}</span><p>${esc(p.rule)}</p></div>`}
+  <div class="card">${REV(it)}<p class="prompt">Listen, then spell the word.</p>
   <div class="row center"><button class="btn hear" id="hear">🔊 Hear the word</button><button class="btn ghost" id="hear2">💬 Hear it in a sentence</button></div>
   <ul class="mini-steps"><li>1. Say it</li><li>2. Tap the sounds</li><li>3. Type each letter</li></ul>
   ${TYPEBOX("Type it here")}</div>
   <div id="fb" class="fb" aria-live="polite"></div>`);
   $("#hear").onclick=()=>speak(it.w);
   $("#hear2").onclick=()=>speak(`${it.w}. ${it.s} ${it.w}.`);
-  setTimeout(()=>speak(it.w),250);
+  const intro=(!R.test&&R.i===0)?`Spelling trick: ${p.name}. ${p.rule} `:"";
+  narrate(`${intro}Listen, then spell the word. The word is: ${it.w}. Say it, tap the sounds, then type each letter. Tap ${R.test?"Save":"Check"} when you're done.`,{fallback:it.w});
+  $("#readme").onclick=()=>speak(plain(`Spelling trick: ${p.name}. ${p.rule} `)+" "+NARR.replace(/^Spelling trick:.*?Listen,/,"Listen,"));
   wireTyped(it,{
     isRight:v=>v===it.w,
     rightHTML:v=>okTiles(v),
-    wrongHTML:(v,last)=>spellCompare(v,it.w,last),
-    revealHTML:()=>`<p class="small" style="margin:0">Here's how to spell it:</p>`+okTiles(it.w)+COMEBACK
+    wrongHTML:v=>spellCompare(v,it.w),
+    revealHTML:()=>`<p class="small" style="margin:0">Here's how to spell it:</p>`+okTiles(it.w)+SAY(`Here's how to spell ${it.w}: ${spellOut(it.w)}.`)+COMEBACK
   });
 }
 
-/* Twin Words */
+/* ---------- Twin Words ---------- */
 function flipPair(it){
   return `<div class="pair"><span class="lbl">✅ The right word</span>${okTiles(it.a)}<span class="lbl">🚫 Its look-alike twin</span>${tiles([...it.b],[],true)}</div>`;
 }
 function flipView(it){
-  frame("flip",`<div class="card"><p class="prompt">Which word fits in the blank?</p>
+  frame(fid("flip"),`<div class="card">${REV(it)}<p class="prompt">Which word fits in the blank?</p>
   <p class="sentence">${esc(it.s).replace("___",'<span class="blank">?</span>')}</p>
-  <div class="row center"><button class="btn hear" id="hear">🔊 Hear the sentence</button></div>
+  ${R.test?"":`<div class="row center"><button class="btn hear" id="hear">🔊 Hear the sentence</button></div>`}
   <div class="choices">${shuffle([it.a,it.b]).map(w=>`<button class="choice wide" data-v="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>
   <div id="fb" class="fb" aria-live="polite"></div>`);
-  $("#hear").onclick=()=>speak(it.s.replace("___",it.a));
+  if(!R.test)$("#hear").onclick=()=>speak(it.s.replace("___",it.a));
+  narrate(`Which word fits in the blank? Here's the sentence: ${it.s.replace("___","blank")} Look closely at the two words, and tap the one that fits.`);
   wireChoices(it,{
     isRight:v=>v===it.a,
-    rightHTML:()=>flipPair(it),
+    rightHTML:()=>flipPair(it)+SAY(`The right word is ${it.a}, spelled ${spellOut(it.a)}.`),
     wrongHTML:()=>`<p class="msg">Tricky twins! 👀 Same letters, different order.</p>`,
-    revealHTML:()=>flipPair(it)+COMEBACK
+    revealHTML:()=>flipPair(it)+SAY(`The right word is ${it.a}, spelled ${spellOut(it.a)}.`)+COMEBACK
   });
 }
 
-/* Word Builder */
+/* ---------- Word Builder ---------- */
 function forgeView(it){
   const own=it.parts.map(p=>p[0]);
   const bank=shuffle([...it.parts,...shuffle(POOL.filter(p=>!own.includes(p[0]))).slice(0,3)]);
   let built=[],over=false;
-  frame("forge",`<div class="card"><p class="prompt">Build a word that means:</p>
+  frame(fid("forge"),`<div class="card">${REV(it)}<p class="prompt">Build a word that means:</p>
   <p class="sentence">"${esc(it.def)}"</p>
   <div class="slots" id="slots" aria-live="polite"></div>
   <p class="preview" id="preview"></p>
   <p class="muted small" style="text-align:center;margin:0">Pieces (the small words tell you what each piece means):</p>
   <div class="bank" id="bank">${bank.map((p,i)=>`<button class="part" data-i="${i}"><b>${esc(p[0])}</b><small>${esc(p[1])}</small></button>`).join("")}</div>
-  <div class="row center"><button class="btn ghost" id="clear">↩️ Start over</button><button class="btn" id="check">✅ Check</button></div></div>
+  <div class="row center"><button class="btn ghost" id="clear">↩️ Start over</button><button class="btn" id="check">✅ ${R.test?"Save":"Check"}</button></div></div>
   <div id="fb" class="fb" aria-live="polite"></div>`);
   const slots=$("#slots");
   function draw(){
@@ -574,21 +791,23 @@ function forgeView(it){
     slots.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{if(over)return;built.splice(+b.dataset.k,1);draw();});
     app.querySelectorAll("#bank [data-i]").forEach(b=>b.disabled=over||built.includes(+b.dataset.i));
   }
-  app.querySelectorAll("#bank [data-i]").forEach(b=>b.onclick=()=>{if(over)return;built.push(+b.dataset.i);draw();});
+  app.querySelectorAll("#bank [data-i]").forEach(b=>b.onclick=()=>{if(over)return;const i=+b.dataset.i;built.push(i);draw();if(S.settings.voice)speak(`${bank[i][0]}. It means ${bank[i][1]}.`);});
+  narrate(`Build a word that means: ${it.def}. Tap the pieces in the right order, then tap ${R.test?"Save":"Check"}. Each piece has a small word under it that tells what it means.`);
   $("#clear").onclick=()=>{if(over)return;built=[];draw();};
   const disable=()=>{over=true;$("#clear").disabled=true;$("#check").disabled=true;draw();};
-  const breakdown=()=>`<div class="built">${esc(it.word)}</div><p class="muted" style="margin:0">${it.parts.map(p=>`${esc(p[0])} (${esc(p[1])})`).join(" + ")}</p>`;
+  const breakdown=()=>SAY(`The word is ${it.word}. ${it.parts.map(p=>`${p[0]} means ${p[1]}`).join(", and ")}.`)+`<div class="built">${esc(it.word)}</div><p class="muted" style="margin:0">${it.parts.map(p=>`${esc(p[0])} (${esc(p[1])})`).join(" + ")}</p>`;
   $("#check").onclick=()=>{
     if(over)return;if(!built.length){toast("Tap a piece first 🧩");return;}
     const ok=built.map(i=>bank[i][0]).join("|")===own.join("|");
-    if(ok){const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);speak(it.word);endWith(`<p class="msg good">${yay()}</p>`+breakdown()+`<p class="gain">+${xp} points</p>`,disable);}
-    else{R.tries++;if(R.tries>=2){requeue(it);speak(it.word);endWith(`<p class="msg">Here's how it's built:</p>`+breakdown()+COMEBACK,disable);}
-      else $("#fb").innerHTML=`<p class="msg">Almost! 🙂 Read the small meaning under each piece.</p><p class="muted small">You get one more try.</p>`;}
+    if(R.test){disable();testRecord(it,ok,built.map(i=>bank[i][0]).join(""));return;}
+    if(ok){resolve(it,R.tries===0);const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+breakdown()+`<p class="gain">+${xp} points</p>`,disable);}
+    else{R.tries++;if(R.tries>=2){resolve(it,false);requeue(it);endWith(`<p class="msg">Here's how it's built:</p>`+breakdown()+COMEBACK,disable);}
+      else{$("#fb").innerHTML=`<p class="msg">Almost! 🙂 Read the small meaning under each piece.</p><p class="muted small" data-say="You get one more try.">You get one more try.</p>`;speakFb();}}
   };
   draw();
 }
 
-/* Speed Read */
+/* ---------- Speed Read ---------- */
 const SICON={level:"🎮",deep:"🐟",skate:"🛹"};
 function wordCount(t){return t.trim().split(/\s+/).length;}
 function speedPick(){
@@ -596,63 +815,213 @@ function speedPick(){
   frame("speed",`<div class="card"><p class="prompt">Pick a story to read</p>
   <div class="picks">${PASSAGES.map(p=>{const r=S.reads[p.id]||[];return `<button class="pick" data-id="${p.id}"><span class="e" aria-hidden="true">${SICON[p.id]||"📖"}</span><span class="t"><span class="mname">${esc(p.title)}</span><span class="mdesc">${r.length?`🏅 Your best: ${Math.max(...r)} words a minute`:"New story"}</span></span></button>`;}).join("")}</div></div>`);
   app.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>speedView(PASSAGES.find(p=>p.id===b.dataset.id)));
+  narrate(`Pick a story to read. Your choices are: ${PASSAGES.map(p=>p.title).join(", ")}.`);
 }
 function barsHTML(arr){
   if(!arr.length)return "";
   const show=arr.slice(-6),max=Math.max(...show),offset=arr.length-show.length;
   return `<div class="bars">${show.map((w,i)=>`<div class="barcol"><span class="bv">${w}</span><span class="b${i===show.length-1?" last":""}" style="height:${Math.max(6,w/max*100)}%"></span><span class="bl">Try ${offset+i+1}</span></div>`).join("")}</div><p class="muted small" style="margin:0">Words you read each minute</p>`;
 }
+function timedReader(p,{onDone,skipLabel,onSkip,listen=true}){
+  let t0=null,timer=null;const words=wordCount(p.text);
+  const html=`<ol class="how3" id="how3"><li class="on"><b>▶️</b>Tap Start</li><li><b>🗣️</b>Read out loud</li><li><b>⏹️</b>Tap Done</li></ol>
+  <div class="card"><div class="timer" id="timer" aria-live="off">0:00</div>
+  <div class="row center"><button class="btn go big" id="go">▶️ Start</button>${listen?`<button class="btn ghost" id="listen">🔊 Listen first</button>`:""}${skipLabel?`<button class="btn ghost" id="skipread">${skipLabel}</button>`:""}</div></div>
+  <article class="passage">${p.text.split("\n").map(x=>`<p>${esc(x)}</p>`).join("")}</article>`;
+  function wire(){
+    const steps=[...document.querySelectorAll("#how3 li")];const step=n=>steps.forEach((l,i)=>l.classList.toggle("on",i===n));
+    if(listen)$("#listen").onclick=()=>speak(p.text.replace(/\n/g," "));
+    if(skipLabel)$("#skipread").onclick=()=>{clearInterval(timer);onSkip();};
+    const go=$("#go"),tEl=$("#timer");
+    const fmt=s=>Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
+    go.onclick=()=>{
+      if(!t0){hush();t0=Date.now();tEl.textContent="0:00";go.textContent="⏹️ Done";step(1);timer=setInterval(()=>tEl.textContent=fmt((Date.now()-t0)/1000),250);$(".passage").scrollIntoView({behavior:"smooth",block:"start"});return;}
+      clearInterval(timer);const secs=(Date.now()-t0)/1000;t0=null;
+      if(secs<8){go.textContent="▶️ Start";step(0);toast("Whoa, too fast! 😄 Tap Start and read the whole story.");return;}
+      go.textContent="🔁 Read it again";step(2);
+      onDone(Math.round(words/(secs/60)));
+    };
+  }
+  return {html,wire};
+}
 function speedView(p){
   R=null;hush();
-  const words=wordCount(p.text);let t0=null,timer=null;
-  frame("speed",`<h2>${SICON[p.id]||"📖"} ${esc(p.title)}</h2>
-  <ol class="how3" id="how3"><li class="on"><b>▶️</b>Tap Start</li><li><b>🗣️</b>Read out loud</li><li><b>⏹️</b>Tap Done</li></ol>
-  <div class="card"><div class="timer" id="timer" aria-live="off">0:00</div>
-  <div class="row center"><button class="btn go big" id="go">▶️ Start</button><button class="btn ghost" id="listen">🔊 Listen first</button></div></div>
-  <article class="passage">${p.text.split("\n").map(x=>`<p>${esc(x)}</p>`).join("")}</article>
-  <div id="fb" class="fb card" aria-live="polite">${barsHTML(S.reads[p.id]||[])}</div>
-  <div class="row center"><button class="btn ghost" id="other">📚 Pick another story</button></div>`);
-  if(!(S.reads[p.id]||[]).length)$("#fb").innerHTML="";
-  const steps=[...document.querySelectorAll("#how3 li")];const step=n=>steps.forEach((l,i)=>l.classList.toggle("on",i===n));
-  $("#listen").onclick=()=>speak(p.text.replace(/\n/g," "));
-  $("#other").onclick=speedPick;
-  const go=$("#go"),tEl=$("#timer");
-  const fmt=s=>Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
-  go.onclick=()=>{
-    if(!t0){hush();t0=Date.now();tEl.textContent="0:00";go.textContent="⏹️ Done";step(1);timer=setInterval(()=>tEl.textContent=fmt((Date.now()-t0)/1000),250);$(".passage").scrollIntoView({behavior:"smooth",block:"start"});return;}
-    clearInterval(timer);const secs=(Date.now()-t0)/1000;t0=null;go.textContent="🔁 Read it again";step(2);
-    if(secs<8){$("#fb").innerHTML=`<p class="msg">Whoa, too fast! 😄 Tap Start and read the whole story.</p>`+barsHTML(S.reads[p.id]||[]);step(0);return;}
-    const wpm=Math.round(words/(secs/60));
+  const tr=timedReader(p,{onDone:wpm=>{
     const arr=(S.reads[p.id]=(S.reads[p.id]||[]).concat(wpm).slice(-12));
-    S.doneToday.speed=true;award(15);
+    S.doneToday.speed=true;logAttempt("speed",true);award(15);
     let msg=`You read ${wpm} words a minute!`;
     if(arr.length>1){const d=wpm-arr[arr.length-2];msg+=d>0?` That's ${d} more than last time! 🚀`:d===0?" Same as last time. Nice and steady. 👍":" A little slower this time, and that's okay. Smooth is what counts. 👍"}
     else msg+=" 🎉 Now read it again and watch your bar grow.";
-    const f=$("#fb");f.innerHTML=`<p class="msg">${msg}</p><p class="gain">+15 points</p>`+barsHTML(arr)+`<div class="row"><button class="btn ghost" id="home3">🏠 Back home</button></div>`;
+    const f=$("#fb");if(S.settings.voice)speak(plain(msg));f.innerHTML=`<p class="msg">${msg}</p><p class="gain">+15 points</p>`+barsHTML(arr)+`<div class="row"><button class="btn ghost" id="home3">🏠 Back home</button></div>`;
     $("#home3").onclick=home;f.scrollIntoView({behavior:"smooth",block:"center"});
-  };
+  }});
+  frame("speed",`<h2>${SICON[p.id]||"📖"} ${esc(p.title)}</h2>${tr.html}
+  <div id="fb" class="fb card" aria-live="polite">${barsHTML(S.reads[p.id]||[])}</div>
+  <div class="row center"><button class="btn ghost" id="other">📚 Pick another story</button></div>`);
+  if(!(S.reads[p.id]||[]).length)$("#fb").innerHTML="";
+  $("#other").onclick=speedPick;tr.wire();
+  narrate(`${p.title}. Tap Start, then read the story out loud. Tap Done when you finish. If you want to hear it first, tap Listen first.`);
 }
 
-/* Settings */
+/* ---------- Level Scan ---------- */
+const SECTIONS=[
+  {id:"sounds",name:"Sounds",icon:"🎧",intro:"Listen to words and play with their sounds.",build:()=>shuffle([...shuffle(COUNTS).slice(0,3).map(c=>Object.assign({kind:"count"},c)),...shuffle(SWAPS).slice(0,3)]),view:swapView},
+  {id:"spell",name:"Spelling",icon:"✏️",intro:"Listen to each word and spell it. Some get harder as you go. Just do your best!",build:()=>PLACE.spell.map(([w,s,p])=>({w,s,p})),view:spellView},
+  {id:"order",name:"Twin words",icon:"🔀",intro:"Read each sentence and pick the word that fits.",build:()=>shuffle(FLIP).slice(0,6),view:flipView},
+  {id:"parts",name:"Word parts",icon:"🧩",intro:"Snap word pieces together to match the meaning.",build:()=>shuffle(FORGE).slice(0,4),view:forgeView},
+  {id:"decode",name:"Read aloud",icon:"🗣️",intro:"Read some made-up words and a short story out loud. A grown-up helps with this part.",custom:true}
+];
+function scanIntro(){
+  R=null;hush();
+  P={results:{sounds:[],spell:[],order:[],parts:[],decode:[]},orderErrs:0,wpm:null};
+  frame("scan",`<div class="card center-text"><span class="icon xl" style="background:var(--c-swap)">🔍</span>
+  <h2>Level Scan</h2>
+  <p style="margin:0">This helps the app figure out what <b>you</b> need to practice.</p>
+  <ol class="modal-like plan" style="text-align:left">${SECTIONS.map(s=>`<li>${s.icon} ${esc(s.name)}</li>`).join("")}</ol>
+  <div class="parent-note"><b>Good to know</b>There's no pass or fail, and no points during the scan. You won't see right or wrong answers, so just try your best and keep going. It takes about 15 minutes.</div>
+  <button class="btn go big" id="begin">🚀 Let's go</button></div>`);
+  $("#begin").onclick=()=>runSection(0);
+  narrate("Level Scan. This helps the app figure out what you need to practice. There are 5 parts: sounds, spelling, twin words, word parts, and reading out loud. There's no pass or fail, and you won't see if answers are right or wrong. Just try your best and keep going. Tap Let's go to start.");
+}
+function runSection(k){
+  R=null;hush();
+  if(k>=SECTIONS.length)return finishScan();
+  const sec=SECTIONS[k];
+  frame("scan",`<div class="card center-text"><span class="part-tag">Part ${k+1} of ${SECTIONS.length}</span>
+  <span class="icon xl" style="background:var(--c-swap)">${sec.icon}</span>
+  <h2>${esc(sec.name)}</h2><p style="margin:0">${esc(sec.intro)}</p>
+  <button class="btn go big" id="startpart">Start part ${k+1} ▶</button></div>`);
+  narrate(`Part ${k+1} of ${SECTIONS.length}: ${sec.name}. ${sec.intro} Tap the green button to start.`);
+  $("#startpart").onclick=()=>{
+    if(sec.custom)return decodeIntro(k);
+    startRound("scan",sec.build(),sec.view,{test:true,section:sec.id,label:`Part ${k+1}`,onDone:()=>runSection(k+1)});
+  };
+}
+function decodeIntro(k){
+  frame("scan",`<div class="card center-text"><span class="part-tag">Part ${k+1} of ${SECTIONS.length}</span>
+  <span class="icon xl" style="background:var(--c-swap)">🙋</span>
+  <h2>Grab a grown-up!</h2>
+  <p style="margin:0">You'll read 10 made-up words out loud. They aren't real words, so just sound them out. Then you'll read a short story.</p>
+  <div class="parent-note"><b>For the grown-up</b>Sit where you can see the screen. After each word, tap ✅ if every sound was right, or ❌ if any sound was wrong, swapped, or skipped. Don't help or correct during the scan. The expected sounds are shown in small print for you. For the story, tap Start when reading begins and Done when it ends.</div>
+  <div class="row center"><button class="btn go big" id="ready">We're ready</button><button class="btn ghost" id="skipdec">Skip (no grown-up right now)</button></div></div>`);
+  $("#ready").onclick=()=>decodeWord(0);
+  narrate("Grab a grown-up! You'll read 10 made-up words out loud. They aren't real words, so just sound them out. Then you'll read a short story. Your grown-up will tap if you read each word right.");
+  $("#skipdec").onclick=finishScan;
+}
+function decodeWord(i){
+  if(i>=PLACE.decode.length)return decodePassage();
+  const [w,hint]=PLACE.decode[i];
+  frame("scan",`<p class="count">Made-up word ${i+1} of ${PLACE.decode.length}</p>
+  <div class="dots" aria-hidden="true">${PLACE.decode.map((_,k)=>`<i class="${k<i?"on":k===i?"now":""}"></i>`).join("")}</div>
+  <div class="card center-text"><p class="prompt">Read this word out loud:</p>
+  <p class="word" style="font-size:3.4rem">${esc(w)}</p>
+  <p class="muted small" style="margin:0">Grown-up: sounds like ${esc(hint)}</p>
+  <div class="scorebtns" style="width:100%"><button class="btn go" data-ok="1">✅ Read it right</button><button class="btn no" data-ok="0">❌ Not quite</button></div></div>`);
+  narrate(i===0?"Read this word out loud. Sound it out, one sound at a time.":"Read this word out loud.");
+  app.querySelectorAll("[data-ok]").forEach(b=>b.onclick=()=>{P.results.decode.push({ok:b.dataset.ok==="1",it:{word:w}});decodeWord(i+1);});
+}
+function decodePassage(){
+  const p=PLACE.passage;
+  const tr=timedReader(p,{listen:false,skipLabel:"Skip the story",onSkip:finishScan,onDone:wpm=>{P.wpm=wpm;finishScan();}});
+  frame("scan",`<span class="part-tag">Last step</span><h2>📻 ${esc(p.title)}</h2>
+  <p class="muted" style="margin:0">Read this story out loud at your normal speed. Grown-up: tap Start when reading begins and Done when it ends.</p>${tr.html}`);
+  tr.wire();
+  narrate("Last step. Read this story out loud at your normal speed. Your grown-up will tap Start when you begin, and Done when you finish.");
+}
+function pctOf(arr){return arr&&arr.length?Math.round(arr.filter(r=>r.ok).length/arr.length*100):null;}
+function finishScan(){
+  R=null;hush();const r=P.results;
+  const spellBy=PATTERNS.map((_,i)=>{const a=r.spell.filter(x=>x.it.p===i);return a.length?{c:a.filter(x=>x.ok).length,t:a.length}:null;});
+  const rec={date:dayStr(),scores:{sounds:pctOf(r.sounds),spell:pctOf(r.spell),order:pctOf(r.order),parts:pctOf(r.parts),decode:pctOf(r.decode)},
+    spellBy,orderErrs:P.orderErrs,spellWrong:r.spell.filter(x=>!x.ok).length,wpm:P.wpm,
+    missed:[...r.spell.filter(x=>!x.ok).map(x=>x.it.w),...r.order.filter(x=>!x.ok).map(x=>x.it.a),...r.decode.filter(x=>!x.ok).map(x=>x.it.word)]};
+  const first=S.scans.length===0;
+  S.scans.push(rec);if(S.scans.length>10)S.scans=S.scans.slice(-10);
+  spellBy.forEach((v,i)=>{if(v&&v.c===v.t&&!S.pat[i].mastered){S.pat[i].mastered=true;S.pat[i].how="scan";}});
+  r.spell.filter(x=>!x.ok).forEach(x=>addMissed("spell",x.it));
+  r.order.filter(x=>!x.ok).forEach(x=>addMissed("flip",x.it));
+  S.nextScan=dayStr(RESCAN_DAYS);S.skipScan=false;P=null;save();
+  resultsScreen(rec,first);
+}
+function level(v){if(v==null)return ["skip","Skipped"];if(v>=85)return ["strong","💪 Strong"];if(v>=60)return ["mid","👍 Getting there"];return ["focus","🎯 Focus here"];}
+function meterColor(v){return v>=85?"var(--mint)":v>=60?"var(--sun)":"var(--coral)";}
+function resultsBody(rec,prev){
+  const rows=AREAS.map(a=>{
+    const v=rec.scores[a.id];const [c,l]=level(v);
+    const pv=prev?prev.scores[a.id]:null;const d=(v!=null&&pv!=null)?v-pv:null;
+    return `<div class="area-row"><span class="ai" aria-hidden="true">${a.icon}</span><span class="an">${esc(a.name)}${v!=null?` ${v}%`:""}${d?`<span class="delta ${d<0?"down":""}">${d>0?"+":""}${d}</span>`:""}</span><span class="lvl ${c}">${l}</span>
+    <span class="meter">${v!=null?`<span style="width:${Math.max(4,v)}%;background:${meterColor(v)}"></span>`:""}</span></div>`;}).join("");
+  const pats=rec.spellBy.map((v,i)=>v?`<li><span>${PICON[i]} ${esc(PATTERNS[i].name)}</span><b>${v.c===v.t?"✅":v.c===0?"🎯":"👍"} ${v.c} of ${v.t}</b></li>`:"").join("");
+  const notes=[];
+  if(rec.spellWrong>0&&rec.orderErrs>0)notes.push(`🔀 ${rec.orderErrs} of ${rec.spellWrong} spelling misses had every right letter, just in the wrong order. Twin Words and the yellow hints in Spell It target this.`);
+  if(rec.wpm)notes.push(`⚡ Reading speed on a new story: <b>${rec.wpm} words a minute</b>${prev&&prev.wpm?` (was ${prev.wpm})`:""}. This is the baseline to beat on the next scan.`);
+  if(rec.scores.decode==null)notes.push("🗣️ The read-aloud part was skipped. Run the scan again with a grown-up to measure sounding out new words.");
+  return `<div class="card"><p class="section-h">Skill map</p><div>${rows}</div></div>
+  ${pats?`<div class="card"><p class="section-h">Spelling tricks</p><ul class="pat-list">${pats}</ul></div>`:""}
+  ${notes.length?`<div class="card"><p class="section-h">What we noticed</p>${notes.map(n=>`<p style="margin:0">${n}</p>`).join("")}</div>`:""}
+  ${rec.missed.length?`<div class="card"><p class="section-h">Words to practice</p><div class="words">${rec.missed.map(w=>`<span>${esc(w)}</span>`).join("")}</div><p class="muted small" style="margin:0">Missed spelling and twin words are added to review automatically.</p></div>`:""}`;
+}
+function resultsScreen(rec,first){
+  const prev=S.scans.length>1?S.scans[S.scans.length-2]:null;
+  const plan=planOrder(),focus=focusMissions(),cp=currentPattern();
+  frame("scan",`<div class="card center-text"><div class="trophy">🎉</div><h2>Scan complete!</h2>
+  <p style="margin:0">${first?"Now the app knows what to work on. Here's your training plan.":"Here's how you've grown since last time."}</p></div>
+  <div class="card"><p class="section-h">Your training plan</p>
+  <ol class="plan">${plan.map(m=>`<li>${m.icon} ${esc(m.name)}${focus.includes(m.id)?" 🎯":""}</li>`).join("")}</ol>
+  ${cp>=0?`<p style="margin:0">✏️ First spelling trick: <b>${esc(PATTERNS[cp].name)}</b></p>`:""}
+  <p class="muted small" style="margin:0">🎯 means a focus area. Those come first and get a couple of extra questions. The next re-check is in 3 weeks.</p></div>
+  ${resultsBody(rec,prev)}
+  <button class="btn go big" id="train">🚀 Start training</button>`);
+  $("#train").onclick=home;
+  narrate(`Scan complete! ${first?"Now the app knows what to work on.":"Great job on your re-check."} Your plan starts with ${plan[0].name}.${cp>=0?` Your first spelling trick is ${PATTERNS[cp].name}.`:""} Tap Start training at the bottom when you're ready.`);
+}
+
+/* ---------- Grown-up view ---------- */
+function parentView(){
+  R=null;P=null;hush();
+  const scan=lastScan(),prev=S.scans.length>1?S.scans[S.scans.length-2]:null;
+  const days=Array.from({length:14},(_,i)=>dayStr(i-13));
+  const cal=days.map(d=>{const l=S.log[d];const n=l?Object.keys(l).length:0;return `<span class="${n?"on":""}" title="${d}">${n||""}</span>`;}).join("");
+  const acc=MISSIONS.filter(m=>m.id!=="speed").map(m=>{const r=recent(m.id,7);return `<li><span>${m.icon} ${esc(m.name)}</span><b>${r.t?`${Math.round(r.c/r.t*100)}% first try (${r.t} words)`:"Not practiced"}</b></li>`;}).join("");
+  const cp=currentPattern();
+  const pats=PATTERNS.map((p,i)=>{const s=S.pat[i];return `<li><span>${PICON[i]} ${esc(p.name)}</span><b>${s.mastered?(s.how==="scan"?"✅ Already knew it":"🏅 Mastered in practice"):i===cp?"🎯 Working on it":"Not started"}</b></li>`;}).join("");
+  const top=Object.values(S.missCount).sort((a,b)=>b.n-a.n).slice(0,12);
+  const hist=S.scans.length>1?`<div class="card"><p class="section-h">Scan history</p><div class="tbl"><table><thead><tr><th>Date</th>${AREAS.map(a=>`<th title="${esc(a.name)}">${a.icon}</th>`).join("")}<th>⚡ wpm</th></tr></thead><tbody>
+    ${S.scans.map(s=>`<tr><td>${niceDate(s.date)}</td>${AREAS.map(a=>`<td>${s.scores[a.id]!=null?s.scores[a.id]+"%":"–"}</td>`).join("")}<td>${s.wpm||"–"}</td></tr>`).join("")}</tbody></table></div></div>`:"";
+  frame("parent",`<div class="parent-note"><b>For grown-ups</b>This is a practice and placement tool, not a diagnosis. The scores show where to focus practice, and they're useful to bring to a school evaluation meeting.</div>
+  ${scan?`<h2 style="margin-bottom:0">Latest Level Scan <span class="muted small">(${niceDate(scan.date)})</span></h2>${resultsBody(scan,prev)}`:`<div class="card"><p style="margin:0">No Level Scan yet. Run one to get a skill map and a focused plan.</p></div>`}
+  ${hist}
+  <div class="card"><p class="section-h">Last 14 days</p><div class="cal">${cal}</div><p class="muted small" style="margin:0">Green days show how many missions were practiced.</p></div>
+  <div class="card"><p class="section-h">Practice this week</p><ul class="pat-list">${acc}</ul></div>
+  <div class="card"><p class="section-h">Spelling tricks</p><ul class="pat-list">${pats}</ul></div>
+  ${top.length?`<div class="card"><p class="section-h">Most-missed words</p><div class="words">${top.map(t=>`<span>${esc(t.label)}<small>×${t.n}</small></span>`).join("")}</div></div>`:""}
+  <div class="row center"><button class="btn" id="scan-again">🔍 ${scan?"Run the Level Scan again":"Start the Level Scan"}</button></div>
+  ${scan&&S.nextScan?`<p class="muted small" style="text-align:center;margin:0">Next re-check reminder: ${niceDate(S.nextScan)}</p>`:""}`);
+  $("#scan-again").onclick=scanIntro;
+  narrate("This page is for grown-ups. It shows scan results and practice progress.",{auto:false});
+}
+
+/* ---------- Settings ---------- */
 function settings(){
-  R=null;hush();setColor(null);let armed=false;
+  R=null;P=null;hush();setColor(null);let armed=false;
   const seg=(key,opts)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button data-k="${key}" data-val="${v}" aria-pressed="${String(S.settings[key])===String(v)}">${l}</button>`).join("")}</div>`;
   app.innerHTML=`<div class="bar"><button class="back" id="back">🏠 Home</button><span class="bar-title">⚙️ Settings</span></div>
   <div class="card">
   <div class="set"><span>🔠 Text size</span>${seg("size",[["m","Medium"],["l","Big"],["xl","Bigger"]])}</div>
   <div class="set"><span>↔️ Space between letters</span>${seg("spaced",[[false,"Normal"],[true,"Extra"]])}</div>
+  <div class="set"><span>🔊 Read instructions out loud</span>${seg("voice",[[true,"On"],[false,"Off"]])}</div>
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
-    const k=b.dataset.k,raw=b.dataset.val;S.settings[k]=k==="size"?raw:k==="spaced"?raw==="true":parseFloat(raw);
+    const k=b.dataset.k,raw=b.dataset.val;S.settings[k]=k==="size"?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);
     save();applySettings();settings();
   });
   $("#test").onclick=()=>speak("Ready for today's missions!");
   $("#replay").onclick=()=>{S.seen={};save();toast("Done! You'll see how to play at the start of each mission.");};
   $("#reset").onclick=e=>{
-    if(!armed){armed=true;e.currentTarget.textContent="⚠️ Tap again to erase everything";return;}
+    if(!armed){armed=true;e.currentTarget.textContent="⚠️ Tap again to erase everything, including scans";return;}
     const keep=S.settings;try{localStorage.removeItem(KEY)}catch(x){}
     S=load();S.settings=keep;save();renderHud();toast("Progress reset.");home();
   };
@@ -661,12 +1030,13 @@ function settings(){
 const GO={
   swap:()=>enter("swap",()=>startRound("swap",buildSwap(),swapView)),
   spell:()=>enter("spell",spellPick),
-  flip:()=>enter("flip",()=>startRound("flip",shuffle(FLIP).slice(0,8),flipView)),
-  forge:()=>enter("forge",()=>startRound("forge",shuffle(FORGE).slice(0,6),forgeView)),
+  flip:()=>enter("flip",()=>{const n=roundSize("flip",8);startRound("flip",withReview("flip",FLIP,n),flipView);}),
+  forge:()=>enter("forge",()=>{const n=roundSize("forge",6);startRound("forge",withReview("forge",FORGE,n),forgeView);}),
   speed:()=>enter("speed",speedPick)
 };
-$("#brand").onclick=home;
+$("#brand").onclick=()=>{if(P&&!confirmLeave())return;home();};
 applySettings();renderHud();save();home();
+
 </script>
 </body>
 </html>
