@@ -387,7 +387,7 @@ function load(){
   ["seen","reads","log","missed","missCount","doneToday"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={};});
   if(!Array.isArray(s.scans))s.scans=[];
   if(!Array.isArray(s.pat)||s.pat.length!==PATTERNS.length)s.pat=PATTERNS.map((_,i)=>(Array.isArray(s.pat)&&s.pat[i])||{mastered:false,how:null,days:{}});
-  s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true},(d&&d.settings)||{});
+  s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true,engine:"eleven"},(d&&d.settings)||{});
   if(s.day!==dayStr()){s.day=dayStr();s.doneToday={};}
   if(s.lastDay&&s.lastDay!==dayStr()&&s.lastDay!==dayStr(-1))s.streak=0;
   const cutoff=dayStr(-90);Object.keys(s.log).forEach(k=>{if(k<cutoff)delete s.log[k];});
@@ -461,13 +461,62 @@ function okTiles(word,sm=true){return tiles([...word],[...word].map(()=>"ok"),sm
 function sameLetters(a,b){return a!==b&&[...a].sort().join("")===[...b].sort().join("");}
 let toastT;
 function toast(msg){let t=$(".toast");if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}t.textContent=msg;clearTimeout(toastT);toastT=setTimeout(()=>t.remove(),3000);}
-function speak(text){
+/* ---------- Voice: ElevenLabs (through the Supabase relay) with built-in fallback ---------- */
+const TTS_URL="https://atsgfhkzhnzjzylwzmkv.supabase.co/functions/v1/decode-tts";
+const TTS_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0c2dmaGt6aG56anp5bHd6bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NjUxNDMsImV4cCI6MjEwMjI0MTE0M30.CobBQSwYd90NC0rninqhhZBv1Qu0zI2TTX5sGri3jv4";
+const ONLINE_HOST=/\.github\.io$/i.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+const TTS_CACHE_KEY="decode-tts-urls";
+let ttsCache={};try{ttsCache=JSON.parse(localStorage.getItem(TTS_CACHE_KEY)||"{}")||{};}catch(e){ttsCache={};}
+let elevenOff=false,elevenWarned=false,speakTok=0;
+const player=new Audio();player.preload="auto";
+function silentWav(){const n=800,b=new ArrayBuffer(44+n),v=new DataView(b),w=(o,t)=>[...t].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
+  w(0,"RIFF");v.setUint32(4,36+n,true);w(8,"WAVE");w(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,"data");v.setUint32(40,n,true);for(let i=0;i<n;i++)v.setUint8(44+i,128);
+  return URL.createObjectURL(new Blob([b],{type:"audio/wav"}));}
+function unlockAudio(){try{player.src=silentWav();const p=player.play();if(p)p.catch(()=>{});}catch(e){}}
+document.addEventListener("pointerdown",unlockAudio,{once:true,capture:true});
+function useEleven(){return S.settings.engine==="eleven"&&ONLINE_HOST&&!elevenOff;}
+function normTTS(t){return String(t).replace(/\s+/g," ").trim();}
+function saveTtsCache(){try{const k=Object.keys(ttsCache);if(k.length>1500)k.slice(0,k.length-1500).forEach(x=>delete ttsCache[x]);localStorage.setItem(TTS_CACHE_KEY,JSON.stringify(ttsCache));}catch(e){}}
+function elevenFailed(code){
+  if(["not_configured","daily_limit","origin_not_allowed","elevenlabs_error","network"].includes(code))elevenOff=true;
+  if(!elevenWarned){elevenWarned=true;toast("Using the built-in voice for now.");}
+}
+async function elevenSpeak(text,tok){
+  let url=ttsCache[text];
+  if(!url){
+    const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),9000);
+    let r,j={};
+    try{r=await fetch(TTS_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+TTS_ANON,apikey:TTS_ANON},body:JSON.stringify({text}),signal:ctrl.signal});j=await r.json().catch(()=>({}));}
+    catch(e){clearTimeout(timer);throw Object.assign(new Error("network"),{code:"network"});}
+    clearTimeout(timer);
+    if(!r.ok||!j.url)throw Object.assign(new Error(j.error||"tts"),{code:j.error||"tts"});
+    url=ttsCache[text]=j.url;saveTtsCache();
+  }
+  if(tok!==speakTok)return;
+  player.pause();player.src=url;
+  const r=S.settings.rate;player.playbackRate=r<=0.75?0.85:r>=1?1.12:1;
+  try{player.preservesPitch=true;}catch(e){}
+  await player.play();
+}
+function browserSpeak(text){
   try{
     if(!("speechSynthesis" in window)){toast("Sound doesn't work in this browser. Ask a grown-up to read it to you.");return;}
     speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=S.settings.rate;u.lang="en-US";speechSynthesis.speak(u);
   }catch(e){}
 }
-function hush(){narrTok++;try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}}
+function stopAll(){try{player.pause();}catch(e){}try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}}
+function speak(text){
+  text=normTTS(text);if(!text)return;
+  const tok=++speakTok;stopAll();
+  if(useEleven()){
+    elevenSpeak(text,tok).catch(err=>{
+      if(err&&err.name==="NotAllowedError")return; // browser blocked autoplay; the next tap will work
+      elevenFailed(err&&err.code);
+      if(tok===speakTok)browserSpeak(text);
+    });
+  }else browserSpeak(text);
+}
+function hush(){narrTok++;speakTok++;stopAll();}
 /* Narration: reads instructions out loud so reading skill isn't a barrier */
 const EXW={a:"apple",e:"egg",i:"itch",o:"octopus",u:"up",b:"ball",f:"fish",k:"kite",l:"lamp",n:"nose",p:"pig",s:"sun",t:"top",w:"wave",ch:"chip",sh:"ship",th:"thumb"};
 function phon(t){return String(t).replace(/(the )?\/(\w+)\/( sound)?/g,(m,a,x)=>EXW[x]?`the first sound in ${EXW[x]}`:x);}
@@ -535,7 +584,8 @@ function home(){
       <button class="go-big" id="scan-go"><span>🔍</span> Start the Level Scan</button>
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
-    <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>`;
+    <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 5</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.");
@@ -564,7 +614,8 @@ function home(){
     <button class="link" id="to-settings">⚙️ Settings</button>
     ${!scan?`<button class="link" id="scan-link">🔍 Take the Level Scan</button>`:""}
     <button class="link" id="to-parent">📊 Grown-up view</button>
-  </div>`;
+  </div>
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 5</p>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   if(due)$("#rescan").onclick=scanIntro;
@@ -1010,15 +1061,25 @@ function settings(){
   <div class="set"><span>🔠 Text size</span>${seg("size",[["m","Medium"],["l","Big"],["xl","Bigger"]])}</div>
   <div class="set"><span>↔️ Space between letters</span>${seg("spaced",[[false,"Normal"],[true,"Extra"]])}</div>
   <div class="set"><span>🔊 Read instructions out loud</span>${seg("voice",[[true,"On"],[false,"Off"]])}</div>
+  <div class="set"><span>🎙️ Voice</span>${seg("engine",[["eleven","ElevenLabs"],["browser","Built-in"]])}</div>
+  <p class="muted small" id="voice-status" style="margin:.4rem 0 0"></p>
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
-  <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div></div>`;
+  <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
+  <p class="muted small" style="margin:0">App version: 5 (ElevenLabs voice)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
-    const k=b.dataset.k,raw=b.dataset.val;S.settings[k]=k==="size"?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);
+    const k=b.dataset.k,raw=b.dataset.val;S.settings[k]=(k==="size"||k==="engine")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
     save();applySettings();settings();
   });
   $("#test").onclick=()=>speak("Ready for today's missions!");
+  const vs=$("#voice-status");
+  if(S.settings.engine!=="eleven")vs.textContent="Using the voice built into this device.";
+  else if(!ONLINE_HOST)vs.textContent="The ElevenLabs voice works on your GitHub Pages site. Here, the built-in voice is used instead.";
+  else{vs.textContent="Checking the ElevenLabs connection…";
+    fetch(TTS_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+TTS_ANON,apikey:TTS_ANON},body:JSON.stringify({check:true})})
+      .then(r=>r.json().then(j=>({ok:r.ok,j}))).then(({ok,j})=>{vs.textContent=ok&&j.configured?"✅ ElevenLabs is connected.":ok?"⚠️ ElevenLabs isn't set up yet. The built-in voice is used until the Supabase secrets are added.":j.error==="origin_not_allowed"?"⚠️ This website address isn't on the allowed list in Supabase.":"⚠️ Couldn't reach ElevenLabs. The built-in voice is used for now.";})
+      .catch(()=>{vs.textContent="⚠️ Couldn't reach ElevenLabs. The built-in voice is used for now.";});}
   $("#replay").onclick=()=>{S.seen={};save();toast("Done! You'll see how to play at the start of each mission.");};
   $("#reset").onclick=e=>{
     if(!armed){armed=true;e.currentTarget.textContent="⚠️ Tap again to erase everything, including scans";return;}
