@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Decode: reading missions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EAF0F8;--surface:#FFFFFF;--ink:#1B2540;--muted:#56637F;--line:#D3DBE8;
+  --cobalt:#2F4BDB;--cobalt-deep:#1F35A8;--on-cobalt:#FFFFFF;
+  --sun:#E39A00;--mint:#12936F;--coral:#D93A40;--tile:#FFFFFF;--tile-ink:#1B2540;
+  --c-swap:#7A5AF0;--c-spell:#2F6FE0;--c-flip:#DD6A12;--c-forge:#16936A;--c-speed:#D93E75;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111A2D;--surface:#1A2540;--ink:#E7ECF6;--muted:#A6B3CE;--line:#2E3C5E;
+    --cobalt:#6F86FF;--cobalt-deep:#3E55C9;--on-cobalt:#0E1630;
+    --sun:#FFC23A;--mint:#35D0A0;--coral:#FF6D72;--tile:#233052;--tile-ink:#F1F4FA;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111A2D;--surface:#1A2540;--ink:#E7ECF6;--muted:#A6B3CE;--line:#2E3C5E;
+  --cobalt:#6F86FF;--cobalt-deep:#3E55C9;--on-cobalt:#0E1630;
+  --sun:#FFC23A;--mint:#35D0A0;--coral:#FF6D72;--tile:#233052;--tile-ink:#F1F4FA;
+  color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+html{scroll-padding-top:env(safe-area-inset-top,0px);font-size:18px;background:var(--bg)}
+html.size-l{font-size:20px}
+html.size-xl{font-size:23px}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Lexend",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+body.spaced{letter-spacing:.06em;word-spacing:.16em}
+button,input{font:inherit;color:inherit;letter-spacing:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px;border-radius:10px}
+.wrap{max-width:680px;margin:0 auto;padding:1rem 1.1rem 3rem}
+
+/* Header */
+header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;padding:.4rem 0 1.1rem}
+.brand{display:flex;gap:.2rem;background:none;border:0;padding:0}
+.brand span{display:inline-grid;place-items:center;width:1.55rem;height:1.75rem;font-weight:800;font-size:.95rem;background:var(--tile);color:var(--tile-ink);border:2px solid var(--line);border-bottom-width:4px;border-radius:7px}
+.hud{display:flex;gap:.5rem}
+.pill{font-size:.9rem;font-weight:600;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:.25rem .75rem}
+
+/* Home */
+h1{font-size:1.9rem;line-height:1.15;margin:.1rem 0 .4rem;font-weight:800}
+h2{font-size:1.45rem;line-height:1.2;margin:.2rem 0 .5rem;font-weight:800}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.hero{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:1.2rem;display:flex;flex-direction:column;gap:.8rem}
+.hero p{margin:0}
+.go-big{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;font-size:1.25rem;font-weight:800;color:#fff;background:var(--m,var(--cobalt));border:0;border-radius:16px;padding:1rem;box-shadow:0 5px 0 rgba(0,0,0,.22)}
+.go-big:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.list-h{font-size:1rem;font-weight:700;margin:1.6rem 0 .6rem;color:var(--muted)}
+.missions{list-style:none;margin:0 0 1.5rem;padding:0;display:grid;gap:.7rem}
+.mission{width:100%;display:flex;align-items:center;gap:.9rem;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:.75rem .9rem;min-height:4.6rem}
+.mission:hover{border-color:var(--m)}
+.icon{flex:none;display:grid;place-items:center;width:3.2rem;height:3.2rem;font-size:1.7rem;background:var(--m);border-radius:14px}
+.mtext{flex:1;display:flex;flex-direction:column}
+.mname{font-weight:800;font-size:1.1rem}
+.mdesc{color:var(--muted);font-size:.9rem;line-height:1.4}
+.chip{flex:none;font-size:.78rem;font-weight:700;padding:.25rem .6rem;border-radius:999px;background:var(--bg);color:var(--muted);white-space:nowrap}
+.chip.done{background:color-mix(in srgb,var(--mint) 20%,var(--surface));color:var(--mint)}
+.link{background:none;border:0;color:var(--muted);font-weight:600;padding:.4rem 0}
+
+/* Mission frame */
+.bar{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap}
+.back,.help{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:.45rem .85rem;font-size:.9rem;font-weight:600}
+.bar-title{flex:1;display:flex;align-items:center;gap:.5rem;font-weight:800;font-size:1.1rem}
+.bar-title .icon{width:2.2rem;height:2.2rem;font-size:1.2rem;border-radius:10px}
+.count{text-align:center;font-weight:700;color:var(--muted);font-size:.9rem;margin-bottom:.35rem}
+.dots{display:flex;gap:.3rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.2rem}
+.dots i{width:.8rem;height:.8rem;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--m)}
+.dots i.now{background:var(--m);outline:3px solid color-mix(in srgb,var(--m) 35%,transparent)}
+.stage{display:flex;flex-direction:column;gap:1rem}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:1.2rem 1rem;display:flex;flex-direction:column;gap:1rem}
+.prompt{font-size:1.2rem;font-weight:600;margin:0;text-align:center}
+.do{display:inline-block;background:color-mix(in srgb,var(--m) 14%,var(--surface));border:2px solid var(--m);border-radius:12px;padding:.35rem .8rem;font-weight:700}
+.word{font-size:3rem;font-weight:800;text-align:center;letter-spacing:.05em;margin:0}
+.row{display:flex;gap:.6rem;flex-wrap:wrap}
+.center{justify-content:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;background:var(--cobalt);color:var(--on-cobalt);border:0;border-radius:14px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;box-shadow:0 4px 0 var(--cobalt-deep);transition:transform .08s;min-height:3.1rem}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--cobalt-deep)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.btn.hear{background:var(--surface);color:var(--ink);border:2px solid var(--m);box-shadow:0 4px 0 var(--m)}
+.btn.go{background:var(--mint);color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--mint) 60%,#000)}
+.btn.big{font-size:1.2rem;padding:.9rem 1.8rem}
+.btn.danger{color:var(--coral)}
+.answer-row{display:flex;gap:.6rem}
+.answer-row input{flex:1;min-width:0;font-size:1.6rem;font-weight:700;padding:.6rem .9rem;border:3px solid var(--line);border-radius:14px;background:var(--tile);color:var(--tile-ink);text-align:center}
+.answer-row input:focus{border-color:var(--m);outline:none}
+.choices{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
+.choice{min-width:3.6rem;min-height:3.6rem;font-size:1.6rem;font-weight:800;padding:.5rem .9rem;background:var(--tile);color:var(--tile-ink);border:3px solid var(--line);border-bottom-width:6px;border-radius:14px}
+.choice:hover:not(:disabled){border-color:var(--m)}
+.choice.wide{min-width:9rem;font-size:1.9rem}
+.choice.ok{border-color:var(--mint);background:color-mix(in srgb,var(--mint) 22%,var(--tile))}
+.choice.bad{border-color:var(--coral);background:color-mix(in srgb,var(--coral) 15%,var(--tile));opacity:.7}
+
+/* Tiles */
+.tiles{display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;margin:.2rem 0}
+.tile{min-width:2.3rem;padding:.2rem .45rem;font-size:1.9rem;font-weight:700;text-align:center;line-height:1.2;background:var(--tile);color:var(--tile-ink);border:2px solid var(--line);border-bottom-width:5px;border-radius:10px}
+.tiles.sm .tile{font-size:1.4rem;min-width:1.95rem}
+.tile.ok{border-color:var(--mint);background:color-mix(in srgb,var(--mint) 22%,var(--tile))}
+.tile.bad{border-color:var(--coral);background:color-mix(in srgb,var(--coral) 16%,var(--tile))}
+.tile.swap{border-color:var(--sun);background:color-mix(in srgb,var(--sun) 28%,var(--tile))}
+.fb .tile{animation:pop .25s ease-out both}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
+
+.fb{text-align:center;display:flex;flex-direction:column;gap:.6rem;align-items:center}
+.fb:empty{display:none}
+.fb .row{justify-content:center;margin-top:.2rem}
+.msg{margin:0;font-weight:700;font-size:1.15rem}
+.msg.good{color:var(--mint)}
+.gain{margin:0;font-weight:800;color:var(--mint)}
+.legend{font-size:.9rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.legend i{display:inline-block;width:1rem;height:1rem;border-radius:4px;border:3px solid;vertical-align:-2px;margin-right:.35rem}
+
+.rule{background:color-mix(in srgb,var(--m) 10%,var(--surface));border:2px solid var(--m);border-radius:16px;padding:.8rem 1rem}
+.rule-name{font-weight:800}
+.rule p{margin:.25rem 0 0}
+.mini-steps{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.mini-steps li{font-size:.85rem;font-weight:600;background:var(--bg);border-radius:999px;padding:.3rem .7rem}
+.picks{display:grid;gap:.7rem}
+.pick{text-align:left;display:flex;align-items:center;gap:.8rem;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:.9rem 1rem;min-height:4rem}
+.pick:hover{border-color:var(--m)}
+.pick .e{font-size:1.5rem}
+.pick span.t{display:flex;flex-direction:column}
+
+.sentence{font-size:1.45rem;text-align:center;margin:0;line-height:1.6;font-weight:500}
+.blank{display:inline-block;min-width:4.5rem;border-bottom:4px solid var(--m);color:var(--m);font-weight:800}
+.pair{display:flex;flex-direction:column;gap:.2rem;align-items:center}
+.pair .lbl{font-size:.85rem;font-weight:600;color:var(--muted)}
+
+.slots{min-height:4.4rem;display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;align-items:center;border:3px dashed var(--m);border-radius:16px;padding:.6rem;background:color-mix(in srgb,var(--m) 6%,var(--surface))}
+.slots .hint{color:var(--muted);font-size:.95rem;font-weight:600}
+.preview{text-align:center;font-size:1.7rem;font-weight:800;min-height:2.4rem;letter-spacing:.03em}
+.bank{display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center}
+.part{display:flex;flex-direction:column;align-items:center;background:var(--tile);color:var(--tile-ink);border:2px solid var(--line);border-bottom-width:5px;border-radius:14px;padding:.4rem .8rem .35rem;min-width:4rem}
+.part b{font-size:1.45rem;font-weight:800;line-height:1.2}
+.part small{font-size:.75rem;color:var(--muted);font-weight:600}
+.part:disabled{opacity:.25;cursor:default}
+.slots .part{border-color:var(--m)}
+.built{font-size:2.4rem;font-weight:800;letter-spacing:.03em}
+
+.how3{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:0;padding:0;list-style:none}
+.how3 li{background:var(--bg);border-radius:14px;padding:.6rem .4rem;text-align:center;font-size:.85rem;font-weight:600;line-height:1.3}
+.how3 li b{display:block;font-size:1.4rem;margin-bottom:.15rem}
+.how3 li.on{background:color-mix(in srgb,var(--m) 22%,var(--surface));outline:2px solid var(--m)}
+.passage{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:1.1rem 1.2rem;font-size:1.2rem;line-height:1.9;max-width:62ch}
+.passage p{margin:0 0 .9em}
+.passage p:last-child{margin:0}
+.timer{font-size:2.6rem;font-weight:800;font-variant-numeric:tabular-nums;text-align:center}
+.bars{display:flex;gap:.7rem;align-items:flex-end;justify-content:center;height:9rem;padding-top:1.4rem}
+.barcol{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:3rem}
+.barcol .b{width:100%;background:color-mix(in srgb,var(--m) 55%,var(--surface));border-radius:8px 8px 3px 3px;min-height:6px}
+.barcol .b.last{background:var(--m)}
+.barcol .bv{font-weight:800;font-size:.95rem}
+.barcol .bl{font-size:.72rem;color:var(--muted);margin-top:.2rem}
+
+.finish{text-align:center;padding:1rem 0;display:flex;flex-direction:column;align-items:center;gap:.4rem}
+.trophy{font-size:3.5rem;line-height:1}
+.stars{font-size:2.2rem;letter-spacing:.2em}
+.big{font-size:1.4rem;font-weight:800;margin:0}
+.finish .row{justify-content:center;margin-top:.8rem}
+
+/* How-to-play overlay */
+.overlay{position:fixed;inset:0;background:rgba(10,16,32,.55);display:grid;place-items:center;padding:1rem;z-index:10}
+.modal{background:var(--surface);color:var(--ink);border-radius:22px;max-width:30rem;width:100%;max-height:90vh;overflow:auto;padding:1.4rem 1.2rem;display:flex;flex-direction:column;gap:1rem;text-align:center;border-top:8px solid var(--m)}
+.modal .icon{margin:0 auto;width:4rem;height:4rem;font-size:2.1rem;border-radius:18px}
+.modal ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.55rem;text-align:left}
+.modal ol li{display:flex;gap:.7rem;align-items:center;background:var(--bg);border-radius:14px;padding:.6rem .8rem;font-weight:600}
+.modal ol li .n{flex:none;display:grid;place-items:center;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--m);color:#fff;font-weight:800}
+.example{border:2px dashed var(--m);border-radius:14px;padding:.7rem .8rem;font-size:.95rem}
+.example b{display:block;margin-bottom:.2rem}
+
+.set{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:.9rem 0;border-bottom:2px solid var(--line)}
+.seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{background:var(--surface);border:0;padding:.5rem .9rem;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--cobalt);color:var(--on-cobalt)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.toast{position:fixed;left:50%;bottom:calc(1rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:.7rem 1.1rem;border-radius:12px;font-size:.95rem;font-weight:600;max-width:90vw;z-index:20}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:440px){.word{font-size:2.4rem}.tile{font-size:1.6rem;min-width:2rem}h1{font-size:1.6rem}.chip{display:none}.answer-row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <button class="brand" id="brand" aria-label="Decode home"><span>D</span><span>E</span><span>C</span><span>O</span><span>D</span><span>E</span></button>
+    <div class="hud">
+      <span class="pill" title="Days in a row">🔥 <b id="hud-streak">0</b> <span id="hud-streak-l">days</span></span>
+      <span class="pill" title="Points">⭐ <b id="hud-xp">0</b> points</span>
+    </div>
+  </header>
+  <main id="app"></main>
+</div>
+<script>
+const SWAPS=[
+ {say:"slip",ask:"Change /i/ to /a/.",ans:["slap"]},
+ {say:"trap",ask:"Change /a/ to /i/.",ans:["trip"]},
+ {say:"flame",ask:"Change /f/ to /b/.",ans:["blame"]},
+ {say:"crust",ask:"Change /k/ to /t/.",ans:["trust"]},
+ {say:"black",ask:"Change /a/ to /o/.",ans:["block"]},
+ {say:"sting",ask:"Change /i/ to /u/.",ans:["stung"]},
+ {say:"grip",ask:"Change /p/ to /n/.",ans:["grin"]},
+ {say:"chop",ask:"Change /ch/ to /sh/.",ans:["shop"]},
+ {say:"thick",ask:"Change /th/ to /ch/.",ans:["chick"]},
+ {say:"stone",ask:"Change /n/ to /l/.",ans:["stole"]},
+ {say:"stack",ask:"Take away the /t/ sound.",ans:["sack"]},
+ {say:"blend",ask:"Take away the /l/ sound.",ans:["bend"]},
+ {say:"swing",ask:"Take away the /w/ sound.",ans:["sing"]},
+ {say:"plant",ask:"Take away the /l/ sound.",ans:["pant"]},
+ {say:"lip",ask:"Add /s/ to the start.",ans:["slip"]},
+ {say:"rain",ask:"Add /t/ to the start.",ans:["train"]},
+ {say:"lamp",ask:"Add /k/ to the start.",ans:["clamp"]}
+];
+const COUNTS=[
+ {word:"shrimp",sounds:["sh","r","i","m","p"]},
+ {word:"thick",sounds:["th","i","ck"],note:"th and ck each make one sound."},
+ {word:"splash",sounds:["s","p","l","a","sh"]},
+ {word:"knight",sounds:["n","igh","t"],note:"The k is silent, and igh makes one sound."},
+ {word:"fox",sounds:["f","o","k","s"],note:"Tricky one: x makes two sounds, /k/ and /s/."},
+ {word:"stretch",sounds:["s","t","r","e","tch"],note:"tch makes one sound."},
+ {word:"bright",sounds:["b","r","igh","t"]},
+ {word:"cheese",sounds:["ch","ee","se"],note:"The se at the end says /z/."},
+ {word:"strong",sounds:["s","t","r","o","ng"],note:"ng makes one sound."},
+ {word:"phone",sounds:["ph","o","n"],note:"ph says /f/, and the silent e makes no sound."}
+];
+const PATTERNS=[
+ {name:"Consonant blends",eg:"strand, crisp, frost",rule:"When consonants team up, each one still says its own sound. Say every sound.",words:[
+  ["strand","A strand of hair fell in her eyes."],["crisp","The chips were crisp and salty."],["thrust","He thrust his hand into the air."],["clamp","Use a clamp to hold the wood still."],["splint","The nurse put a splint on my finger."],["blend","Blend the fruit to make a smoothie."],["script","The actors read the script out loud."],["frost","Frost covered the car this morning."]]},
+ {name:"Silent e",eg:"stripe, flame, globe",rule:"An e at the end makes no sound, but it makes the vowel say its name. Rip becomes ripe.",words:[
+  ["stripe","The flag has a red stripe."],["flame","The candle flame flickered."],["spoke","She spoke to the whole class."],["prune","We prune the bushes every spring."],["theme","The party had a space theme."],["shine","The sun began to shine."],["globe","Spin the globe and pick a country."],["crate","The puppy slept in its crate."]]},
+ {name:"Vowel teams",eg:"stream, float, train",rule:"Two vowels team up to make one sound: ai, ea, oa, ee.",words:[
+  ["stream","We waded across the stream."],["float","Wood will float on water."],["train","The train was late again."],["bleach","Bleach can take the color out of a shirt."],["coast","We drove up the coast."],["speech","He gave a speech at the meeting."],["paint","The paint is still wet."],["cheap","That game was cheap on sale."]]},
+ {name:"Bossy r",eg:"storm, thirst, burst",rule:"When r comes after a vowel, it changes the vowel's sound: ar, or, er, ir, ur.",words:[
+  ["storm","The storm knocked out the power."],["thirst","Cold water fixed my thirst."],["charge","Plug in the phone to charge it."],["burst","The balloon burst with a pop."],["sharp","Be careful, that knife is sharp."],["first","I was first in line."],["north","Birds fly north in the spring."],["curve","The road has a sharp curve."]]},
+ {name:"The -tion ending",eg:"action, station, motion",rule:"The ending -tion sounds like \"shun.\" Spell the first part, then add -tion.",words:[
+  ["action","That movie had a lot of action."],["station","Meet me at the train station."],["motion","The boat's motion made me dizzy."],["fraction","One half is a fraction."],["section","Read the first section of the chapter."],["caption","Write a caption for the photo."],["lotion","Put lotion on your dry hands."],["nation","The whole nation watched the game."]]},
+ {name:"Doubling rule",eg:"running, stopped, grabbed",rule:"Short vowel and one consonant at the end? Double that consonant before adding -ing or -ed. Run becomes running.",words:[
+  ["running","He was running late for school."],["stopped","The bus stopped at the corner."],["planning","We are planning a trip."],["hopping","The frog kept hopping away."],["grabbed","She grabbed her backpack."],["swimming","We went swimming at the lake."],["dropped","I dropped my phone again."],["shipping","Shipping is free this week."]]}
+];
+const FLIP=[
+ {s:"I got a letter ___ my cousin.",a:"from",b:"form"},
+ {s:"Fill out this ___ to join the team.",a:"form",b:"from"},
+ {s:"I ___ a hawk over the field.",a:"saw",b:"was"},
+ {s:"It ___ raining all day.",a:"was",b:"saw"},
+ {s:"Turn ___ at the next street.",a:"left",b:"felt"},
+ {s:"She ___ sick after the ride.",a:"felt",b:"left"},
+ {s:"We hiked the ___ up the mountain.",a:"trail",b:"trial"},
+ {s:"The judge started the ___.",a:"trial",b:"trail"},
+ {s:"The library is very ___.",a:"quiet",b:"quite"},
+ {s:"That test was ___ hard.",a:"quite",b:"quiet"},
+ {s:"A right ___ has 90 degrees.",a:"angle",b:"angel"},
+ {s:"My shoe came ___ again.",a:"untied",b:"united"},
+ {s:"The team was ___ after the big win.",a:"united",b:"untied"},
+ {s:"Milk comes from a ___ farm.",a:"dairy",b:"diary"},
+ {s:"I write in my ___ every night.",a:"diary",b:"dairy"},
+ {s:"I ___ to win this game.",a:"expect",b:"except"},
+ {s:"Everyone came ___ Sam.",a:"except",b:"expect"},
+ {s:"The dog was ___ of the thunder.",a:"scared",b:"sacred"},
+ {s:"Put the book ___ the table.",a:"on",b:"no"},
+ {s:"There is ___ milk left.",a:"no",b:"on"},
+ {s:"I want to go home ___.",a:"now",b:"won"},
+ {s:"Our team ___ the game.",a:"won",b:"now"},
+ {s:"I ___ my best on the test.",a:"tried",b:"tired"},
+ {s:"I'm so ___ after practice.",a:"tired",b:"tried"}
+];
+const FORGE=[
+ {def:"To break in while someone is talking",word:"interrupt",parts:[["inter","between"],["rupt","break"]]},
+ {def:"Easy to carry around",word:"portable",parts:[["port","carry"],["able","can be"]]},
+ {def:"The act of building something",word:"construction",parts:[["con","together"],["struct","build"],["ion","act of"]]},
+ {def:"To pull something out",word:"extract",parts:[["ex","out"],["tract","pull"]]},
+ {def:"To say what will happen before it happens",word:"predict",parts:[["pre","before"],["dict","say"]]},
+ {def:"To carry things from one place to another",word:"transport",parts:[["trans","across"],["port","carry"]]},
+ {def:"A person who looks into things to check them",word:"inspector",parts:[["in","into"],["spect","look"],["or","one who"]]},
+ {def:"To break out suddenly, like a volcano",word:"erupt",parts:[["e","out"],["rupt","break"]]},
+ {def:"To pull someone's attention away",word:"distract",parts:[["dis","away"],["tract","pull"]]},
+ {def:"To say the opposite of what someone said",word:"contradict",parts:[["contra","against"],["dict","say"]]},
+ {def:"Not able to be seen",word:"invisible",parts:[["in","not"],["vis","see"],["ible","can be"]]},
+ {def:"To carry goods into a country",word:"import",parts:[["im","into"],["port","carry"]]}
+];
+const POOL=[["re","again"],["pre","before"],["ex","out"],["con","together"],["trans","across"],["dis","away"],["port","carry"],["rupt","break"],["dict","say"],["struct","build"],["tract","pull"],["spect","look"],["vis","see"],["able","can be"],["ion","act of"],["or","one who"],["er","one who"],["ive","tending to"],["sub","under"],["mis","wrong"]];
+const PASSAGES=[
+ {id:"level",title:"The Last Level",text:"Maya had been stuck on the last level for three days. The boss had two shields, and every time she broke one, the other grew back. Her brother said the game was broken. Maya did not think so.\nShe grabbed a notebook and wrote down every move the boss made. Jump, spin, shield, charge. Jump, spin, shield, charge. It was a pattern. The shields only dropped for one second after the charge.\nOn her next try, she waited. She dodged the charge, then struck fast. The first shield cracked. Then the second. The screen flashed gold. Maya did not cheer. She just smiled and closed the notebook. Patterns, she thought, are everywhere."},
+ {id:"deep",title:"Lights in the Deep",text:"Far below the waves, the sea is dark and cold. Sunlight fades as you go down, and deep enough there is no light at all. Yet the deep sea is not empty.\nSome fish make their own light. They glow blue or green to find food, trick enemies, or signal each other. The anglerfish dangles a glowing lure in front of its mouth like a fishing pole. Small fish swim toward the light and get snapped up.\nScientists explore these depths with robot subs built to handle the crushing weight of the water. On almost every trip down, they find something new. Much of the deep ocean has still never been seen by anyone."},
+ {id:"skate",title:"The Skate Park Plan",text:"The town wanted to tear down the old tennis courts. Jalen had a better idea. He walked the courts and drew a map of where ramps, rails, and a small bowl could go.\nThen he counted how many kids skated in the parking lot behind the store. On Monday, there were fourteen. On Friday, there were twenty-two. He put the numbers on a poster and brought it to the town meeting.\nHis hands shook when he stood up to speak. He read his plan slowly and clearly. When he finished, the room was quiet. Then the mayor asked a question. How much would it cost? Jalen flipped the poster over. He had already done the math."}
+];
+
+const MISSIONS=[
+ {id:"swap",name:"Sound Swap",icon:"🎧",desc:"Change one sound to make a new word.",min:"5 min",
+  steps:["🔊 Listen to the word","🔄 Change, remove, or add the sound it tells you","⌨️ Type the new word"],
+  ex:["Example","chop: change /ch/ to /sh/ and you get shop. Sometimes you'll count sounds instead. Tap one finger for each sound."]},
+ {id:"spell",name:"Spell It",icon:"✏️",desc:"Listen to a word and spell it.",min:"10 min",
+  steps:["👂 Listen to the word","☝️ Tap a finger for each sound","⌨️ Say each letter out loud as you type"],
+  ex:["Colors help you fix it","🟩 Green: right letter, right spot. 🟨 Yellow: right letter, wrong spot. 🟥 Red: check this letter."]},
+ {id:"flip",name:"Twin Words",icon:"🔀",desc:"Pick the right word from two look-alikes.",min:"5 min",
+  steps:["📖 Read the sentence","👀 Look closely at both words","👆 Tap the one that fits"],
+  ex:["Example","I got a letter ___ my cousin. Is it from or form? It's from."]},
+ {id:"forge",name:"Word Builder",icon:"🧩",desc:"Snap word pieces together to make big words.",min:"5 min",
+  steps:["📖 Read what the word means","🧩 Tap the pieces in the right order","✅ Tap Check"],
+  ex:["Example","port means carry. able means can be. port + able = portable (easy to carry)."]},
+ {id:"speed",name:"Speed Read",icon:"⚡",desc:"Read a story out loud and beat your own speed.",min:"10 min",
+  steps:["▶️ Tap Start","🗣️ Read the whole story out loud","⏹️ Tap Done when you finish"],
+  ex:["Tip","Read the same story 3 times. Your bar gets taller each time. Smooth reading beats rushing."]}
+];
+const MCOLOR={swap:"var(--c-swap)",spell:"var(--c-spell)",flip:"var(--c-flip)",forge:"var(--c-forge)",speed:"var(--c-speed)"};
+const mission=id=>MISSIONS.find(m=>m.id===id);
+const YAY=["Nice! 🎉","You got it! ✅","Awesome! ⭐","Nailed it! 💪","Great job! 🙌","Boom! 💥"];
+const yay=()=>YAY[Math.floor(Math.random()*YAY.length)];
+
+/* ---------- State ---------- */
+const $=s=>document.querySelector(s);
+const app=$("#app");
+const KEY="decode-v1";
+function dayStr(off=0){const d=new Date();d.setDate(d.getDate()+off);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function load(){
+  let d=null;try{d=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
+  const s=Object.assign({xp:0,streak:0,lastDay:null,day:null,doneToday:{},reads:{},seen:{}},d||{});
+  s.seen=s.seen||{};
+  s.settings=Object.assign({size:"m",spaced:false,rate:0.85},(d&&d.settings)||{});
+  if(s.day!==dayStr()){s.day=dayStr();s.doneToday={};}
+  if(s.lastDay&&s.lastDay!==dayStr()&&s.lastDay!==dayStr(-1))s.streak=0;
+  return s;
+}
+let S=load();
+let R=null;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function renderHud(){$("#hud-streak").textContent=S.streak;$("#hud-streak-l").textContent=S.streak===1?"day":"days";$("#hud-xp").textContent=S.xp;}
+function award(n){
+  S.xp+=n;const t=dayStr();
+  if(S.lastDay!==t){S.streak=(S.lastDay===dayStr(-1))?S.streak+1:1;S.lastDay=t;}
+  if(R)R.xp+=n;save();renderHud();
+}
+function applySettings(){
+  const h=document.documentElement;h.classList.remove("size-l","size-xl");
+  if(S.settings.size==="l")h.classList.add("size-l");
+  if(S.settings.size==="xl")h.classList.add("size-xl");
+  document.body.classList.toggle("spaced",!!S.settings.spaced);
+}
+
+/* ---------- Helpers ---------- */
+function esc(t){return String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function tiles(parts,cls=[],sm=false){return `<div class="tiles${sm?" sm":""}">${parts.map((p,i)=>`<span class="tile ${cls[i]||""}">${esc(p)}</span>`).join("")}</div>`;}
+function okTiles(word,sm=true){return tiles([...word],[...word].map(()=>"ok"),sm);}
+let toastT;
+function toast(msg){let t=$(".toast");if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}t.textContent=msg;clearTimeout(toastT);toastT=setTimeout(()=>t.remove(),3000);}
+function speak(text){
+  try{
+    if(!("speechSynthesis" in window)){toast("Sound doesn't work in this browser. Ask a grown-up to read it to you.");return;}
+    speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=S.settings.rate;u.lang="en-US";speechSynthesis.speak(u);
+  }catch(e){}
+}
+function hush(){try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}}
+function setColor(id){document.documentElement.style.setProperty("--m",id?MCOLOR[id]:"var(--cobalt)");}
+
+/* ---------- How to play ---------- */
+function showHelp(id,onClose){
+  const m=mission(id);S.seen[id]=true;save();
+  const o=document.createElement("div");o.className="overlay";
+  o.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="help-t">
+    <span class="icon" style="background:${MCOLOR[id]}">${m.icon}</span>
+    <h2 id="help-t">How to play ${esc(m.name)}</h2>
+    <ol>${m.steps.map((s,i)=>`<li><span class="n">${i+1}</span><span>${esc(s)}</span></li>`).join("")}</ol>
+    <div class="example"><b>${esc(m.ex[0])}</b>${esc(m.ex[1])}</div>
+    <button class="btn go big" id="help-ok">Got it, let's go!</button>
+  </div>`;
+  document.body.appendChild(o);
+  const close=()=>{o.remove();document.removeEventListener("keydown",k);onClose&&onClose();};
+  const k=e=>{if(e.key==="Escape")close();};
+  document.addEventListener("keydown",k);
+  $("#help-ok").onclick=close;$("#help-ok").focus();
+}
+function enter(id,fn){setColor(id);if(!S.seen[id]){showHelp(id,fn);}else fn();}
+
+/* ---------- Screens ---------- */
+function home(){
+  R=null;hush();setColor(null);
+  const done=MISSIONS.filter(m=>S.doneToday[m.id]).length;
+  const next=MISSIONS.find(m=>!S.doneToday[m.id]);
+  app.innerHTML=`<div class="hero" style="--m:${next?MCOLOR[next.id]:"var(--mint)"}">
+    <div><h1>${done===0?"Hey! Ready to train? 👋":done===5?"All done for today! 🎉":"Keep it going! 🚀"}</h1>
+    <p class="muted">${done===5?"You finished all 5 missions. Come back tomorrow to keep your streak alive. 🔥":`You've done <b>${done} of 5</b> missions today. Just tap the big button.`}</p></div>
+    ${next?`<button class="go-big" id="next-up"><span>${next.icon}</span> Start ${esc(next.name)}</button>`:""}
+  </div>
+  <p class="list-h">All missions</p>
+  <ol class="missions">${MISSIONS.map((m,i)=>`<li><button class="mission" style="--m:${MCOLOR[m.id]}" data-go="${m.id}">
+    <span class="icon" aria-hidden="true">${m.icon}</span>
+    <span class="mtext"><span class="mname">${i+1}. ${esc(m.name)}</span><span class="mdesc">${esc(m.desc)}</span></span>
+    <span class="chip ${S.doneToday[m.id]?"done":""}">${S.doneToday[m.id]?"✓ Done":m.min}</span></button></li>`).join("")}</ol>
+  <button class="link" id="to-settings">⚙️ Settings</button>`;
+  app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
+  if(next)$("#next-up").onclick=()=>GO[next.id]();
+  $("#to-settings").onclick=settings;window.scrollTo(0,0);
+}
+function frame(id,body){
+  const m=mission(id);setColor(id);
+  let prog="";
+  if(R&&R.i<R.items.length){
+    const n=R.items.length;
+    prog=`<p class="count">Question ${R.i+1} of ${n}</p><div class="dots" aria-hidden="true">${Array.from({length:n},(_,k)=>`<i class="${k<R.i?"on":k===R.i?"now":""}"></i>`).join("")}</div>`;
+  }
+  app.innerHTML=`<div class="bar"><button class="back" id="back">🏠 Home</button>
+    <span class="bar-title"><span class="icon" style="background:${MCOLOR[id]}" aria-hidden="true">${m.icon}</span>${esc(m.name)}</span>
+    <button class="help" id="help">❓ How to play</button></div>
+  ${prog}<div class="stage">${body}</div>`;
+  $("#back").onclick=home;$("#help").onclick=()=>showHelp(id);window.scrollTo(0,0);
+}
+function startRound(mode,items,view,extra={}){R=Object.assign({mode,items,i:0,tries:0,first:0,total:items.length,xp:0,view},extra);showItem();}
+function showItem(){if(R.i>=R.items.length)return finish();R.tries=0;R.view(R.items[R.i]);}
+function nextItem(){hush();R.i++;showItem();}
+function requeue(it){if(!it._rq)R.items.push(Object.assign({},it,{_rq:true}));}
+function finish(){
+  S.doneToday[R.mode]=true;save();const r=R;
+  const pct=r.first/r.total,stars=pct>=.9?3:pct>=.6?2:1;
+  const next=MISSIONS.find(m=>!S.doneToday[m.id]);
+  frame(r.mode,`<div class="card finish"><div class="trophy">🏆</div><h2>Mission complete!</h2>
+  <div class="stars" aria-label="${stars} of 3 stars">${"⭐".repeat(stars)}${"☆".repeat(3-stars)}</div>
+  <p class="big">You got ${r.first} out of ${r.total}</p>
+  <p class="gain">+${r.xp} points</p>
+  <div class="row">${next?`<button class="btn go big" id="nx">${next.icon} Next: ${esc(next.name)}</button>`:`<button class="btn go big" id="nx">🎉 See today's wins</button>`}
+  <button class="btn ghost" id="again">🔁 Play again</button></div></div>`);
+  $("#nx").onclick=()=>next?GO[next.id]():home();$("#again").onclick=()=>GO[r.mode]();$("#nx").focus();
+}
+function endWith(html,disable){
+  disable();const fb=$("#fb");
+  fb.innerHTML=html+`<div class="row"><button class="btn go big" id="next">Next ▶</button></div>`;
+  const n=$("#next");n.onclick=nextItem;n.focus();
+}
+function wireTyped(it,{isRight,rightHTML,wrongHTML,revealHTML}){
+  const inp=$("#ans"),chk=$("#check"),fb=$("#fb");let over=false;
+  const disable=()=>{over=true;inp.disabled=true;chk.disabled=true;};
+  function check(){
+    if(over)return;const v=inp.value.trim().toLowerCase();if(!v){toast("Type your answer first 🙂");inp.focus();return;}
+    if(isRight(v)){const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+rightHTML(v)+`<p class="gain">+${xp} points</p>`,disable);}
+    else{R.tries++;if(R.tries>=2){requeue(it);endWith(wrongHTML(v,true)+revealHTML(),disable);}else{fb.innerHTML=wrongHTML(v,false)+`<p class="muted small">You get one more try.</p>`;inp.select();}}
+  }
+  chk.onclick=check;inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();check();}});
+  setTimeout(()=>inp.focus(),60);
+}
+function wireChoices(it,{isRight,rightHTML,wrongHTML,revealHTML}){
+  const btns=[...app.querySelectorAll("[data-v]")],fb=$("#fb");
+  const disable=()=>btns.forEach(b=>b.disabled=true);
+  btns.forEach(b=>b.onclick=()=>{
+    const v=b.dataset.v;
+    if(isRight(v)){b.classList.add("ok");const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+rightHTML(v)+`<p class="gain">+${xp} points</p>`,disable);}
+    else{
+      b.classList.add("bad");b.disabled=true;R.tries++;
+      if(R.tries>=2||btns.filter(x=>!x.disabled).length<=1){requeue(it);const r=btns.find(x=>isRight(x.dataset.v));if(r)r.classList.add("ok");endWith(wrongHTML(v)+revealHTML(),disable);}
+      else fb.innerHTML=wrongHTML(v)+`<p class="muted small">You get one more try.</p>`;
+    }
+  });
+}
+const COMEBACK=`<p class="muted small">No worries. This one comes back at the end so you can practice it again.</p>`;
+const TYPEBOX=(ph)=>`<label class="sr" for="ans">${ph}</label>
+  <div class="answer-row"><input id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${ph}"><button class="btn" id="check">✅ Check</button></div>`;
+
+/* Sound Swap */
+function swapView(it){
+  if(it.kind==="count"){
+    frame("swap",`<div class="card"><p class="prompt">How many <b>sounds</b> do you hear?</p>
+    <p class="word">${esc(it.word)}</p>
+    <div class="row center"><button class="btn hear" id="hear">🔊 Hear it</button></div>
+    <p class="muted small" style="text-align:center;margin:0">Say it slowly. Tap one finger for each sound. Sounds, not letters!</p>
+    <div class="choices">${[2,3,4,5,6].map(n=>`<button class="choice" data-v="${n}">${n}</button>`).join("")}</div></div>
+    <div id="fb" class="fb" aria-live="polite"></div>`);
+    $("#hear").onclick=()=>speak(it.word);setTimeout(()=>speak(it.word),250);
+    const breakdown=()=>`<p class="muted small" style="margin:0">Here are the sounds:</p>`+tiles(it.sounds,it.sounds.map(()=>"ok"),true)+(it.note?`<p class="small" style="margin:0">💡 ${esc(it.note)}</p>`:"");
+    wireChoices(it,{
+      isRight:v=>+v===it.sounds.length,
+      rightHTML:()=>breakdown(),
+      wrongHTML:()=>`<p class="msg">Almost! 🙂 Say it slowly and count again.</p>`,
+      revealHTML:()=>`<p class="msg">It has ${it.sounds.length} sounds.</p>`+breakdown()+COMEBACK
+    });
+    return;
+  }
+  frame("swap",`<div class="card"><p class="prompt">Start with this word:</p>
+  <p class="word">${esc(it.say)}</p>
+  <div class="row center"><button class="btn hear" id="hear">🔊 Hear it</button></div>
+  <p class="prompt"><span class="do">🔄 ${esc(it.ask)}</span></p>
+  <p class="muted small" style="text-align:center;margin:0">What new word do you get?</p>
+  ${TYPEBOX("New word")}</div>
+  <div id="fb" class="fb" aria-live="polite"></div>`);
+  $("#hear").onclick=()=>speak(it.say);setTimeout(()=>speak(it.say),250);
+  wireTyped(it,{
+    isRight:v=>it.ans.includes(v),
+    rightHTML:v=>`<p class="small" style="margin:0">${esc(it.say)} turned into ${esc(v)}</p>`+okTiles(v),
+    wrongHTML:()=>`<p class="msg">Almost! 🙂 Say the new word out loud, then spell it.</p>`,
+    revealHTML:()=>`<p class="small" style="margin:0">The new word is:</p>`+okTiles(it.ans[0])+COMEBACK
+  });
+}
+function buildSwap(){return shuffle([...shuffle(SWAPS).slice(0,5),...shuffle(COUNTS).slice(0,3).map(c=>Object.assign({kind:"count"},c))]);}
+
+/* Spell It */
+const PICON=["🧱","🤫","👯","👑","🎬","✌️"];
+function spellPick(){
+  R=null;hush();
+  frame("spell",`<div class="card"><p class="prompt">Which spelling trick do you want to practice?</p>
+  <div class="picks">${PATTERNS.map((p,i)=>`<button class="pick" data-p="${i}"><span class="e" aria-hidden="true">${PICON[i]||"✏️"}</span><span class="t"><span class="mname">${esc(p.name)}</span><span class="mdesc">Like: ${esc(p.eg)}</span></span></button>`).join("")}</div>
+  <p class="muted small" style="margin:0">Tip: stick with one trick for a few days before trying the next one.</p></div>`);
+  app.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const p=PATTERNS[+b.dataset.p];startRound("spell",shuffle(p.words).map(([w,s])=>({w,s})),spellView,{pattern:p});});
+}
+function spellCompare(v,t,last){
+  const same=[...v].sort().join("")===[...t].sort().join("");
+  const cls=[...v].map((c,i)=>c===t[i]?"ok":(same?"swap":"bad"));
+  return `<p class="msg">${same?"So close! 👀 You have all the right letters. Some are in the wrong spot.":"Almost! 🙂 Listen again and tap each sound."}</p>`+
+  `<p class="muted small" style="margin:0">What you typed:</p>`+tiles([...v],cls,true)+
+  `<div class="legend"><span><i style="border-color:var(--mint)"></i>Right spot</span>${same?`<span><i style="border-color:var(--sun)"></i>Wrong spot</span>`:`<span><i style="border-color:var(--coral)"></i>Check this one</span>`}</div>`;
+}
+function spellView(it){
+  const p=R.pattern;
+  frame("spell",`<div class="rule"><span class="rule-name">💡 ${esc(p.name)}</span><p>${esc(p.rule)}</p></div>
+  <div class="card"><p class="prompt">Listen, then spell the word.</p>
+  <div class="row center"><button class="btn hear" id="hear">🔊 Hear the word</button><button class="btn ghost" id="hear2">💬 Hear it in a sentence</button></div>
+  <ul class="mini-steps"><li>1. Say it</li><li>2. Tap the sounds</li><li>3. Type each letter</li></ul>
+  ${TYPEBOX("Type it here")}</div>
+  <div id="fb" class="fb" aria-live="polite"></div>`);
+  $("#hear").onclick=()=>speak(it.w);
+  $("#hear2").onclick=()=>speak(`${it.w}. ${it.s} ${it.w}.`);
+  setTimeout(()=>speak(it.w),250);
+  wireTyped(it,{
+    isRight:v=>v===it.w,
+    rightHTML:v=>okTiles(v),
+    wrongHTML:(v,last)=>spellCompare(v,it.w,last),
+    revealHTML:()=>`<p class="small" style="margin:0">Here's how to spell it:</p>`+okTiles(it.w)+COMEBACK
+  });
+}
+
+/* Twin Words */
+function flipPair(it){
+  return `<div class="pair"><span class="lbl">✅ The right word</span>${okTiles(it.a)}<span class="lbl">🚫 Its look-alike twin</span>${tiles([...it.b],[],true)}</div>`;
+}
+function flipView(it){
+  frame("flip",`<div class="card"><p class="prompt">Which word fits in the blank?</p>
+  <p class="sentence">${esc(it.s).replace("___",'<span class="blank">?</span>')}</p>
+  <div class="row center"><button class="btn hear" id="hear">🔊 Hear the sentence</button></div>
+  <div class="choices">${shuffle([it.a,it.b]).map(w=>`<button class="choice wide" data-v="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>
+  <div id="fb" class="fb" aria-live="polite"></div>`);
+  $("#hear").onclick=()=>speak(it.s.replace("___",it.a));
+  wireChoices(it,{
+    isRight:v=>v===it.a,
+    rightHTML:()=>flipPair(it),
+    wrongHTML:()=>`<p class="msg">Tricky twins! 👀 Same letters, different order.</p>`,
+    revealHTML:()=>flipPair(it)+COMEBACK
+  });
+}
+
+/* Word Builder */
+function forgeView(it){
+  const own=it.parts.map(p=>p[0]);
+  const bank=shuffle([...it.parts,...shuffle(POOL.filter(p=>!own.includes(p[0]))).slice(0,3)]);
+  let built=[],over=false;
+  frame("forge",`<div class="card"><p class="prompt">Build a word that means:</p>
+  <p class="sentence">"${esc(it.def)}"</p>
+  <div class="slots" id="slots" aria-live="polite"></div>
+  <p class="preview" id="preview"></p>
+  <p class="muted small" style="text-align:center;margin:0">Pieces (the small words tell you what each piece means):</p>
+  <div class="bank" id="bank">${bank.map((p,i)=>`<button class="part" data-i="${i}"><b>${esc(p[0])}</b><small>${esc(p[1])}</small></button>`).join("")}</div>
+  <div class="row center"><button class="btn ghost" id="clear">↩️ Start over</button><button class="btn" id="check">✅ Check</button></div></div>
+  <div id="fb" class="fb" aria-live="polite"></div>`);
+  const slots=$("#slots");
+  function draw(){
+    slots.innerHTML=built.length?built.map((bi,k)=>`<button class="part" data-k="${k}" aria-label="Remove ${esc(bank[bi][0])}"><b>${esc(bank[bi][0])}</b><small>${esc(bank[bi][1])}</small></button>`).join(""):`<span class="hint">👇 Tap pieces below to put them here</span>`;
+    $("#preview").textContent=built.map(i=>bank[i][0]).join("");
+    slots.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{if(over)return;built.splice(+b.dataset.k,1);draw();});
+    app.querySelectorAll("#bank [data-i]").forEach(b=>b.disabled=over||built.includes(+b.dataset.i));
+  }
+  app.querySelectorAll("#bank [data-i]").forEach(b=>b.onclick=()=>{if(over)return;built.push(+b.dataset.i);draw();});
+  $("#clear").onclick=()=>{if(over)return;built=[];draw();};
+  const disable=()=>{over=true;$("#clear").disabled=true;$("#check").disabled=true;draw();};
+  const breakdown=()=>`<div class="built">${esc(it.word)}</div><p class="muted" style="margin:0">${it.parts.map(p=>`${esc(p[0])} (${esc(p[1])})`).join(" + ")}</p>`;
+  $("#check").onclick=()=>{
+    if(over)return;if(!built.length){toast("Tap a piece first 🧩");return;}
+    const ok=built.map(i=>bank[i][0]).join("|")===own.join("|");
+    if(ok){const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);speak(it.word);endWith(`<p class="msg good">${yay()}</p>`+breakdown()+`<p class="gain">+${xp} points</p>`,disable);}
+    else{R.tries++;if(R.tries>=2){requeue(it);speak(it.word);endWith(`<p class="msg">Here's how it's built:</p>`+breakdown()+COMEBACK,disable);}
+      else $("#fb").innerHTML=`<p class="msg">Almost! 🙂 Read the small meaning under each piece.</p><p class="muted small">You get one more try.</p>`;}
+  };
+  draw();
+}
+
+/* Speed Read */
+const SICON={level:"🎮",deep:"🐟",skate:"🛹"};
+function wordCount(t){return t.trim().split(/\s+/).length;}
+function speedPick(){
+  R=null;hush();
+  frame("speed",`<div class="card"><p class="prompt">Pick a story to read</p>
+  <div class="picks">${PASSAGES.map(p=>{const r=S.reads[p.id]||[];return `<button class="pick" data-id="${p.id}"><span class="e" aria-hidden="true">${SICON[p.id]||"📖"}</span><span class="t"><span class="mname">${esc(p.title)}</span><span class="mdesc">${r.length?`🏅 Your best: ${Math.max(...r)} words a minute`:"New story"}</span></span></button>`;}).join("")}</div></div>`);
+  app.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>speedView(PASSAGES.find(p=>p.id===b.dataset.id)));
+}
+function barsHTML(arr){
+  if(!arr.length)return "";
+  const show=arr.slice(-6),max=Math.max(...show),offset=arr.length-show.length;
+  return `<div class="bars">${show.map((w,i)=>`<div class="barcol"><span class="bv">${w}</span><span class="b${i===show.length-1?" last":""}" style="height:${Math.max(6,w/max*100)}%"></span><span class="bl">Try ${offset+i+1}</span></div>`).join("")}</div><p class="muted small" style="margin:0">Words you read each minute</p>`;
+}
+function speedView(p){
+  R=null;hush();
+  const words=wordCount(p.text);let t0=null,timer=null;
+  frame("speed",`<h2>${SICON[p.id]||"📖"} ${esc(p.title)}</h2>
+  <ol class="how3" id="how3"><li class="on"><b>▶️</b>Tap Start</li><li><b>🗣️</b>Read out loud</li><li><b>⏹️</b>Tap Done</li></ol>
+  <div class="card"><div class="timer" id="timer" aria-live="off">0:00</div>
+  <div class="row center"><button class="btn go big" id="go">▶️ Start</button><button class="btn ghost" id="listen">🔊 Listen first</button></div></div>
+  <article class="passage">${p.text.split("\n").map(x=>`<p>${esc(x)}</p>`).join("")}</article>
+  <div id="fb" class="fb card" aria-live="polite">${barsHTML(S.reads[p.id]||[])}</div>
+  <div class="row center"><button class="btn ghost" id="other">📚 Pick another story</button></div>`);
+  if(!(S.reads[p.id]||[]).length)$("#fb").innerHTML="";
+  const steps=[...document.querySelectorAll("#how3 li")];const step=n=>steps.forEach((l,i)=>l.classList.toggle("on",i===n));
+  $("#listen").onclick=()=>speak(p.text.replace(/\n/g," "));
+  $("#other").onclick=speedPick;
+  const go=$("#go"),tEl=$("#timer");
+  const fmt=s=>Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
+  go.onclick=()=>{
+    if(!t0){hush();t0=Date.now();tEl.textContent="0:00";go.textContent="⏹️ Done";step(1);timer=setInterval(()=>tEl.textContent=fmt((Date.now()-t0)/1000),250);$(".passage").scrollIntoView({behavior:"smooth",block:"start"});return;}
+    clearInterval(timer);const secs=(Date.now()-t0)/1000;t0=null;go.textContent="🔁 Read it again";step(2);
+    if(secs<8){$("#fb").innerHTML=`<p class="msg">Whoa, too fast! 😄 Tap Start and read the whole story.</p>`+barsHTML(S.reads[p.id]||[]);step(0);return;}
+    const wpm=Math.round(words/(secs/60));
+    const arr=(S.reads[p.id]=(S.reads[p.id]||[]).concat(wpm).slice(-12));
+    S.doneToday.speed=true;award(15);
+    let msg=`You read ${wpm} words a minute!`;
+    if(arr.length>1){const d=wpm-arr[arr.length-2];msg+=d>0?` That's ${d} more than last time! 🚀`:d===0?" Same as last time. Nice and steady. 👍":" A little slower this time, and that's okay. Smooth is what counts. 👍"}
+    else msg+=" 🎉 Now read it again and watch your bar grow.";
+    const f=$("#fb");f.innerHTML=`<p class="msg">${msg}</p><p class="gain">+15 points</p>`+barsHTML(arr)+`<div class="row"><button class="btn ghost" id="home3">🏠 Back home</button></div>`;
+    $("#home3").onclick=home;f.scrollIntoView({behavior:"smooth",block:"center"});
+  };
+}
+
+/* Settings */
+function settings(){
+  R=null;hush();setColor(null);let armed=false;
+  const seg=(key,opts)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button data-k="${key}" data-val="${v}" aria-pressed="${String(S.settings[key])===String(v)}">${l}</button>`).join("")}</div>`;
+  app.innerHTML=`<div class="bar"><button class="back" id="back">🏠 Home</button><span class="bar-title">⚙️ Settings</span></div>
+  <div class="card">
+  <div class="set"><span>🔠 Text size</span>${seg("size",[["m","Medium"],["l","Big"],["xl","Bigger"]])}</div>
+  <div class="set"><span>↔️ Space between letters</span>${seg("spaced",[[false,"Normal"],[true,"Extra"]])}</div>
+  <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
+  <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
+  <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div></div>`;
+  $("#back").onclick=home;
+  app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k,raw=b.dataset.val;S.settings[k]=k==="size"?raw:k==="spaced"?raw==="true":parseFloat(raw);
+    save();applySettings();settings();
+  });
+  $("#test").onclick=()=>speak("Ready for today's missions!");
+  $("#replay").onclick=()=>{S.seen={};save();toast("Done! You'll see how to play at the start of each mission.");};
+  $("#reset").onclick=e=>{
+    if(!armed){armed=true;e.currentTarget.textContent="⚠️ Tap again to erase everything";return;}
+    const keep=S.settings;try{localStorage.removeItem(KEY)}catch(x){}
+    S=load();S.settings=keep;save();renderHud();toast("Progress reset.");home();
+  };
+}
+
+const GO={
+  swap:()=>enter("swap",()=>startRound("swap",buildSwap(),swapView)),
+  spell:()=>enter("spell",spellPick),
+  flip:()=>enter("flip",()=>startRound("flip",shuffle(FLIP).slice(0,8),flipView)),
+  forge:()=>enter("forge",()=>startRound("forge",shuffle(FORGE).slice(0,6),forgeView)),
+  speed:()=>enter("speed",speedPick)
+};
+$("#brand").onclick=home;
+applySettings();renderHud();save();home();
+</script>
+</body>
+</html>
