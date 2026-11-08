@@ -12,7 +12,7 @@
   --bg:#EAF0F8;--surface:#FFFFFF;--ink:#1B2540;--muted:#56637F;--line:#D3DBE8;
   --cobalt:#2F4BDB;--cobalt-deep:#1F35A8;--on-cobalt:#FFFFFF;
   --sun:#E39A00;--mint:#12936F;--coral:#D93A40;--tile:#FFFFFF;--tile-ink:#1B2540;
-  --c-swap:#7A5AF0;--c-spell:#2F6FE0;--c-flip:#DD6A12;--c-forge:#16936A;--c-speed:#D93E75;
+  --c-swap:#7A5AF0;--c-spell:#2F6FE0;--c-flip:#DD6A12;--c-forge:#16936A;--c-speed:#D93E75;--c-lab:#0E8FA8;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
@@ -190,6 +190,23 @@ h2{font-size:1.45rem;line-height:1.2;margin:.2rem 0 .5rem;font-weight:800}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:440px){.word{font-size:2.4rem}.tile{font-size:1.6rem;min-width:2rem}h1{font-size:1.6rem}.chip{display:none}.answer-row{flex-direction:column}}
 .center-text{text-align:center;align-items:center}
+.tile.end{border-color:var(--m);background:color-mix(in srgb,var(--m) 22%,var(--tile));min-width:auto;padding:.2rem .6rem}
+.syl{display:flex;justify-content:center;gap:.2rem;font-size:2.5rem;font-weight:800;flex-wrap:wrap;letter-spacing:.03em}
+.sy{padding:.05rem .35rem;border-radius:10px}
+.sy.a{color:var(--c-spell)}.sy.b{color:var(--c-flip)}
+.sy.e{background:color-mix(in srgb,var(--m) 18%,transparent)}
+.choice small{display:block;font-size:.8rem;font-weight:600;color:var(--muted)}
+.split{display:flex;flex-wrap:nowrap;justify-content:safe center;align-items:center;overflow-x:auto;padding:.3rem 0}
+.split .lt{font-size:calc(var(--fs,1.75)*1rem);font-weight:800;line-height:1;padding:0 .04rem}
+@media (min-width:520px){.split .lt{font-size:calc(var(--fs,1.75)*1.35rem)}.split .gap{width:1.1rem}}
+.gap{flex:none;width:.75rem;height:3rem;border:0;background:transparent;position:relative;padding:0;cursor:pointer}
+.gap::after{content:"";position:absolute;left:50%;top:.35rem;bottom:.35rem;width:3px;background:var(--line);border-radius:2px;transform:translateX(-50%)}
+.gap:hover:not(:disabled)::after{background:var(--m);width:4px}
+.gap.ok::after{background:var(--mint);width:6px}.gap.bad::after{background:var(--coral);width:5px}
+.rules{display:flex;flex-direction:column;gap:.5rem}
+.rule-row{display:grid;grid-template-columns:1.8rem 1fr auto;gap:.6rem;align-items:center;background:var(--bg);border-radius:14px;padding:.6rem .8rem}
+.rule-row b{display:block}.rule-row .ri{font-size:1.3rem}
+.btn.sm{min-height:2.4rem;padding:.4rem .7rem;font-size:.95rem}
 .w{border-radius:5px;transition:background .08s}
 .w.on{text-shadow:.03em 0 0 currentColor,-.03em 0 0 currentColor,0 .02em 0 currentColor;background:color-mix(in srgb,var(--sun) 32%,transparent)}
 .demo-stage{min-height:13rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;text-align:center}
@@ -365,6 +382,9 @@ const AREAS=[
   {id:"decode",name:"Sounding out new words",icon:"🗣️",mission:"speed"}
 ];
 const MISSIONS=[
+ {id:"lab",name:"Ending Lab",icon:"🧪",desc:"Master -tion and -sion: hear them, split them, spell them.",min:"8 min",
+  steps:["🔊 Listen to or read the word","🧩 Find the ending: -tion or -sion","✅ Use the rules to pick, split, or spell it"],
+  ex:["The rules","Most of the time both endings say “shun.” Base word ends in t or te: add -tion. Ends in d, de, se, or ss: add -sion. Hear “zhun,” like vision? Always -sion."]},
  {id:"swap",name:"Sound Swap",icon:"🎧",desc:"Change one sound to make a new word.",min:"5 min",
   steps:["🔊 Listen to the word","🔄 Change, remove, or add the sound it tells you","⌨️ Type the new word"],
   ex:["Example","chop: change /ch/ to /sh/ and you get shop. Sometimes you'll count sounds instead. Tap one finger for each sound."]},
@@ -383,7 +403,7 @@ const MISSIONS=[
 ];
 const SCAN={id:"scan",name:"Level Scan",icon:"🔍"};
 const PARENT={id:"parent",name:"Grown-up view",icon:"📊"};
-const MCOLOR={swap:"var(--c-swap)",spell:"var(--c-spell)",flip:"var(--c-flip)",forge:"var(--c-forge)",speed:"var(--c-speed)",scan:"var(--c-swap)",parent:"var(--cobalt)"};
+const MCOLOR={lab:"var(--c-lab)",swap:"var(--c-swap)",spell:"var(--c-spell)",flip:"var(--c-flip)",forge:"var(--c-forge)",speed:"var(--c-speed)",scan:"var(--c-swap)",parent:"var(--cobalt)"};
 const mission=id=>MISSIONS.find(m=>m.id===id)||(id==="scan"?SCAN:PARENT);
 const YAY=["Nice! 🎉","You got it! ✅","Awesome! ⭐","Nailed it! 💪","Great job! 🙌","Boom! 💥"];
 const yay=()=>YAY[Math.floor(Math.random()*YAY.length)];
@@ -401,7 +421,8 @@ function load(){
   ["seen","reads","log","missed","missCount","doneToday","demoSeen"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={};});
   if(!Array.isArray(s.scans))s.scans=[];
   if(!Array.isArray(s.pat)||s.pat.length!==PATTERNS.length)s.pat=PATTERNS.map((_,i)=>(Array.isArray(s.pat)&&s.pat[i])||{mastered:false,how:null,days:{}});
-  s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true,engine:"eleven",demo:"daily"},(d&&d.settings)||{});
+  s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true,engine:"eleven",demo:"first",talk:"short"},(d&&d.settings)||{});
+  if(!s.v8){s.v8=true;s.settings.talk="short";s.settings.demo="first";s.settings.voice=true;}
   if(s.day!==dayStr()){s.day=dayStr();s.doneToday={};}
   if(s.lastDay&&s.lastDay!==dayStr()&&s.lastDay!==dayStr(-1))s.streak=0;
   const cutoff=dayStr(-90);Object.keys(s.log).forEach(k=>{if(k<cutoff)delete s.log[k];});
@@ -441,7 +462,7 @@ function logAttempt(mode,ok,p){
   if(mode==="spell"&&typeof p==="number"){const pd=S.pat[p].days;pd[d]=pd[d]||{c:0,t:0};pd[d].t++;if(ok)pd[d].c++;}
 }
 function resolve(it,firstTry){
-  if(it._rq)return;logAttempt(R.mode,firstTry,it.p);
+  if(it._rq)return;logAttempt(R.mode,firstTry,it.p);if(R.mode==="lab"&&it.kind)logAttempt("lab-"+it.kind,firstTry);
   if(firstTry)reviewHit(R.mode,it);else addMissed(R.mode,it);save();
 }
 function recent(mode,days){let c=0,t=0;for(let i=0;i<days;i++){const e=(S.log[dayStr(-i)]||{})[mode];if(e){c+=e.c;t+=e.t;}}return {c,t};}
@@ -460,11 +481,13 @@ function areaScore(aid){
 }
 function focusMissions(){
   const list=AREAS.map(a=>({m:a.mission,s:areaScore(a.id)})).filter(x=>x.s!=null).sort((a,b)=>a.s-b.s);
-  if(!list.length)return [];
+  if(!list.length)return labMastered()?[]:["lab"];
   const f=list.filter(x=>x.s<60).map(x=>x.m).slice(0,3);
   if(!f.length&&list[0].s<85)f.push(list[0].m);
+  if(!labMastered())f.unshift("lab");
   return f;
 }
+function labMastered(){const r=recent("lab",7);return r.t>=30&&r.c/r.t>=0.9;}
 function planOrder(){const f=focusMissions();return [...f.map(mission),...MISSIONS.filter(m=>!f.includes(m.id))];}
 
 /* ---------- Helpers ---------- */
@@ -584,21 +607,27 @@ function spellOut(w){return [...w].join(", ");}
 let NARR="",userActed=false,narrTok=0;
 document.addEventListener("pointerdown",()=>{userActed=true;},{once:true,capture:true});
 document.addEventListener("keydown",()=>{userActed=true;},{once:true,capture:true});
-function narrate(text,{auto=true,fallback=""}={}){
-  const txt=NARR=plain(text);const tok=++narrTok;
+function talkMode(){return S.settings.talk||"short";}
+function narrate(text,{auto=true,fallback="",short}={}){
+  NARR=plain(text);const tok=++narrTok;
   const b=document.getElementById("readme");if(b)b.onclick=()=>speak(NARR);
   if(!auto)return;
+  const mode=talkMode();
+  const txt=mode==="full"?NARR:mode==="short"?(short===undefined?NARR:plain(short)):"";
   setTimeout(()=>{
-    if(tok!==narrTok)return;
-    if(S.settings.voice&&userActed)speak(txt);
-    else if(fallback&&userActed)speak(fallback);
+    if(tok!==narrTok||!userActed)return;
+    if(txt)speak(txt);else if(fallback)speak(fallback);
   },220);
 }
 const SAY=t=>`<span class="sr" aria-hidden="true" data-say="${esc(t)}"></span>`;
+const SAYK=t=>`<span class="sr" aria-hidden="true" data-key="${esc(t)}"></span>`;
 function speakFb(){
-  narrTok++;if(!S.settings.voice)return;const fb=document.getElementById("fb");if(!fb)return;
-  const parts=[...fb.querySelectorAll(".msg,[data-say]")].map(e=>e.dataset.say||e.textContent).filter(Boolean);
-  if(parts.length)speak(plain(parts.join(". ").replace(/\.\s*\./g,".")));
+  narrTok++;const mode=talkMode();if(mode==="quiet")return;const fb=document.getElementById("fb");if(!fb)return;
+  let parts;
+  if(mode==="full")parts=[...fb.querySelectorAll(".msg,[data-say]")].map(e=>e.dataset.say||e.textContent).filter(Boolean);
+  else{const m=fb.querySelector(".msg");const first=m?(plain(m.textContent).match(/^[^.!?]*[.!?]/)||[plain(m.textContent)])[0]:"";
+    parts=[first,...[...fb.querySelectorAll("[data-key]")].map(e=>e.dataset.key)].filter(Boolean);}
+  if(parts.length)speak(plain(parts.join(" ").replace(/\.\s*\./g,".")));
 }
 function setColor(id){document.documentElement.style.setProperty("--m",id?MCOLOR[id]:"var(--cobalt)");}
 const fid=id=>(R&&R.test)?"scan":id;
@@ -627,7 +656,7 @@ function showHelp(id,onClose){
   document.addEventListener("keydown",k);
   const helpText=plain(`How to play ${m.name}. `+m.steps.map((s,i)=>`Step ${i+1}: ${s}.`).join(" ")+` ${m.ex[0]}: ${m.ex[1]} When you're ready, tap the green button.`);
   $("#help-read").onclick=()=>speak(helpText);
-  if(S.settings.voice&&userActed)setTimeout(()=>speak(helpText),200);
+  if(talkMode()==="full"&&userActed)setTimeout(()=>speak(helpText),200);
   $("#help-ok").onclick=()=>{hush();close();};$("#help-ok").focus();
 }
 function enter(id,fn){setColor(id);if(!S.seen[id]){showHelp(id,fn);}else fn();}
@@ -644,21 +673,21 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 7</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 8</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
-    narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.");
+    narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
     window.scrollTo(0,0);return;
   }
   const plan=planOrder(),focus=focusMissions();
   const done=MISSIONS.filter(m=>S.doneToday[m.id]).length;
-  const next=plan.find(m=>!S.doneToday[m.id]);
+  const next=plan.find(m=>!S.doneToday[m.id]);const NM=MISSIONS.length;
   const due=scan&&S.nextScan&&dayStr()>=S.nextScan;
   const cp=currentPattern();
   app.innerHTML=`<div class="hero" style="--m:${next?MCOLOR[next.id]:"var(--mint)"}">
     <div class="hero-top"><span></span><button class="readme" id="readme">🔊 Read to me</button></div>
-    <div><h1>${done===0?"Hey! Ready to train? 👋":done===5?"All done for today! 🎉":"Keep it going! 🚀"}</h1>
-    <p class="muted">${done===5?"You finished all 5 missions. Come back tomorrow to keep your streak alive. 🔥":`You've done <b>${done} of 5</b> missions today.${scan?" Your plan starts with the stuff that will help you most.":""}`}</p></div>
+    <div><h1>${done===0?"Hey! Ready to train? 👋":done===NM?"All done for today! 🎉":"Keep it going! 🚀"}</h1>
+    <p class="muted">${done===NM?`You finished all ${NM} missions. Come back tomorrow to keep your streak alive. 🔥`:`You've done <b>${done} of ${NM}</b> missions today.${scan?" Your plan starts with the stuff that will help you most.":""}`}</p></div>
     ${next?`<button class="go-big" id="next-up"><span>${next.icon}</span> Start ${esc(next.name)}</button>`:""}
   </div>
   ${due?`<div class="banner"><span style="font-size:1.6rem">🔍</span><p>Time for a Level Scan re-check. See how much you've grown!</p><button class="btn" id="rescan">Start</button></div>`:""}
@@ -674,14 +703,14 @@ function home(){
     ${!scan?`<button class="link" id="scan-link">🔍 Take the Level Scan</button>`:""}
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 7</p>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 8</p>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   if(due)$("#rescan").onclick=scanIntro;
   if(!scan)$("#scan-link").onclick=scanIntro;
   $("#to-settings").onclick=settings;$("#to-parent").onclick=parentView;window.scrollTo(0,0);
-  narrate(done===5?"All done for today! You finished all 5 missions. Come back tomorrow to keep your streak going."
-    :`Hi! You've done ${done} of 5 missions today. Tap the big button to start ${next.name}.${due?" It's also time for a Level Scan re-check. Tap Start in the purple box when you're ready.":""}`);
+  narrate(done===NM?`All done for today! You finished all ${NM} missions. Come back tomorrow to keep your streak going.`
+    :`Hi! You've done ${done} of ${NM} missions today. Tap the big button to start ${next.name}.${due?" It's also time for a Level Scan re-check. Tap Start in the purple box when you're ready.":""}`,{short:""});
 }
 
 /* ---------- Frame & rounds ---------- */
@@ -726,7 +755,7 @@ function finish(){
   <div class="row">${next?`<button class="btn go big" id="nx">${next.icon} Next: ${esc(next.name)}</button>`:`<button class="btn go big" id="nx">🎉 See today's wins</button>`}
   <button class="btn ghost" id="again">🔁 Play again</button></div></div>`);
   $("#nx").onclick=()=>next?GO[next.id]():home();$("#again").onclick=()=>GO[r.mode]();$("#nx").focus();
-  narrate(`Mission complete! You got ${r.first} out of ${r.total}, and earned ${r.xp} points. ${mastered?plain(mastered)+" ":""}${next?`Tap the green button to go to your next mission, ${next.name}.`:"Tap the green button to see today's wins."}`);
+  narrate(`Mission complete! You got ${r.first} out of ${r.total}, and earned ${r.xp} points. ${mastered?plain(mastered)+" ":""}${next?`Tap the green button to go to your next mission, ${next.name}.`:"Tap the green button to see today's wins."}`,{short:`Mission complete! ${r.first} out of ${r.total}.`});
 }
 function endWith(html,disable){
   disable();const fb=$("#fb");
@@ -781,13 +810,13 @@ function swapView(it){
     <div class="choices">${[2,3,4,5,6].map(n=>`<button class="choice" data-v="${n}">${n}</button>`).join("")}</div></div>
     <div id="fb" class="fb" aria-live="polite"></div>`);
     $("#hear").onclick=()=>speak(it.word);
-    narrate(`How many sounds do you hear in the word: ${it.word}? Say it slowly, and tap one finger for each sound. Then tap the number.`,{fallback:it.word});
+    narrate(`How many sounds do you hear in the word: ${it.word}? Say it slowly, and tap one finger for each sound. Then tap the number.`,{fallback:it.word,short:`How many sounds in: ${it.word}?`});
     const breakdown=()=>`<p class="muted small" style="margin:0">Here are the sounds:</p>`+tiles(it.sounds,it.sounds.map(()=>"ok"),true)+(it.note?`<p class="small" style="margin:0">💡 ${esc(it.note)}</p>`:"");
     wireChoices(it,{
       isRight:v=>+v===it.sounds.length,
       rightHTML:()=>breakdown()+(it.note?SAY(it.note):""),
       wrongHTML:()=>`<p class="msg">Almost! 🙂 Say it slowly and count again.</p>`,
-      revealHTML:()=>`<p class="msg">It has ${it.sounds.length} sounds.</p>`+breakdown()+(it.note?SAY(it.note):"")+COMEBACK
+      revealHTML:()=>`<p class="msg">It has ${it.sounds.length} sounds.</p>`+SAYK(`It has ${it.sounds.length} sounds.`)+breakdown()+(it.note?SAY(it.note):"")+COMEBACK
     });
     return;
   }
@@ -799,12 +828,12 @@ function swapView(it){
   ${TYPEBOX("New word")}</div>
   <div id="fb" class="fb" aria-live="polite"></div>`);
   $("#hear").onclick=()=>speak(it.say);
-  narrate(`Start with this word: ${it.say}. ${it.ask} What new word do you get? Type it, then tap ${R.test?"Save":"Check"}.`,{fallback:it.say});
+  narrate(`Start with this word: ${it.say}. ${it.ask} What new word do you get? Type it, then tap ${R.test?"Save":"Check"}.`,{fallback:it.say,short:`${it.say}. ${it.ask}`});
   wireTyped(it,{
     isRight:v=>it.ans.includes(v),
     rightHTML:v=>`<p class="small" style="margin:0" data-say="${esc(it.say)} turned into ${esc(v)}.">${esc(it.say)} turned into ${esc(v)}</p>`+okTiles(v),
     wrongHTML:()=>`<p class="msg">Almost! 🙂 Say the new word out loud, then spell it.</p>`,
-    revealHTML:()=>`<p class="small" style="margin:0">The new word is:</p>`+okTiles(it.ans[0])+SAY(`The new word is ${it.ans[0]}, spelled ${spellOut(it.ans[0])}.`)+COMEBACK
+    revealHTML:()=>`<p class="small" style="margin:0">The new word is:</p>`+okTiles(it.ans[0])+SAY(`The new word is ${it.ans[0]}, spelled ${spellOut(it.ans[0])}.`)+SAYK(`The word is ${it.ans[0]}.`)+COMEBACK
   });
 }
 function buildSwap(){
@@ -826,7 +855,7 @@ function spellPick(){
   </div>
   <div class="card"><p class="section-h">${cp>=0?"Or practice a different trick":"All tricks"}</p>
   <div class="picks">${PATTERNS.map((p,i)=>i===cp?"":`<button class="pick" data-p="${i}"><span class="e" aria-hidden="true">${PICON[i]||"✏️"}</span><span class="t"><span class="mname">${esc(p.name)}</span><span class="mdesc">${status(i)||"Like: "+esc(p.eg)}</span></span></button>`).join("")}</div></div>`);
-  narrate(cp>=0?`Your spelling trick right now is ${PATTERNS[cp].name}. Tap it to start. Or pick a different trick lower down.`:"You've mastered every spelling trick! Pick any one to keep it sharp.");
+  narrate(cp>=0?`Your spelling trick right now is ${PATTERNS[cp].name}. Tap it to start. Or pick a different trick lower down.`:"You've mastered every spelling trick! Pick any one to keep it sharp.",{short:""});
   app.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
     const i=+b.dataset.p;const n=roundSize("spell",8);
     const rev=Object.values(S.missed.spell||{}).slice(0,3).map(x=>Object.assign({},x.it,{_rev:true}));
@@ -854,13 +883,13 @@ function spellView(it){
   $("#hear").onclick=()=>speak(it.w);
   $("#hear2").onclick=()=>speak(`${it.w}. ${it.s} ${it.w}.`);
   const intro=(!R.test&&R.i===0)?`Spelling trick: ${p.name}. ${p.rule} `:"";
-  narrate(`${intro}Listen, then spell the word. The word is: ${it.w}. Say it, tap the sounds, then type each letter. Tap ${R.test?"Save":"Check"} when you're done.`,{fallback:it.w});
+  narrate(`${intro}Listen, then spell the word. The word is: ${it.w}. Say it, tap the sounds, then type each letter. Tap ${R.test?"Save":"Check"} when you're done.`,{short:`Spell: ${it.w}.`,fallback:it.w});
   $("#readme").onclick=()=>speak(plain(`Spelling trick: ${p.name}. ${p.rule} `)+" "+NARR.replace(/^Spelling trick:.*?Listen,/,"Listen,"));
   wireTyped(it,{
     isRight:v=>v===it.w,
     rightHTML:v=>okTiles(v),
     wrongHTML:v=>spellCompare(v,it.w),
-    revealHTML:()=>`<p class="small" style="margin:0">Here's how to spell it:</p>`+okTiles(it.w)+SAY(`Here's how to spell ${it.w}: ${spellOut(it.w)}.`)+COMEBACK
+    revealHTML:()=>`<p class="small" style="margin:0">Here's how to spell it:</p>`+okTiles(it.w)+SAY(`Here's how to spell ${it.w}: ${spellOut(it.w)}.`)+SAYK(`${it.w}: ${spellOut(it.w)}.`)+COMEBACK
   });
 }
 
@@ -875,12 +904,12 @@ function flipView(it){
   <div class="choices">${shuffle([it.a,it.b]).map(w=>`<button class="choice wide" data-v="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>
   <div id="fb" class="fb" aria-live="polite"></div>`);
   if(!R.test)$("#hear").onclick=()=>speak(it.s.replace("___",it.a),null,[...document.querySelectorAll(".sentence .w")]);
-  narrate(`Which word fits in the blank? Here's the sentence: ${it.s.replace("___","blank")} Look closely at the two words, and tap the one that fits.`);
+  narrate(`Which word fits in the blank? Here's the sentence: ${it.s.replace("___","blank")} Look closely at the two words, and tap the one that fits.`,{short:"Pick the word that fits."});
   wireChoices(it,{
     isRight:v=>v===it.a,
     rightHTML:()=>flipPair(it)+SAY(`The right word is ${it.a}, spelled ${spellOut(it.a)}.`),
     wrongHTML:()=>`<p class="msg">Tricky twins! 👀 Same letters, different order.</p>`,
-    revealHTML:()=>flipPair(it)+SAY(`The right word is ${it.a}, spelled ${spellOut(it.a)}.`)+COMEBACK
+    revealHTML:()=>flipPair(it)+SAY(`The right word is ${it.a}, spelled ${spellOut(it.a)}.`)+SAYK(`It's ${it.a}.`)+COMEBACK
   });
 }
 
@@ -904,8 +933,8 @@ function forgeView(it){
     slots.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{if(over)return;built.splice(+b.dataset.k,1);draw();});
     app.querySelectorAll("#bank [data-i]").forEach(b=>b.disabled=over||built.includes(+b.dataset.i));
   }
-  app.querySelectorAll("#bank [data-i]").forEach(b=>b.onclick=()=>{if(over)return;const i=+b.dataset.i;built.push(i);draw();if(S.settings.voice)speak(`${bank[i][0]}. It means ${bank[i][1]}.`);});
-  narrate(`Build a word that means: ${it.def}. Tap the pieces in the right order, then tap ${R.test?"Save":"Check"}. Each piece has a small word under it that tells what it means.`);
+  app.querySelectorAll("#bank [data-i]").forEach(b=>b.onclick=()=>{if(over)return;const i=+b.dataset.i;built.push(i);draw();const tm=talkMode();if(tm==="full")speak(`${bank[i][0]}. It means ${bank[i][1]}.`);else if(tm==="short")speak(bank[i][0]);});
+  narrate(`Build a word that means: ${it.def}. Tap the pieces in the right order, then tap ${R.test?"Save":"Check"}. Each piece has a small word under it that tells what it means.`,{short:`Build a word that means: ${it.def}.`});
   $("#clear").onclick=()=>{if(over)return;built=[];draw();};
   const disable=()=>{over=true;$("#clear").disabled=true;$("#check").disabled=true;draw();};
   const breakdown=()=>SAY(`The word is ${it.word}. ${it.parts.map(p=>`${p[0]} means ${p[1]}`).join(", and ")}.`)+`<div class="built">${esc(it.word)}</div><p class="muted" style="margin:0">${it.parts.map(p=>`${esc(p[0])} (${esc(p[1])})`).join(" + ")}</p>`;
@@ -928,7 +957,7 @@ function speedPick(){
   frame("speed",`<div class="card"><p class="prompt">Pick a story to read</p>
   <div class="picks">${PASSAGES.map(p=>{const r=S.reads[p.id]||[];return `<button class="pick" data-id="${p.id}"><span class="e" aria-hidden="true">${SICON[p.id]||"📖"}</span><span class="t"><span class="mname">${esc(p.title)}</span><span class="mdesc">${r.length?`🏅 Your best: ${Math.max(...r)} words a minute`:"New story"}</span></span></button>`;}).join("")}</div></div>`);
   app.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>speedView(PASSAGES.find(p=>p.id===b.dataset.id)));
-  narrate(`Pick a story to read. Your choices are: ${PASSAGES.map(p=>p.title).join(", ")}.`);
+  narrate(`Pick a story to read. Your choices are: ${PASSAGES.map(p=>p.title).join(", ")}.`,{short:""});
 }
 function barsHTML(arr){
   if(!arr.length)return "";
@@ -966,7 +995,7 @@ function speedView(p,skipDemo){
     let msg=`You read ${wpm} words a minute!`;
     if(arr.length>1){const d=wpm-arr[arr.length-2];msg+=d>0?` That's ${d} more than last time! 🚀`:d===0?" Same as last time. Nice and steady. 👍":" A little slower this time, and that's okay. Smooth is what counts. 👍"}
     else msg+=" 🎉 Now read it again and watch your bar grow.";
-    const f=$("#fb");if(S.settings.voice)speak(plain(msg));f.innerHTML=`<p class="msg">${msg}</p><p class="gain">+15 points</p>`+barsHTML(arr)+`<div class="row"><button class="btn ghost" id="home3">🏠 Back home</button></div>`;
+    const f=$("#fb");if(talkMode()==="full")speak(plain(msg));else if(talkMode()==="short")speak(`${wpm} words a minute!`);f.innerHTML=`<p class="msg">${msg}</p><p class="gain">+15 points</p>`+barsHTML(arr)+`<div class="row"><button class="btn ghost" id="home3">🏠 Back home</button></div>`;
     $("#home3").onclick=home;f.scrollIntoView({behavior:"smooth",block:"center"});
   }});
   frame("speed",`<h2>${SICON[p.id]||"📖"} ${esc(p.title)}</h2>${tr.html}
@@ -975,7 +1004,7 @@ function speedView(p,skipDemo){
   $("#showme2").onclick=()=>runDemo("speed",DEMOS.speed({p}),()=>speedView(p,true));
   if(!(S.reads[p.id]||[]).length)$("#fb").innerHTML="";
   $("#other").onclick=speedPick;tr.wire();
-  narrate(`${p.title}. Tap Start, then read the story out loud. Tap Done when you finish. If you want to hear it first, tap Listen first.`);
+  narrate(`${p.title}. Tap Start, then read the story out loud. Tap Done when you finish. If you want to hear it first, tap Listen first.`,{short:"Tap Start, then read out loud."});
 }
 
 /* ---------- Level Scan ---------- */
@@ -996,7 +1025,7 @@ function scanIntro(){
   <div class="parent-note"><b>Good to know</b>There's no pass or fail, and no points during the scan. You won't see right or wrong answers, so just try your best and keep going. It takes about 15 minutes.</div>
   <button class="btn go big" id="begin">🚀 Let's go</button></div>`);
   $("#begin").onclick=()=>runSection(0);
-  narrate("Level Scan. This helps the app figure out what you need to practice. There are 5 parts: sounds, spelling, twin words, word parts, and reading out loud. There's no pass or fail, and you won't see if answers are right or wrong. Just try your best and keep going. Tap Let's go to start.");
+  narrate("Level Scan. This helps the app figure out what you need to practice. There are 5 parts: sounds, spelling, twin words, word parts, and reading out loud. There's no pass or fail, and you won't see if answers are right or wrong. Just try your best and keep going. Tap Let's go to start.",{short:"Level Scan. Just do your best. Tap Let's go."});
 }
 function runSection(k){
   R=null;hush();
@@ -1006,7 +1035,7 @@ function runSection(k){
   <span class="icon xl" style="background:var(--c-swap)">${sec.icon}</span>
   <h2>${esc(sec.name)}</h2><p style="margin:0">${esc(sec.intro)}</p>
   <button class="btn go big" id="startpart">Start part ${k+1} ▶</button></div>`);
-  narrate(`Part ${k+1} of ${SECTIONS.length}: ${sec.name}. ${sec.intro} Tap the green button to start.`);
+  narrate(`Part ${k+1} of ${SECTIONS.length}: ${sec.name}. ${sec.intro} Tap the green button to start.`,{short:`Part ${k+1}: ${sec.name}.`});
   $("#startpart").onclick=()=>{
     if(sec.custom)return decodeIntro(k);
     startRound("scan",sec.build(),sec.view,{test:true,section:sec.id,label:`Part ${k+1}`,onDone:()=>runSection(k+1)});
@@ -1020,7 +1049,7 @@ function decodeIntro(k){
   <div class="parent-note"><b>For the grown-up</b>Sit where you can see the screen. After each word, tap ✅ if every sound was right, or ❌ if any sound was wrong, swapped, or skipped. Don't help or correct during the scan. The expected sounds are shown in small print for you. For the story, tap Start when reading begins and Done when it ends.</div>
   <div class="row center"><button class="btn go big" id="ready">We're ready</button><button class="btn ghost" id="skipdec">Skip (no grown-up right now)</button></div></div>`);
   $("#ready").onclick=()=>decodeWord(0);
-  narrate("Grab a grown-up! You'll read 10 made-up words out loud. They aren't real words, so just sound them out. Then you'll read a short story. Your grown-up will tap if you read each word right.");
+  narrate("Grab a grown-up! You'll read 10 made-up words out loud. They aren't real words, so just sound them out. Then you'll read a short story. Your grown-up will tap if you read each word right.",{short:"Grab a grown-up for this part."});
   $("#skipdec").onclick=finishScan;
 }
 function decodeWord(i){
@@ -1032,7 +1061,7 @@ function decodeWord(i){
   <p class="word" style="font-size:3.4rem">${esc(w)}</p>
   <p class="muted small" style="margin:0">Grown-up: sounds like ${esc(hint)}</p>
   <div class="scorebtns" style="width:100%"><button class="btn go" data-ok="1">✅ Read it right</button><button class="btn no" data-ok="0">❌ Not quite</button></div></div>`);
-  narrate(i===0?"Read this word out loud. Sound it out, one sound at a time.":"Read this word out loud.");
+  narrate(i===0?"Read this word out loud. Sound it out, one sound at a time.":"Read this word out loud.",{short:i===0?"Read this word out loud.":""});
   app.querySelectorAll("[data-ok]").forEach(b=>b.onclick=()=>{P.results.decode.push({ok:b.dataset.ok==="1",it:{word:w}});decodeWord(i+1);});
 }
 function decodePassage(){
@@ -1041,7 +1070,7 @@ function decodePassage(){
   frame("scan",`<span class="part-tag">Last step</span><h2>📻 ${esc(p.title)}</h2>
   <p class="muted" style="margin:0">Read this story out loud at your normal speed. Grown-up: tap Start when reading begins and Done when it ends.</p>${tr.html}`);
   tr.wire();
-  narrate("Last step. Read this story out loud at your normal speed. Your grown-up will tap Start when you begin, and Done when you finish.");
+  narrate("Last step. Read this story out loud at your normal speed. Your grown-up will tap Start when you begin, and Done when you finish.",{short:"Read this story out loud."});
 }
 function pctOf(arr){return arr&&arr.length?Math.round(arr.filter(r=>r.ok).length/arr.length*100):null;}
 function finishScan(){
@@ -1088,7 +1117,7 @@ function resultsScreen(rec,first){
   ${resultsBody(rec,prev)}
   <button class="btn go big" id="train">🚀 Start training</button>`);
   $("#train").onclick=home;
-  narrate(`Scan complete! ${first?"Now the app knows what to work on.":"Great job on your re-check."} Your plan starts with ${plan[0].name}.${cp>=0?` Your first spelling trick is ${PATTERNS[cp].name}.`:""} Tap Start training at the bottom when you're ready.`);
+  narrate(`Scan complete! ${first?"Now the app knows what to work on.":"Great job on your re-check."} Your plan starts with ${plan[0].name}.${cp>=0?` Your first spelling trick is ${PATTERNS[cp].name}.`:""} Tap Start training at the bottom when you're ready.`,{short:"Scan complete! Tap Start training when you're ready."});
 }
 
 /* ---------- Grown-up view ---------- */
@@ -1108,6 +1137,7 @@ function parentView(){
   ${hist}
   <div class="card"><p class="section-h">Last 14 days</p><div class="cal">${cal}</div><p class="muted small" style="margin:0">Green days show how many missions were practiced.</p></div>
   <div class="card"><p class="section-h">Practice this week</p><ul class="pat-list">${acc}</ul></div>
+  <div class="card"><p class="section-h">🧪 Ending Lab this week (-tion / -sion)</p><ul class="pat-list">${[["sound","Hears the ending sound"],["choose","Picks -tion or -sion"],["chunk","Finds the ending in a word"],["spell","Spells the word"],["read","Reads it out loud (self-check)"]].map(([k,l])=>{const r=recent("lab-"+k,7);return `<li><span>${l}</span><b>${r.t?Math.round(r.c/r.t*100)+"% first try ("+r.t+")":"Not yet"}</b></li>`;}).join("")}</ul></div>
   <div class="card"><p class="section-h">Spelling tricks</p><ul class="pat-list">${pats}</ul></div>
   ${top.length?`<div class="card"><p class="section-h">Most-missed words</p><div class="words">${top.map(t=>`<span>${esc(t.label)}<small>×${t.n}</small></span>`).join("")}</div></div>`:""}
   <div class="row center"><button class="btn" id="scan-again">🔍 ${scan?"Run the Level Scan again":"Start the Level Scan"}</button></div>
@@ -1124,17 +1154,18 @@ function settings(){
   <div class="card">
   <div class="set"><span>🔠 Text size</span>${seg("size",[["m","Medium"],["l","Big"],["xl","Bigger"]])}</div>
   <div class="set"><span>↔️ Space between letters</span>${seg("spaced",[[false,"Normal"],[true,"Extra"]])}</div>
-  <div class="set"><span>🔊 Read instructions out loud</span>${seg("voice",[[true,"On"],[false,"Off"]])}</div>
-  <div class="set"><span>👀 Show an example first</span>${seg("demo",[["daily","Once a day"],["always","Every time"],["off","Off"]])}</div>
+  <div class="set"><span>🔊 How much it talks</span>${seg("talk",[["short","Short"],["full","Everything"],["quiet","Words only"]])}</div>
+  <p class="muted small" style="margin:.3rem 0 0">Short: quick spoken instructions and the practice words. Everything: reads the whole screen. Words only: just the practice words. 🔊 Read to me always reads the whole screen.</p>
+  <div class="set"><span>👀 Show an example first</span>${seg("demo",[["first","First time only"],["daily","Once a day"],["off","Off"]])}</div>
   <div class="set"><span>🎙️ Voice</span>${seg("engine",[["eleven","ElevenLabs"],["browser","Built-in"]])}</div>
   <p class="muted small" id="voice-status" style="margin:.4rem 0 0"></p>
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 7 (read-along)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 8 (Ending Lab, less talking)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
-    const k=b.dataset.k,raw=b.dataset.val;S.settings[k]=(k==="size"||k==="engine"||k==="demo")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
+    const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
     save();applySettings();settings();
   });
   $("#test").onclick=()=>speak("Ready for today's missions!");
@@ -1160,7 +1191,7 @@ const DEMO_SWAP={say:"chop",ask:"Change /ch/ to /sh/.",ans:["shop"]};
 const DEMO_FLIP=FLIP.find(x=>x.a==="from"&&x.b==="form")||FLIP[0];
 const DEMO_FORGE=FORGE.find(x=>x.word==="portable")||FORGE[0];
 function demoWord(i){const p=PATTERNS[i];const w=p.eg.split(",")[0].trim();const hit=p.words.find(x=>x[0]===w)||p.words[0];return {w:hit[0],s:hit[1]};}
-function needDemo(key){const m=S.settings.demo;if(m==="off")return false;if(m==="always")return true;return S.demoSeen[key]!==dayStr();}
+function needDemo(key){const m=S.settings.demo;if(m==="off")return false;if(m==="always")return true;if(m==="first")return !S.demoSeen[key];return S.demoSeen[key]!==dayStr();}
 function markDemo(key){S.demoSeen[key]=dayStr();save();}
 function withDemo(mode,key,stepsFn,start){if(!needDemo(key))return start();runDemo(mode,stepsFn(),()=>{markDemo(key);start();});}
 function runDemo(mode,steps,onDone){
@@ -1237,7 +1268,154 @@ const DEMOS={
     {html:`<div class="timer">⏹️</div>`,say:"See? Not too fast, not too slow. If I get stuck on a word, I sound it out and keep going. When I finish the story, I tap Done. Now it's your turn!"}
   ];}
 };
+
+/* ---------- Ending Lab: -tion / -sion (structured, multisensory) ---------- */
+const LAB=[
+ {word:"action",base:"act",stem:"ac",end:"tion",syl:["ac","tion"]},
+ {word:"invention",base:"invent",stem:"inven",end:"tion",syl:["in","ven","tion"]},
+ {word:"direction",base:"direct",stem:"direc",end:"tion",syl:["di","rec","tion"]},
+ {word:"collection",base:"collect",stem:"collec",end:"tion",syl:["col","lec","tion"]},
+ {word:"protection",base:"protect",stem:"protec",end:"tion",syl:["pro","tec","tion"]},
+ {word:"connection",base:"connect",stem:"connec",end:"tion",syl:["con","nec","tion"]},
+ {word:"prediction",base:"predict",stem:"predic",end:"tion",syl:["pre","dic","tion"]},
+ {word:"completion",base:"complete",stem:"comple",end:"tion",syl:["com","ple","tion"]},
+ {word:"education",base:"educate",stem:"educa",end:"tion",syl:["ed","u","ca","tion"]},
+ {word:"celebration",base:"celebrate",stem:"celebra",end:"tion",syl:["cel","e","bra","tion"]},
+ {word:"location",base:"locate",stem:"loca",end:"tion",syl:["lo","ca","tion"]},
+ {word:"creation",base:"create",stem:"crea",end:"tion",syl:["cre","a","tion"]},
+ {word:"pollution",base:"pollute",stem:"pollu",end:"tion",syl:["pol","lu","tion"]},
+ {word:"subtraction",base:"subtract",stem:"subtrac",end:"tion",syl:["sub","trac","tion"]},
+ {word:"decision",base:"decide",stem:"deci",end:"sion",zh:1,syl:["de","ci","sion"]},
+ {word:"division",base:"divide",stem:"divi",end:"sion",zh:1,syl:["di","vi","sion"]},
+ {word:"explosion",base:"explode",stem:"explo",end:"sion",zh:1,syl:["ex","plo","sion"]},
+ {word:"confusion",base:"confuse",stem:"confu",end:"sion",zh:1,syl:["con","fu","sion"]},
+ {word:"conclusion",base:"conclude",stem:"conclu",end:"sion",zh:1,syl:["con","clu","sion"]},
+ {word:"invasion",base:"invade",stem:"inva",end:"sion",zh:1,syl:["in","va","sion"]},
+ {word:"revision",base:"revise",stem:"revi",end:"sion",zh:1,syl:["re","vi","sion"]},
+ {word:"television",base:"televise",stem:"televi",end:"sion",zh:1,syl:["tel","e","vi","sion"]},
+ {word:"collision",base:"collide",stem:"colli",end:"sion",zh:1,syl:["col","li","sion"]},
+ {word:"erosion",base:"erode",stem:"ero",end:"sion",zh:1,syl:["e","ro","sion"]},
+ {word:"extension",base:"extend",stem:"exten",end:"sion",syl:["ex","ten","sion"]},
+ {word:"expansion",base:"expand",stem:"expan",end:"sion",syl:["ex","pan","sion"]},
+ {word:"suspension",base:"suspend",stem:"suspen",end:"sion",syl:["sus","pen","sion"]},
+ {word:"discussion",base:"discuss",stem:"discus",end:"sion",syl:["dis","cus","sion"]},
+ {word:"expression",base:"express",stem:"expres",end:"sion",syl:["ex","pres","sion"]},
+ {word:"confession",base:"confess",stem:"confes",end:"sion",syl:["con","fes","sion"]},
+ {word:"permission",base:"permit",stem:"permis",end:"sion",ex:1,syl:["per","mis","sion"]},
+ {word:"admission",base:"admit",stem:"admis",end:"sion",ex:1,syl:["ad","mis","sion"]}
+];
+const LT=w=>String(w).toUpperCase().split("").join(", ");
+function labClue(it){
+  if(it.ex)return `${it.base} is a rule-breaker: the t changes to ss, so it takes -sion.`;
+  if(it.end==="tion")return `${it.base} ends in ${/te$/.test(it.base)?"te":"t"}, so it takes -tion.`;
+  if(/ss$/.test(it.base))return `${it.base} ends in ss, so it takes -sion.`;
+  if(/(de|se)$/.test(it.base))return `${it.base} ends in ${it.base.slice(-2)}, so it takes -sion.`;
+  if(/d$/.test(it.base))return `${it.base} ends in d, so it takes -sion.`;
+  return "It takes -sion.";
+}
+function clueShow(c){return c.replace(/-(tion|sion)/g,"\u2011$1");}
+function clueSay(c){return c.replace(/-(tion|sion)/g,(m,x)=>LT(x));}
+function labSay(it){return it.syl.map(x=>x==="tion"?"shun":x==="sion"?(it.zh?"zhun":"shun"):x).join(". ")+". "+it.word+".";}
+function labTiles(it){return `<div class="tiles sm">${[...it.stem].map(c=>`<span class="tile ok">${esc(c)}</span>`).join("")}<span class="tile end">${esc(it.end)}</span></div>`;}
+function labSyl(it){return `<div class="syl">${it.syl.map((x,i)=>`<span class="sy ${i%2?"b":"a"}${i===it.syl.length-1?" e":""}">${esc(x)}</span>`).join("")}</div>`;}
+const LAB_RULES=[
+  ["🗣️","Most of the time, ‑tion and ‑sion say “shun.”","action · mission","Most of the time, T I O N and S I O N both say shun. Like action, and mission."],
+  ["👂","Hear “zhun,” like in vision? It’s always ‑sion.","vision · decision","If you hear zhun, like in vision, it is always S I O N."],
+  ["🧱","Base word ends in t or te → add ‑tion","act → action · create → creation","If the base word ends in T, or T E, add T I O N. Act becomes action."],
+  ["🧱","Base word ends in d, de, se, or ss → add ‑sion","decide → decision · discuss → discussion","If the base word ends in D, D E, S E, or double S, add S I O N. Decide becomes decision."],
+  ["⚠️","Rule-breakers: t changes to ss","permit → permission · admit → admission","Watch for rule-breakers. Permit becomes permission. The T changes to double S."]
+];
+function labIntro(){
+  R=null;hush();
+  frame("lab",`<div class="card"><p class="prompt">The ending rules</p>
+    <div class="rules">${LAB_RULES.map((r,i)=>`<div class="rule-row"><span class="ri" aria-hidden="true">${r[0]}</span><div><b>${esc(r[1])}</b><span class="muted small">${esc(r[2])}</span></div><button class="btn ghost sm" data-r="${i}" aria-label="Hear this rule">🔊</button></div>`).join("")}</div>
+    <p class="muted small" style="margin:0">💡 Not sure? ‑tion is the most common ending.</p>
+    <button class="btn go big" id="lab-start">Start ▶</button></div>`);
+  app.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>speak(LAB_RULES[+b.dataset.r][3]));
+  narrate("The ending rules. "+LAB_RULES.map(r=>r[3]).join(" ")+" Tap Start when you're ready.",{short:"Ending Lab. Check the rules, then tap Start."});
+  $("#lab-start").onclick=()=>withDemo("lab","lab",()=>DEMOS.lab(),()=>startRound("lab",buildLab(),labView));
+}
+function buildLab(){
+  const n=roundSize("lab",10);
+  const zh=shuffle(LAB.filter(x=>x.zh)),sh=shuffle(LAB.filter(x=>!x.zh));
+  const pool=shuffle([...zh.slice(0,4),...sh.slice(0,8)]);
+  const kinds=["sound","sound","choose","choose","choose","chunk","chunk","spell","spell","read","choose","spell"].slice(0,n);
+  let pi=0;
+  const items=kinds.map((k,i)=>Object.assign({},k==="sound"?(i===0?zh[zh.length-1]:sh[sh.length-1]):pool[pi++%pool.length],{kind:k}));
+  const rev=Object.values(S.missed.lab||{}).slice(0,3).map(x=>Object.assign({},x.it,{_rev:true}));
+  const keys=new Set(rev.map(x=>x.word));
+  const order={sound:0,choose:1,chunk:2,spell:3,read:4};
+  return [...items.filter(x=>!keys.has(x.word)).slice(0,Math.max(0,n-rev.length)),...rev].sort((a,b)=>order[a.kind]-order[b.kind]);
+}
+function labView(it){
+  const k=it.kind,word=it.word,clue=labClue(it);
+  if(k==="sound"){
+    const ans=it.zh?"zhun":"shun",ansSay=it.zh?"zhun, like vision":"shun, like station";
+    frame("lab",`<div class="card">${REV(it)}<p class="prompt">Listen to the end of the word. Which sound do you hear?</p>
+      <div class="row center"><button class="btn hear" id="hear">🔊 Hear the word</button></div>
+      <div class="choices"><button class="choice wide" data-v="shun">shun<small>like station</small></button><button class="choice wide" data-v="zhun">zhun<small>like vision</small></button></div></div>
+      <div id="fb" class="fb" aria-live="polite"></div>`);
+    $("#hear").onclick=()=>speak(word);
+    narrate(`Listen to the word: ${word}. Does the ending sound like shun, like in station, or zhun, like in vision? Tap your answer.`,{short:`Listen: ${word}.`,fallback:word});
+    const show=()=>`<p class="word" style="font-size:2.3rem">${esc(word)}</p>`+labTiles(it)+SAY(`${word} ends with the ${ansSay} sound, spelled ${LT(it.end)}.`);
+    wireChoices(it,{isRight:v=>v===ans,rightHTML:show,wrongHTML:()=>`<p class="msg">Listen again. 🙂</p>`,revealHTML:()=>`<p class="msg">It's ${ansSay}.</p>`+show()+COMEBACK});
+    return;
+  }
+  if(k==="choose"){
+    frame("lab",`<div class="card">${REV(it)}<p class="prompt">Base word: <b>${esc(it.base)}</b></p>
+      <p class="word">${esc(it.stem)}<span class="blank">&nbsp;?&nbsp;</span></p>
+      <div class="row center"><button class="btn hear" id="hear">🔊 Hear the new word</button></div>
+      <div class="choices"><button class="choice wide" data-v="tion">-tion</button><button class="choice wide" data-v="sion">-sion</button></div></div>
+      <div id="fb" class="fb" aria-live="polite"></div>`);
+    $("#hear").onclick=()=>speak(word);
+    narrate(`The base word is ${it.base}. The new word is ${word}. Does it end with ${LT("tion")}, or ${LT("sion")}?`,{short:`${it.base}. ${word}. Which ending?`});
+    const show=()=>labTiles(it)+`<p class="small" style="margin:0">💡 ${esc(clueShow(clue))}</p>`+SAY(clueSay(clue))+SAYK(clueSay(clue));
+    wireChoices(it,{isRight:v=>v===it.end,rightHTML:show,wrongHTML:()=>`<p class="msg">Not this one. Check how the base word ends. 👀</p>`,revealHTML:()=>`<p class="msg">Here's the answer.</p>`+show()+COMEBACK});
+    return;
+  }
+  if(k==="chunk"){
+    const L=[...word],g0=it.stem.length;
+    frame("lab",`<div class="card">${REV(it)}<p class="prompt">Find the ending. Tap the line right before <b>&#8209;tion</b> or <b>&#8209;sion</b>.</p>
+      <div class="split" style="--fs:${L.length<=8?1.75:L.length<=10?1.45:1.25}">${L.map((c,i)=>(i>0?`<button class="gap" data-v="${i}" aria-label="Split before letter ${i+1}"></button>`:"")+`<span class="lt">${esc(c)}</span>`).join("")}</div></div>
+      <div id="fb" class="fb" aria-live="polite"></div>`);
+    narrate(`Find the ending in this word. Tap the line right before ${LT("tion")} or ${LT("sion")}.`,{short:"Tap where the ending starts."});
+    const show=()=>labSyl(it)+SAY(labSay(it))+SAYK(labSay(it));
+    wireChoices(it,{isRight:v=>+v===g0,rightHTML:show,wrongHTML:()=>`<p class="msg">Not quite. Look for the &#8209;tion or &#8209;sion ending. 👀</p>`,revealHTML:()=>`<p class="msg">The ending starts at the green line.</p>`+show()+COMEBACK});
+    return;
+  }
+  if(k==="spell"){
+    frame("lab",`<div class="card">${REV(it)}<p class="prompt">Listen, then spell the word.</p>
+      <div class="row center"><button class="btn hear" id="hear">🔊 Hear the word</button></div>
+      ${TYPEBOX("Type it here")}</div>
+      <div id="fb" class="fb" aria-live="polite"></div>`);
+    $("#hear").onclick=()=>speak(word);
+    narrate(`Spell: ${word}. Think about the base word, then pick the right ending.`,{short:`Spell: ${word}.`,fallback:word});
+    wireTyped(it,{isRight:v=>v===word,rightHTML:()=>labTiles(it),
+      wrongHTML:v=>spellCompare(v,word)+`<p class="small" style="margin:0">💡 Base word: <b>${esc(it.base)}</b>. ${esc(clueShow(clue))}</p>`+SAYK(`Base word: ${it.base}.`),
+      revealHTML:()=>`<p class="small" style="margin:0">Here's how to spell it:</p>`+labTiles(it)+SAY(`${word}: ${spellOut(word)}.`)+SAYK(`${word}: ${spellOut(word)}.`)+COMEBACK});
+    return;
+  }
+  // read: self-check reading in colored syllable chunks
+  frame("lab",`<div class="card">${REV(it)}<p class="prompt">Read this word out loud, one chunk at a time.</p>
+    ${labSyl(it)}
+    <div class="row center"><button class="btn hear" id="hear">🔊 Check: hear it</button></div>
+    <div class="scorebtns"><button class="btn go" id="rd-ok">✅ I read it right</button><button class="btn ghost" id="rd-no">🔁 Not yet</button></div></div>
+    <div id="fb" class="fb" aria-live="polite"></div>`);
+  $("#hear").onclick=()=>speak(labSay(it));
+  narrate("Read this word out loud, one chunk at a time. Then tap Check to hear it.",{short:"Read this word out loud."});
+  let over=false;const dis=()=>{over=true;$("#rd-ok").disabled=true;$("#rd-no").disabled=true;$("#hear").disabled=false;};
+  $("#rd-ok").onclick=()=>{if(over)return;resolve(it,true);if(!it._rq)R.first++;award(5);endWith(`<p class="msg good">Nice reading! 📖</p><p class="gain">+5 points</p>`,dis);};
+  $("#rd-no").onclick=()=>{if(over)return;resolve(it,false);requeue(it);endWith(`<p class="msg">That's okay. Listen, then read it with me.</p>`+SAY(labSay(it))+SAYK(labSay(it))+COMEBACK,dis);};
+}
+DEMOS.lab=()=>{const it=LAB.find(x=>x.word==="decision");return [
+  {html:`<p class="prompt">Base word</p><p class="word">decide</p>`,say:"Watch me do one. My base word is decide."},
+  {html:`<div class="rule" style="width:100%"><span class="rule-name">🧱 Ends in d, de, se, or ss</span><p>Add -sion</p></div>`,say:"Decide ends in D E. Base words that end in D, D E, S E, or double S take S I O N."},
+  {html:labTiles(it),say:"So I drop the E and add S I O N. Decision."},
+  {html:labSyl(it),say:"Then I read it in chunks and blend them together: decision. The ending sounds like zhun, like in vision."},
+  {html:labSyl(it)+`<p class="msg good">✅ Got it!</p>`,say:"Now it's your turn!"}
+];};
 const GO={
+  lab:()=>{setColor("lab");S.seen.lab=true;save();labIntro();},
   swap:()=>enter("swap",()=>withDemo("swap","swap",()=>DEMOS.swap(),()=>startRound("swap",buildSwap(),swapView))),
   spell:()=>enter("spell",spellPick),
   flip:()=>enter("flip",()=>withDemo("flip","flip",()=>DEMOS.flip(),()=>{const n=roundSize("flip",8);startRound("flip",withReview("flip",FLIP.filter(x=>x.s!==DEMO_FLIP.s),n),flipView);})),
