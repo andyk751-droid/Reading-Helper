@@ -11,7 +11,7 @@
 :root{
   --bg:#EAF0F8;--surface:#FFFFFF;--ink:#1B2540;--muted:#56637F;--line:#D3DBE8;
   --cobalt:#2F4BDB;--cobalt-deep:#1F35A8;--on-cobalt:#FFFFFF;
-  --sun:#E39A00;--mint:#12936F;--coral:#D93A40;--tile:#FFFFFF;--tile-ink:#1B2540;
+  --sun:#E39A00;--mint:#12936F;--coral:#E06A00;--tile:#FFFFFF;--tile-ink:#1B2540;
   --c-swap:#7A5AF0;--c-spell:#2F6FE0;--c-flip:#DD6A12;--c-forge:#16936A;--c-speed:#D93E75;--c-lab:#0E8FA8;
   color-scheme:light;
 }
@@ -19,14 +19,14 @@
   :root:not([data-theme="light"]){
     --bg:#111A2D;--surface:#1A2540;--ink:#E7ECF6;--muted:#A6B3CE;--line:#2E3C5E;
     --cobalt:#6F86FF;--cobalt-deep:#3E55C9;--on-cobalt:#0E1630;
-    --sun:#FFC23A;--mint:#35D0A0;--coral:#FF6D72;--tile:#233052;--tile-ink:#F1F4FA;
+    --sun:#FFC23A;--mint:#35D0A0;--coral:#FF9A4D;--tile:#233052;--tile-ink:#F1F4FA;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#111A2D;--surface:#1A2540;--ink:#E7ECF6;--muted:#A6B3CE;--line:#2E3C5E;
   --cobalt:#6F86FF;--cobalt-deep:#3E55C9;--on-cobalt:#0E1630;
-  --sun:#FFC23A;--mint:#35D0A0;--coral:#FF6D72;--tile:#233052;--tile-ink:#F1F4FA;
+  --sun:#FFC23A;--mint:#35D0A0;--coral:#FF9A4D;--tile:#233052;--tile-ink:#F1F4FA;
   color-scheme:dark;
 }
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
@@ -198,7 +198,7 @@ h2{font-size:1.45rem;line-height:1.2;margin:.2rem 0 .5rem;font-weight:800}
 :root:not([data-theme="zz"]){
   --bg:#0A0F24;--surface:#141B3D;--ink:#EEF2FF;--muted:#A9B4DA;--line:#2C3872;
   --cobalt:#6C84FF;--cobalt-deep:#3346B8;--on-cobalt:#FFFFFF;
-  --sun:#FFC83D;--mint:#2EE6A6;--coral:#FF5C7A;--tile:#1C2552;--tile-ink:#F4F6FF;
+  --sun:#FFC83D;--mint:#2EE6A6;--coral:#FF8A3D;--tile:#1C2552;--tile-ink:#F4F6FF;
   --c-lab:#22D3EE;--c-swap:#A78BFA;--c-spell:#60A5FA;--c-flip:#FB923C;--c-forge:#34D399;--c-speed:#F472B6;
   --pix:"Sora","Lexend",system-ui,sans-serif;
   color-scheme:dark;
@@ -221,20 +221,20 @@ h2{font-size:1.35rem}
 .btn{border-radius:14px;background:linear-gradient(180deg,#7D93FF,#5670F0);box-shadow:0 6px 18px rgba(108,132,255,.35),inset 0 1px 0 rgba(255,255,255,.25)}
 .btn:active{transform:translateY(1px);box-shadow:0 3px 10px rgba(108,132,255,.3)}
 .btn.go{background:linear-gradient(180deg,#5BF2C0,#22CF93);color:#04261B;box-shadow:0 6px 20px rgba(46,230,166,.35),inset 0 1px 0 rgba(255,255,255,.35)}
-.btn.no{color:#2A0710}
+.btn.no{color:#2A1400}
 .btn.ghost,.btn.hear,.back,.help,.readme,.seg button{background:rgba(255,255,255,.06);color:var(--ink);border:1px solid rgba(140,160,255,.3);box-shadow:none}
 .btn.hear{border-color:var(--m);box-shadow:0 0 16px color-mix(in srgb,var(--m) 35%,transparent)}
 .go-big{color:#071022;border-radius:16px;font-family:var(--pix);font-weight:800;letter-spacing:0;background:linear-gradient(180deg,color-mix(in srgb,var(--m) 80%,#fff),var(--m));box-shadow:0 10px 28px color-mix(in srgb,var(--m) 45%,transparent),inset 0 1px 0 rgba(255,255,255,.4)}
 .tile,.choice,.part{border-radius:12px;background:linear-gradient(180deg,#26306A,#1A2252);border:1px solid rgba(140,160,255,.3);border-bottom-width:1px;box-shadow:0 4px 12px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.08);font-weight:700}
 .tile.ok,.choice.ok{border-color:var(--mint);background:linear-gradient(180deg,rgba(46,230,166,.28),rgba(46,230,166,.14))}
-.tile.bad,.choice.bad{border-color:var(--coral);background:linear-gradient(180deg,rgba(255,92,122,.28),rgba(255,92,122,.12))}
+.tile.bad,.choice.bad{border-color:var(--coral);background:linear-gradient(180deg,rgba(255,138,61,.28),rgba(255,138,61,.12))}
 .tile.swap{border-color:var(--sun);background:linear-gradient(180deg,rgba(255,200,61,.3),rgba(255,200,61,.14))}
 .tile.end{border-color:var(--m);background:linear-gradient(180deg,color-mix(in srgb,var(--m) 34%,transparent),color-mix(in srgb,var(--m) 16%,transparent))}
 .choice:hover:not(:disabled){box-shadow:0 0 14px color-mix(in srgb,var(--m) 45%,transparent)}
 .icon{border-radius:10px;box-shadow:0 0 14px color-mix(in srgb,var(--m,#6C84FF) 45%,transparent)}
 .dots i.now{box-shadow:0 0 10px var(--m)}
 .dots i.ok{background:var(--mint);box-shadow:0 0 6px rgba(46,230,166,.5)}
-.dots i.bad{background:var(--coral);box-shadow:0 0 6px rgba(255,92,122,.55)}
+.dots i.bad{background:var(--coral);box-shadow:0 0 6px rgba(255,138,61,.55)}
 .dots-key{display:flex;gap:.9rem;justify-content:center;font-size:.75rem;color:var(--muted);margin:-.8rem 0 1rem}
 .dots-key i{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;margin-right:.3rem;vertical-align:0}
 .miss-sec{margin:0;font-weight:800;font-size:.95rem;color:var(--muted)}
@@ -806,7 +806,7 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 13</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 14</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -840,7 +840,7 @@ function home(){
     ${!scan?`<button class="link" id="scan-link">🔍 Take the Level Scan</button>`:""}
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 13</p>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 14</p>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   if(due)$("#rescan").onclick=scanIntro;
@@ -911,7 +911,7 @@ function testRecord(it,ok,v,fixed){
   const sec=R.section;
   const body=fixed?`<p class="msg good">✅ Got it on try 2!</p>`+scanRight(sec,it)+(sec==="spell"?meaningHTML(it.w):"")
     :ok?`<p class="msg good">✅ Correct!</p>`+scanRight(sec,it)
-    :`<p class="msg bad">❌ Not quite.</p><div class="miss" style="text-align:left;width:100%"><span aria-hidden="true">💡</span><div>${missItem({sec,it,v})}</div></div>`+SAYK(scanKey(sec,it));
+    :`<p class="msg bad">🔸 Not quite.</p><div class="miss" style="text-align:left;width:100%"><span aria-hidden="true">💡</span><div>${missItem({sec,it,v})}</div></div>`+SAYK(scanKey(sec,it));
   endWith(body,()=>{});
 }
 function scanRight(sec,it){
@@ -945,7 +945,7 @@ function wireTyped(it,{isRight,rightHTML,wrongHTML,revealHTML,copy}){
     }
     const ok=isRight(v);
     if(R.test){
-      if(!ok&&R.tries===0){R.tries++;fb.innerHTML=`<p class="msg bad">❌ Not quite. You get one more try.</p>`+(R.section==="spell"?spellCompare(v,it.w):"");inp.select();speakFb();return;}
+      if(!ok&&R.tries===0){R.tries++;fb.innerHTML=`<p class="msg bad">🔸 Not quite. You get one more try.</p>`+(R.section==="spell"?spellCompare(v,it.w):"");inp.select();speakFb();return;}
       disable();testRecord(it,ok&&R.tries===0,v,ok&&R.tries>0);return;}
     if(ok){resolve(it,R.tries===0);if(R.tries>0&&R.res)R.res[R.i]="two";const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+rightHTML(v)+`<p class="gain">+${xp} points</p>`,disable);}
     else{R.tries++;if(R.tries>=2){resolve(it,false);requeue(it);if(copy)startCopy(v);else endWith(wrongHTML(v,true)+revealHTML(),disable);}else{fb.innerHTML=wrongHTML(v,false)+`<p class="muted small" data-say="You get one more try.">You get one more try.</p>`;inp.select();speakFb();}}
@@ -959,7 +959,7 @@ function wireChoices(it,{isRight,rightHTML,wrongHTML,revealHTML}){
   btns.forEach(b=>b.onclick=()=>{
     const v=b.dataset.v;
     if(R.test){const ok=isRight(v);
-      if(!ok&&R.tries===0&&btns.filter(x=>!x.disabled).length>2){R.tries++;b.classList.add("bad");b.disabled=true;fb.innerHTML=`<p class="msg bad">❌ Not quite. You get one more try.</p>`;speakFb();return;}
+      if(!ok&&R.tries===0&&btns.filter(x=>!x.disabled).length>2){R.tries++;b.classList.add("bad");b.disabled=true;fb.innerHTML=`<p class="msg bad">🔸 Not quite. You get one more try.</p>`;speakFb();return;}
       disable();b.classList.add(ok?"ok":"bad");if(!ok){const r=btns.find(x=>isRight(x.dataset.v));if(r)r.classList.add("ok");}testRecord(it,ok&&R.tries===0,v,ok&&R.tries>0);return;}
     if(isRight(v)){b.classList.add("ok");resolve(it,R.tries===0);if(R.tries>0&&R.res)R.res[R.i]="two";const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+rightHTML(v)+`<p class="gain">+${xp} points</p>`,disable);}
     else{
@@ -1116,7 +1116,7 @@ function forgeView(it){
     if(over)return;if(!built.length){toast("Tap a piece first 🧩");return;}
     const ok=built.map(i=>bank[i][0]).join("|")===own.join("|");
     if(R.test){
-      if(!ok&&R.tries===0){R.tries++;built=[];draw();$("#fb").innerHTML=`<p class="msg bad">❌ Not quite. You get one more try.</p><p class="small" style="margin:0">Read the small meaning under each piece.</p>`;speakFb();return;}
+      if(!ok&&R.tries===0){R.tries++;built=[];draw();$("#fb").innerHTML=`<p class="msg bad">🔸 Not quite. You get one more try.</p><p class="small" style="margin:0">Read the small meaning under each piece.</p>`;speakFb();return;}
       disable();testRecord(it,ok&&R.tries===0,built.map(i=>bank[i][0]).join(""),ok&&R.tries>0);return;}
     if(ok){resolve(it,R.tries===0);if(R.tries>0&&R.res)R.res[R.i]="two";const xp=R.tries===0?10:5;if(!it._rq)R.first++;award(xp);endWith(`<p class="msg good">${yay()}</p>`+breakdown()+`<p class="gain">+${xp} points</p>`,disable);}
     else{R.tries++;if(R.tries>=2){resolve(it,false);requeue(it);endWith(`<p class="msg">Here's how it's built:</p>`+breakdown()+COMEBACK,disable);}
@@ -1222,7 +1222,7 @@ function decodeIntro(k){
   <span class="icon xl" style="background:var(--c-swap)">🙋</span>
   <h2>Grab a grown-up!</h2>
   <p style="margin:0">You'll read 10 made-up words out loud. They aren't real words, so just sound them out. Then you'll read a short story.</p>
-  <div class="parent-note"><b>For the grown-up</b>Sit where you can see the screen. After each word, tap ✅ if every sound was right, or ❌ if any sound was wrong, swapped, or skipped. Don't help or correct during the scan. The expected sounds are shown in small print for you. For the story, tap Start when reading begins and Done when it ends.</div>
+  <div class="parent-note"><b>For the grown-up</b>Sit where you can see the screen. After each word, tap ✅ if every sound was right, or 🔸 if any sound was wrong, swapped, or skipped. Don't help or correct during the scan. The expected sounds are shown in small print for you. For the story, tap Start when reading begins and Done when it ends.</div>
   <div class="row center"><button class="btn go big" id="ready">We're ready</button><button class="btn ghost" id="skipdec">Skip (no grown-up right now)</button></div></div>`);
   $("#ready").onclick=()=>decodeWord(0);
   narrate("Grab a grown-up! You'll read 10 made-up words out loud. They aren't real words, so just sound them out. Then you'll read a short story. Your grown-up will tap if you read each word right.",{short:"Grab a grown-up for this part."});
@@ -1236,7 +1236,7 @@ function decodeWord(i){
   <div class="card center-text"><p class="prompt">Read this word out loud:</p>
   <p class="word" style="font-size:3.4rem">${esc(w)}</p>
   <p class="muted small" style="margin:0">Grown-up: sounds like ${esc(hint)}</p>
-  <div class="scorebtns" style="width:100%"><button class="btn go" data-ok="1">✅ Read it right</button><button class="btn no" data-ok="0">❌ Not quite</button></div></div>`);
+  <div class="scorebtns" style="width:100%"><button class="btn go" data-ok="1">✅ Read it right</button><button class="btn no" data-ok="0">🔸 Not quite</button></div></div>`);
   narrate(i===0?"Read this word out loud. Sound it out, one sound at a time.":"Read this word out loud.",{short:i===0?"Read this word out loud.":""});
   app.querySelectorAll("[data-ok]").forEach(b=>b.onclick=()=>{P.results.decode.push({ok:b.dataset.ok==="1",it:{word:w}});decodeWord(i+1);});
 }
@@ -1286,7 +1286,7 @@ function missesHTML(rec){
   if(!rec.misses)return "";
   if(!rec.misses.length)return `<div class="card"><p class="section-h">What you missed, and why</p><p style="margin:0">Nothing missed. Perfect scan! 🎉</p></div>`;
   return `<div class="card"><p class="section-h">What you missed, and why (${rec.misses.length})</p>
-    ${MISS_SECS.map(([id,ic,nm])=>{const list=rec.misses.filter(m=>m.sec===id);return list.length?`<p class="miss-sec">${ic} ${nm}</p>${list.map(m=>`<div class="miss"${m.fixed?' style="border-left-color:var(--sun)"':""}><span aria-hidden="true">${m.fixed?"🟡":"❌"}</span><div>${m.fixed?`<p class="lbl-sm" style="margin:0 0 .2rem;color:var(--sun)">Fixed on the 2nd try</p>`:""}${missItem(m)}</div></div>`).join("")}`:"";}).join("")}
+    ${MISS_SECS.map(([id,ic,nm])=>{const list=rec.misses.filter(m=>m.sec===id);return list.length?`<p class="miss-sec">${ic} ${nm}</p>${list.map(m=>`<div class="miss"${m.fixed?' style="border-left-color:var(--sun)"':""}><span aria-hidden="true">${m.fixed?"🟡":"🔸"}</span><div>${m.fixed?`<p class="lbl-sm" style="margin:0 0 .2rem;color:var(--sun)">Fixed on the 2nd try</p>`:""}${missItem(m)}</div></div>`).join("")}`:"";}).join("")}
     <p class="muted small" style="margin:0">Missed spelling and twin words are added to practice automatically.</p></div>`;
 }
 function resultsBody(rec,prev){
@@ -1363,7 +1363,7 @@ function settings(){
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 13 (2 tries in scan + word meanings)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 14 (orange instead of red)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
