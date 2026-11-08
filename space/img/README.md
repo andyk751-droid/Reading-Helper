@@ -18,3 +18,15 @@ built-in look if not. Originals live in Google Drive: My Drive / Decode Space Ar
 | space-bg.webp | Background | to do |
 
 Animated planets: add the planet's name to PLANET_VIDS in index.html.
+
+## Orbit, the robot-owl co-pilot (added v20)
+| File | Where it shows |
+|---|---|
+| orbit-wave.mp4 + orbit-wave-poster.webp | Animated "comms screen" on the sign-in and welcome screens (still image if motion is reduced) |
+| orbit-wave.webp | Fallback if the video can't play |
+| orbit-point.webp | Next to the Launch button; after a missed answer (pointing at the right one) |
+| orbit-think.webp | "One more try" moments |
+| orbit-cheer.webp | Correct answers, Planet cleared, Part complete, Scan complete |
+| orbit-main.webp | Spare (not used yet) |
+| crate.webp, crate-gold.webp | Supply drops |
+| space-bg.webp | Page background |

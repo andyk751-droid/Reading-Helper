@@ -330,6 +330,21 @@ header{gap:.6rem}
 .name-in{font-size:1.4rem;font-weight:700;padding:.6rem .9rem;border-radius:14px;border:1px solid rgba(140,160,255,.35);background:rgba(10,15,36,.7);color:var(--ink);text-align:center;width:100%}
 .name-in:focus{outline:none;border-color:var(--c-lab)}
 .privacy{font-size:.85rem;color:var(--muted);text-align:center;margin:0}
+.orbit{display:block;pointer-events:none;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(125,232,255,.18))}
+.orbit-hi{display:flex;align-items:center;gap:.7rem}
+.orbit-hi .orbit{width:6.4rem;height:6.4rem;flex:none;animation:orbit-hover 3.2s ease-in-out infinite}
+.bubble{position:relative;background:rgba(255,255,255,.07);border:1px solid rgba(140,160,255,.32);border-radius:18px 18px 18px 6px;padding:.6rem .85rem;font-weight:600;line-height:1.35}
+.bubble b{color:var(--c-lab)}
+.launch-row{display:flex;align-items:center;gap:.3rem}.launch-row .go-big{flex:1;min-width:0}
+.launch-row .orbit{width:5.4rem;height:5.4rem;flex:none;margin:-.9rem -.5rem -.9rem 0;animation:orbit-hover 3.2s ease-in-out infinite}
+#fb .orbit-fb{width:4.8rem;height:4.8rem;margin:0 auto -.5rem}
+.trophy.has-img .tf{display:none}.trophy img.orbit{width:8.5rem;height:8.5rem;margin:0 auto;filter:drop-shadow(0 0 16px rgba(255,200,61,.35))}
+.orbit-comm{position:relative;flex:none;width:6.8rem;height:6.8rem;border-radius:22px;overflow:hidden;border:2px solid rgba(34,211,238,.65);background:#0B102A;box-shadow:0 0 0 4px rgba(34,211,238,.1),0 0 22px rgba(34,211,238,.3)}
+.orbit-comm video,.orbit-comm img{width:100%;height:100%;object-fit:cover;display:block}
+.orbit-comm .comm-tag{position:absolute;left:50%;bottom:.3rem;transform:translateX(-50%);font-size:.62rem;font-weight:800;letter-spacing:.12em;color:#071022;background:var(--c-lab);border-radius:999px;padding:.05rem .45rem}
+.orbit-comm.static{border:0;background:none;box-shadow:none;overflow:visible}.orbit-comm.static .comm-tag{display:none}
+@keyframes orbit-hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media (prefers-reduced-motion: reduce){.orbit{animation:none!important}}
 .pilot.join{border-style:dashed;border-color:rgba(255,200,61,.55)}
 .pilot .pc{font-size:.72rem;color:var(--c-lab);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .code-in{font-family:var(--pix);font-size:2rem;letter-spacing:.35em;text-transform:uppercase;padding:.6rem .9rem .6rem 1.25rem;border-radius:16px;border:2px solid rgba(140,160,255,.4);background:rgba(10,15,36,.75);color:var(--ink);text-align:center;width:100%;max-width:20rem;margin:0 auto}
@@ -879,7 +894,22 @@ const SAYK=t=>`<span class="sr" aria-hidden="true" data-key="${esc(t)}"></span>`
 const DEFS={"grasp": "to hold something tightly in your hand", "scrub": "to rub something hard to clean it", "slope": "ground that slants up or down, like the side of a hill", "brave": "not afraid to do something hard or scary", "cream": "the thick, rich part of milk", "toast": "bread that has been browned by heat", "smart": "quick to learn and understand things", "churn": "to stir or shake hard, like rough, foamy water", "option": "a choice you can pick", "mention": "to talk about something quickly", "tapping": "hitting something lightly, again and again", "slipped": "slid by accident and lost your balance", "strand": "one thin piece, like a single hair", "crisp": "dry, firm, and crunchy", "thrust": "to push something forward hard and fast", "clamp": "a tool that squeezes things and holds them tight", "splint": "a stiff piece that holds a hurt bone still", "blend": "to mix things together", "script": "the written words that actors say", "frost": "a thin layer of ice that forms when it's very cold", "stripe": "a long, thin band of color", "flame": "the bright, hot, glowing part of a fire", "spoke": "talked (spoke is the past tense of speak)", "prune": "to cut off parts of a plant to help it grow", "theme": "the main idea or style of something", "shine": "to give off bright light", "globe": "a round model of the Earth", "crate": "a big box for carrying or storing things", "stream": "a small, narrow river", "float": "to stay on top of water or drift in the air", "train": "a line of cars pulled along a track", "bleach": "a strong liquid that cleans and takes color out", "coast": "the land along the edge of the sea", "speech": "a talk you give to a group of people", "paint": "colored liquid you brush onto things", "cheap": "low in price; it doesn't cost much", "storm": "strong wind with rain, snow, or thunder", "thirst": "the feeling of needing a drink", "charge": "to fill a battery with power", "burst": "to break open suddenly", "sharp": "having a thin edge or point that can cut", "first": "before all the others; number one", "north": "the direction toward the top of a map", "curve": "a line or road that bends", "action": "something you do", "station": "a place where a bus or train stops", "motion": "moving, or a movement", "fraction": "a part of a whole, like one half", "section": "one part of something bigger", "caption": "words under a picture that tell about it", "lotion": "a cream you rub on your skin", "nation": "a country and the people who live there", "running": "moving fast on your feet", "stopped": "came to an end, or quit moving", "planning": "deciding ahead of time what you will do", "hopping": "jumping in short little jumps", "grabbed": "took hold of something quickly", "swimming": "moving through water using your arms and legs", "dropped": "let something fall", "shipping": "sending packages to someone", "invention": "something new that someone creates for the first time", "direction": "the way something is going or pointing", "collection": "a group of things gathered together", "protection": "keeping someone or something safe", "connection": "a link between two things", "prediction": "a smart guess about what will happen", "completion": "finishing something all the way", "education": "learning and teaching, like at school", "celebration": "a party for something special", "location": "the place where something is", "creation": "something that was made", "pollution": "dirt or poison that harms the air, water, or land", "subtraction": "taking one number away from another", "decision": "a choice you make", "division": "splitting something into equal parts", "explosion": "a loud, sudden burst", "confusion": "not understanding what is going on", "conclusion": "the end of something", "invasion": "going into a place by force", "revision": "a change that makes something better", "television": "a screen that shows shows and movies; a TV", "collision": "when two things crash into each other", "erosion": "land slowly wearing away from wind or water", "extension": "making something longer", "expansion": "growing bigger", "suspension": "a pause or stop for a while", "discussion": "a talk where people share ideas", "expression": "the look on your face, or a saying", "confession": "telling the truth about something you did", "permission": "being allowed to do something", "admission": "being let in, or the price to get in"};
 function meaningHTML(w){const d=DEFS[w];return d?`<p class="mean">📖 <b>${esc(w)}</b> means: ${esc(d)}.</p>`+SAY(`${w} means ${d}.`)+SAYK(`It means ${d}.`):"";}
 
+/* Orbit, the robot-owl co-pilot. Art is optional: images remove themselves if missing. */
+const orbitImg=(pose,cls="")=>`<img class="orbit ${cls}" src="img/orbit-${pose}.webp" alt="" onerror="this.remove()">`;
+const orbitTrophy=e=>`<img class="orbit" src="img/orbit-cheer.webp" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="tf">${e}</span>`;
+/* Animated Orbit on a "comms screen". Falls back to the still image, then to nothing. */
+function orbitComm(){
+  return `<span class="orbit-comm"><video src="img/orbit-wave.mp4" poster="img/orbit-wave-poster.webp" muted loop playsinline ${REDUCED?"":"autoplay"} aria-hidden="true"
+    onerror="const c=this.parentNode;c.classList.add('static');c.innerHTML='<img class=&quot;orbit&quot; src=&quot;img/orbit-wave.webp&quot; alt=&quot;&quot; onerror=&quot;this.parentNode.remove()&quot;>'"></video><span class="comm-tag">ORBIT</span></span>`;
+}
+function orbitFb(){
+  const fb=document.getElementById("fb");if(!fb||fb.querySelector(".orbit-fb"))return;
+  const good=fb.querySelector(".msg.good"),m=fb.querySelector(".msg");if(!good&&!m)return;
+  const pose=good?"cheer":/one more try|try again/i.test(m.textContent)?"think":"point";
+  fb.insertAdjacentHTML("afterbegin",orbitImg(pose,"orbit-fb"));
+}
 function speakFb(){
+  orbitFb();
   narrTok++;const mode=talkMode();if(mode==="quiet")return;const fb=document.getElementById("fb");if(!fb)return;
   let parts;
   if(mode==="full")parts=[...fb.querySelectorAll(".msg,[data-say]")].map(e=>e.dataset.say||e.textContent).filter(Boolean);
@@ -926,12 +956,13 @@ function home(){
   if(!scan&&!S.skipScan){
     app.innerHTML=`<div class="hero" style="--m:var(--c-swap)">
       <div class="hero-top"><h1>Welcome, ${esc((curPilot()&&curPilot().name)||"Cadet")}! 👋</h1><button class="readme" id="readme">🔊 Read to me</button></div><div>
+      <div class="orbit-hi" style="margin-bottom:.6rem">${orbitComm()}<p class="bubble" style="margin:0">Hi! I'm <b>Orbit</b>, your co-pilot. Let's see what you already know!</p></div>
       <p class="muted">Start with a quick <b>Level Scan</b>. It figures out what you're already good at and what to practice first, so you don't waste time on easy stuff.</p></div>
       <button class="go-big" id="scan-go"><span>🔍</span> ${S.scanDraft?`Continue the Level Scan (Part ${S.scanDraft.k+1})`:"Start the Level Scan"}</button>
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 19</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 20</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -950,7 +981,7 @@ function home(){
       <small>${rk.next?`⛽ ${S.xp} / ${rk.need} fuel to <b>${esc(rk.next)}</b>`:"⛽ Top rank reached. Legendary!"}</small></div></div>
     <div class="teaser"><span>🏅 Badges ${Object.keys(S.badges).length}/${BADGES.length}</span><span>✨ Stickers ${Object.keys(S.stickers).length}/${STICKERS.length}</span><span>🎁 Clear a planet for a supply drop</span></div>
     <p class="muted" style="margin:0">${done===NM?`You cleared all ${NM} planets today. Come back tomorrow to keep your streak alive. 🔥`:`Planets cleared today: <b>${done} of ${NM}</b>.`}</p>
-    ${next?`<button class="go-big" id="next-up"><span>${next.icon}</span> Launch: ${esc(next.name)}</button>`:""}
+    ${next?`<div class="launch-row"><button class="go-big" id="next-up"><span>${next.icon}</span> Launch: ${esc(next.name)}</button>${orbitImg("point")}</div>`:""}
   </div>
   ${S.scanDraft?`<div class="banner"><span style="font-size:1.6rem">🔍</span><p>Your Level Scan is waiting at Part ${S.scanDraft.k+1} of ${SECTIONS.length}. Pick up where you left off!</p><button class="btn" id="resume-scan">Continue</button></div>`:""}
   ${due?`<div class="banner"><span style="font-size:1.6rem">🔍</span><p>Time for a Level Scan re-check. See how much you've grown!</p><button class="btn" id="rescan">Start</button></div>`:""}
@@ -968,7 +999,7 @@ function home(){
     <button class="link" id="to-hangar">🛸 Hangar</button>
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 19</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 20</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   app.querySelectorAll(".orb-vid").forEach(v=>{v.muted=true;const p=v.play();if(p&&p.catch)p.catch(()=>{});});
@@ -1022,7 +1053,7 @@ function finish(){
   }
   const pct=r.first/r.total,stars=pct>=.9?3:pct>=.6?2:1;
   const next=planOrder().find(m=>!S.doneToday[m.id]);
-  frame(r.mode,`<div class="card finish"><div class="trophy">🪐</div><h2>Planet cleared!</h2>
+  frame(r.mode,`<div class="card finish"><div class="trophy">${orbitTrophy("🪐")}</div><h2>Planet cleared!</h2>
   <div class="stars" aria-label="${stars} of 3 stars">${"⭐".repeat(stars)}${"☆".repeat(3-stars)}</div>
   <p class="big">You got ${r.first} out of ${r.total}</p>
   <p class="gain">+${r.xp} fuel</p>${mastered}${badgeChips(nb)}
@@ -1383,7 +1414,7 @@ function runSection(k,resumed){
   if(k>0&&!resumed){
     const prevSec=SECTIONS[k-1],arr=P.results[prevSec.id]||[],right=arr.filter(x=>x.ok).length,left=SECTIONS.length-k;
     award(15);saveDraft(k);
-    celebrate=`<div class="card center-text"><div class="trophy">🌟</div><h2 style="margin:0">Part ${k} complete!</h2>
+    celebrate=`<div class="card center-text"><div class="trophy">${orbitTrophy("🌟")}</div><h2 style="margin:0">Part ${k} complete!</h2>
       <p style="margin:0">${right} of ${arr.length} right on the first try. <span class="gain">+15 fuel bonus</span></p>
       <p class="cheer">${left===1?"Just one part left. You've got this!":`${left} parts to go. You're doing awesome!`}</p></div>`;
     celebrateSay=`Part ${k} complete! ${left===1?"Just one part left.":left+" parts to go."}`;
@@ -1495,7 +1526,7 @@ function resultsScreen(rec,first){
   const nbS=checkBadges();
   const prev=S.scans.length>1?S.scans[S.scans.length-2]:null;
   const plan=planOrder(),focus=focusMissions(),cp=currentPattern();
-  frame("scan",`<div class="card center-text"><div class="trophy">🎉</div><h2>Scan complete!</h2>
+  frame("scan",`<div class="card center-text"><div class="trophy">${orbitTrophy("🎉")}</div><h2>Scan complete!</h2>
   <p style="margin:0">${first?"Now the app knows what to work on. Here's your training plan.":"Here's how you've grown since last time."}</p></div>
   <div class="card"><p class="section-h">Your training plan</p>
   <ol class="plan">${plan.map(m=>`<li>${m.icon} ${esc(m.name)}${focus.includes(m.id)?" 🎯":""}</li>`).join("")}</ol>
@@ -1550,7 +1581,7 @@ function settings(){
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 19 (class sign-in + teacher sync)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 20 (Orbit co-pilot + new art)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
@@ -1879,7 +1910,7 @@ function signIn(editId){
     return `<div class="pwrap"><button class="pilot" data-pick="${x.id}"><span class="av">${x.avatar}</span><span class="pn">${esc(x.name||"Name me!")}</span><span class="pr">${rk.icon} ${rk.name} · ⛽ ${d.xp||0}</span>${x.cls?`<span class="pc">🏫 ${esc(x.cls.className)}</span>`:""}</button>
       <button class="mini ed" data-edit="${x.id}" aria-label="Edit ${esc(x.name||"pilot")}">✏️</button>${list.length>1?`<button class="mini del" data-del="${x.id}" aria-label="Remove ${esc(x.name||"pilot")}">🗑️</button>`:""}</div>`;};
   if(editId!==undefined){return pilotForm(editId||null);}
-  app.innerHTML=`<div class="hero signin"><div class="splash"><span class="logo-mark"><img src="img/owl-512.png" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span><span class="logo-word" style="align-items:center"><span class="lw-main">Decode</span><span class="lw-sub">Space Adventure</span></span></div><div><p class="mc-kicker">Pilot sign-in</p><h1 style="margin:0">Who's flying today?</h1></div>
+  app.innerHTML=`<div class="hero signin"><div class="splash"><span class="logo-mark"><img src="img/owl-512.png" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span><span class="logo-word" style="align-items:center"><span class="lw-main">Decode</span><span class="lw-sub">Space Adventure</span></span></div><div class="orbit-hi">${orbitComm()}<div><p class="mc-kicker">Pilot sign-in</p><h1 style="margin:0">Who's flying today?</h1></div></div>
     <div class="pilots">${list.map(card).join("")}<button class="pilot add" id="add-pilot"><span class="av">➕</span><span class="pn">New pilot</span><span class="pr" style="color:var(--muted)">Add a learner</span></button><button class="pilot join" id="join-class"><span class="av">🏫</span><span class="pn">Join my class</span><span class="pr" style="color:var(--muted)">Use a class code</span></button></div>
     <p class="privacy">🔒 Progress is saved on this device. Class pilots also share their progress with their teacher. No email or password needed.</p><p class="privacy"><a href="teacher/" style="color:var(--muted)">Teacher or parent? Open the dashboard</a></p></div>`;
   app.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const x=list.find(y=>y.id===b.dataset.pick);if(x.cls)return pinScreen({pilot:x});if(!x.name)return pilotForm(x.id);switchTo(x.id);});
