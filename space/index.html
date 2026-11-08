@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Decode Space Adventure</title>
+<link rel="icon" type="image/png" href="img/owl-64.png">
+<link rel="apple-touch-icon" href="img/owl-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -43,8 +45,8 @@ button{cursor:pointer}
 
 /* Header */
 header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;padding:.4rem 0 1.1rem}
-.brand{display:flex;gap:.2rem;background:none;border:0;padding:0}
-.brand span{display:inline-grid;place-items:center;width:1.55rem;height:1.75rem;font-weight:800;font-size:.95rem;background:var(--tile);color:var(--tile-ink);border:2px solid var(--line);border-bottom-width:4px;border-radius:7px}
+.brand{display:flex;align-items:center;gap:.65rem;background:none;border:0;padding:0;color:inherit;text-align:left}
+.brand .old-tile{display:inline-grid;place-items:center;width:1.55rem;height:1.75rem;font-weight:800;font-size:.95rem;background:var(--tile);color:var(--tile-ink);border:2px solid var(--line);border-bottom-width:4px;border-radius:7px}
 .hud{display:flex;gap:.5rem}
 .pill{font-size:.9rem;font-weight:600;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:.25rem .75rem}
 
@@ -215,7 +217,7 @@ body{overflow-x:hidden}
 h1,h2,.pixel{font-family:var(--pix);font-weight:800;letter-spacing:-.01em}
 h1{font-size:1.75rem;line-height:1.2}
 h2{font-size:1.35rem}
-.brand span{background:linear-gradient(160deg,#25306A,#161E48);color:#E8FBFF;border:1px solid rgba(34,211,238,.55);border-bottom-width:1px;box-shadow:0 0 12px rgba(34,211,238,.3);font-family:var(--pix);border-radius:8px}
+.brand .old-tile{background:linear-gradient(160deg,#25306A,#161E48);color:#E8FBFF;border:1px solid rgba(34,211,238,.55);border-bottom-width:1px;box-shadow:0 0 12px rgba(34,211,238,.3);font-family:var(--pix);border-radius:8px}
 .pill{background:rgba(20,27,61,.85);border-color:var(--line);color:var(--ink)}
 .card,.hero,.passage,.pick,.rule-row,.modal{background:linear-gradient(180deg,rgba(28,37,82,.88),rgba(18,24,56,.9));border:1px solid rgba(140,160,255,.22);box-shadow:0 12px 32px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(6px)}
 .rule-row{background:rgba(10,15,36,.6)}
@@ -290,6 +292,28 @@ h2{font-size:1.35rem}
 .rankup .modal{border-top-color:var(--sun)}
 .rankup .badge{width:5.5rem;height:5.5rem;font-size:3rem;margin:0 auto;animation:pop .5s ease-out both}
 @media (prefers-reduced-motion: reduce){body::before{animation:none}}
+/* Logo + Akra owl brandmark */
+.logo-mark{position:relative;flex:none;width:3rem;height:3rem;border-radius:50%;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(circle at 50% 38%,#33468F,#141C44 72%);border:2px solid rgba(255,200,61,.85);
+  box-shadow:0 0 0 4px rgba(34,211,238,.12),0 0 22px rgba(255,200,61,.35),inset 0 2px 6px rgba(255,255,255,.18)}
+.logo-mark img{width:90%;height:90%;object-fit:contain;margin-top:6%;filter:drop-shadow(0 0 5px rgba(255,255,255,.28))}
+.logo-mark.nofile::after{content:"🦉";font-size:1.7rem}
+.logo-word{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+.lw-main{font-family:var(--pix);font-weight:800;font-size:1.75rem;letter-spacing:-.03em;line-height:1;
+  background:linear-gradient(95deg,#7DE8FF 0%,#A78BFA 52%,#F472B6 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 14px rgba(125,232,255,.25))}
+.lw-sub{font-size:.72rem;font-weight:700;color:var(--sun);letter-spacing:.1em;margin-top:.28rem}
+.brand:hover .logo-mark{box-shadow:0 0 0 4px rgba(34,211,238,.22),0 0 28px rgba(255,200,61,.5),inset 0 2px 6px rgba(255,255,255,.18)}
+header{gap:.6rem}
+/* Big lockup on sign-in */
+.splash{display:flex;flex-direction:column;align-items:center;gap:.6rem;text-align:center;padding:.4rem 0 .2rem}
+.splash .logo-mark{width:6.5rem;height:6.5rem;border-width:3px}
+.splash .logo-mark.nofile::after{font-size:3.6rem}
+.splash .lw-main{font-size:3rem}
+.splash .lw-sub{font-size:.9rem}
+.made-by{display:flex;align-items:center;justify-content:center;gap:.4rem;font-size:.8rem;color:var(--muted);text-decoration:none;margin:.3rem auto 0}
+.made-by img{width:1.3rem;height:1.3rem;object-fit:contain}
+.made-by:hover{color:var(--ink)}
 /* Sign in */
 .signin{display:flex;flex-direction:column;gap:1rem}
 .pilots{display:grid;grid-template-columns:repeat(auto-fill,minmax(9rem,1fr));gap:.8rem}
@@ -437,7 +461,10 @@ body.has-bg{background-image:linear-gradient(rgba(10,15,36,.55),rgba(10,15,36,.7
 <body>
 <div class="wrap">
   <header>
-    <button class="brand" id="brand" aria-label="Decode home"><span>D</span><span>E</span><span>C</span><span>O</span><span>D</span><span>E</span></button>
+    <button class="brand" id="brand" aria-label="Decode Space Adventure, home">
+      <span class="logo-mark"><img src="img/owl.webp" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span>
+      <span class="logo-word"><span class="lw-main">Decode</span><span class="lw-sub">Space Adventure</span></span>
+    </button>
     <div class="hud">
       <button class="pill pilotchip" id="hud-pilot" title="Switch pilot">🧑‍🚀 Sign in</button>
       <span class="pill" title="Days in a row">🔥 <b id="hud-streak">0</b> <span id="hud-streak-l">days</span></span>
@@ -892,7 +919,7 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 16</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 17</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -929,7 +956,7 @@ function home(){
     <button class="link" id="to-hangar">🛸 Hangar</button>
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 16</p>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 17</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   app.querySelectorAll(".orb-vid").forEach(v=>{v.muted=true;const p=v.play();if(p&&p.catch)p.catch(()=>{});});
@@ -1508,7 +1535,7 @@ function settings(){
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 16 (new artwork + animated planets)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 17 (new logo + owl brandmark)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
@@ -1831,13 +1858,13 @@ $("#brand").onclick=()=>{if(P&&!confirmLeave())return;home();};
 
 function signIn(editId){
   R=null;P=null;hush();setColor(null);
-  document.querySelector(".hud").style.visibility="hidden";
+  document.querySelector(".hud").style.visibility="hidden";document.querySelector("header").style.visibility="hidden";
   const list=PROF.list;
   const card=x=>{const d=pilotSave(x.id),rk=rankInfo(d.xp||0);
     return `<div class="pwrap"><button class="pilot" data-pick="${x.id}"><span class="av">${x.avatar}</span><span class="pn">${esc(x.name||"Name me!")}</span><span class="pr">${rk.icon} ${rk.name} · ⛽ ${d.xp||0}</span></button>
       <button class="mini ed" data-edit="${x.id}" aria-label="Edit ${esc(x.name||"pilot")}">✏️</button>${list.length>1?`<button class="mini del" data-del="${x.id}" aria-label="Remove ${esc(x.name||"pilot")}">🗑️</button>`:""}</div>`;};
   if(!list.length||editId!==undefined){return pilotForm(editId||null);}
-  app.innerHTML=`<div class="hero signin"><div><p class="mc-kicker">Pilot sign-in</p><h1 style="margin:0">Who's flying today?</h1></div>
+  app.innerHTML=`<div class="hero signin"><div class="splash"><span class="logo-mark"><img src="img/owl.webp" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span><span class="logo-word" style="align-items:center"><span class="lw-main">Decode</span><span class="lw-sub">Space Adventure</span></span></div><div><p class="mc-kicker">Pilot sign-in</p><h1 style="margin:0">Who's flying today?</h1></div>
     <div class="pilots">${list.map(card).join("")}<button class="pilot add" id="add-pilot"><span class="av">➕</span><span class="pn">New pilot</span><span class="pr" style="color:var(--muted)">Add a learner</span></button></div>
     <p class="privacy">🔒 Progress is saved only on this device, in this browser. No account, email, or password needed.</p></div>`;
   app.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const x=list.find(y=>y.id===b.dataset.pick);if(!x.name)return pilotForm(x.id);switchTo(x.id);});
@@ -1871,7 +1898,7 @@ function pilotForm(id){
 }
 function switchTo(id){
   PROF.last=id;setProfiles();KEY="decode-space-v1:"+id;S=load();save();R=null;P=null;
-  document.querySelector(".hud").style.visibility="";applySettings();renderHud();home();
+  document.querySelector(".hud").style.visibility="";document.querySelector("header").style.visibility="";applySettings();renderHud();home();
 }
 function startApp(){const pc=curPilot();if(PROF.list.length===1&&pc&&pc.name)return switchTo(pc.id);signIn();}
 (()=>{const bg=new Image();bg.onload=()=>document.body.classList.add("has-bg");bg.src="img/space-bg.webp";})();
