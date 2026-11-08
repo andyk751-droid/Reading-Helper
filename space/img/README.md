@@ -1,18 +1,20 @@
-# Optional artwork for Decode Space Adventure
+# Artwork for Decode Space Adventure
 
-Drop PNG images here with these exact names. The game uses each one
-automatically if it's present, and falls back to its built-in look if not.
+The game uses each file automatically if it's here, and falls back to its
+built-in look if not. Originals live in Google Drive: My Drive / Decode Space Art.
 
-| File | Where it shows | Size |
+| File | Where it shows | Status |
 |---|---|---|
-| planet-lab.png | Ending Lab planet | 512x512, transparent |
-| planet-swap.png | Sound Swap planet | 512x512, transparent |
-| planet-spell.png | Spell It planet | 512x512, transparent |
-| planet-flip.png | Twin Words planet | 512x512, transparent |
-| planet-forge.png | Word Builder planet | 512x512, transparent |
-| planet-speed.png | Speed Read planet | 512x512, transparent |
-| rank-0.png ... rank-4.png | Rank badges (Cadet, Trooper, Sergeant, Commander, Fleet Admiral) | 512x512 |
-| ship.png | Mission control ship | 768x512, transparent |
-| crate.png | Supply drop | 512x512, transparent |
-| crate-gold.png | Golden supply drop | 512x512, transparent |
-| space-bg.jpg | Background | 1920x1080 |
+| planet-lab.webp | Ending Lab planet | ✅ |
+| planet-swap.webp + planet-swap.mp4 | Sound Swap planet (animated) | ✅ |
+| planet-spell.webp + planet-spell.mp4 | Spell It planet (animated) | ✅ |
+| planet-flip.webp + planet-flip.mp4 | Twin Words planet (animated) | ✅ |
+| planet-forge.webp | Word Builder planet | ✅ |
+| planet-speed.webp | Speed Read planet | ✅ |
+| rank-0.webp ... rank-4.webp | Rank badges | ✅ |
+| ship.webp | Mission control ship | ✅ |
+| crate.webp | Supply drop | to do |
+| crate-gold.webp | Golden supply drop | to do |
+| space-bg.webp | Background | to do |
+
+Animated planets: add the planet's name to PLANET_VIDS in index.html.

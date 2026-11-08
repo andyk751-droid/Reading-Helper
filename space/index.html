@@ -205,11 +205,13 @@ h2{font-size:1.45rem;line-height:1.2;margin:.2rem 0 .5rem;font-weight:800}
 }
 html{background:var(--bg)}
 body{background:radial-gradient(1100px 600px at 85% -10%,rgba(124,92,255,.28),transparent 60%),radial-gradient(900px 520px at -15% 105%,rgba(34,211,238,.18),transparent 60%),var(--bg);background-attachment:fixed;min-height:100vh}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.75;
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.75;
   background-image:radial-gradient(1.5px 1.5px at 23px 41px,#fff,transparent),radial-gradient(1px 1px at 97px 13px,#cfe,transparent),radial-gradient(1px 1px at 151px 88px,#fff,transparent),radial-gradient(2px 2px at 211px 160px,#ffe9a8,transparent),radial-gradient(1px 1px at 61px 199px,#fff,transparent),radial-gradient(1.5px 1.5px at 181px 233px,#bcd,transparent),radial-gradient(1px 1px at 131px 141px,#fff,transparent);
   background-size:250px 250px;animation:twinkle 6s ease-in-out infinite alternate}
 @keyframes twinkle{from{opacity:.45}to{opacity:.85}}
-.wrap{position:relative;z-index:1}
+.wrap{position:relative}
+body{overflow-x:hidden}
+.map{overflow-x:clip}
 h1,h2,.pixel{font-family:var(--pix);font-weight:800;letter-spacing:-.01em}
 h1{font-size:1.75rem;line-height:1.2}
 h2{font-size:1.35rem}
@@ -342,10 +344,17 @@ h2{font-size:1.35rem}
 /* Optional artwork (img/ folder) */
 .orb .orb-img{position:absolute;inset:-14%;width:128%;height:128%;object-fit:contain;pointer-events:none}
 .orb.has-img{background:none;box-shadow:none}.orb.has-img .oe{display:none}.orb.has-img::after{display:none}
+.orb .orb-vid{position:absolute;left:50%;top:50%;width:205%;height:auto;transform:translate(-50%,-50%);mix-blend-mode:screen;pointer-events:none}
+.orb.has-vid{background:none;box-shadow:none}.orb.has-vid::after{display:none}.orb.has-vid .orb-img,.orb.has-vid .oe{display:none}
+.pl .ptxt{position:relative;z-index:1}
+.badge.has-img{background:none;border:0;box-shadow:none}
+.pl.next .orb.has-img:not(.has-vid){animation:none;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--m) 70%,transparent))}
+.pl.next .orb.has-vid{animation:none}
+.pl:hover .orb.has-vid,.pl:focus-visible .orb.has-vid{transform:none}
 .badge .b-img{width:100%;height:100%;object-fit:contain;border-radius:inherit}.badge.has-img .be{display:none}
-.mc-ship{position:absolute;right:-.6rem;top:-1.6rem;width:7.5rem;height:auto;pointer-events:none;filter:drop-shadow(0 8px 18px rgba(0,0,0,.5))}
+.mc-ship{position:absolute;right:.9rem;top:5.9rem;width:5.4rem;height:auto;pointer-events:none;filter:drop-shadow(0 8px 18px rgba(0,0,0,.5))}
 .mc{position:relative}
-body.has-bg{background-image:linear-gradient(rgba(10,15,36,.55),rgba(10,15,36,.75)),url(img/space-bg.jpg);background-size:cover;background-position:center}
+body.has-bg{background-image:linear-gradient(rgba(10,15,36,.55),rgba(10,15,36,.75)),url(img/space-bg.webp);background-size:cover;background-position:center}
 
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:440px){.word{font-size:2.4rem}.tile{font-size:1.6rem;min-width:2rem}h1{font-size:1.6rem}.chip{display:none}.answer-row{flex-direction:column}}
@@ -566,6 +575,8 @@ const MISSIONS=[
 const SCAN={id:"scan",name:"Level Scan",icon:"🔍"};
 const PARENT={id:"parent",name:"Grown-up view",icon:"📊"};
 const MCOLOR={lab:"var(--c-lab)",swap:"var(--c-swap)",spell:"var(--c-spell)",flip:"var(--c-flip)",forge:"var(--c-forge)",speed:"var(--c-speed)",scan:"var(--c-swap)",parent:"var(--cobalt)",hangar:"var(--c-lab)"};
+const PLANET_VIDS=["flip","spell","swap"];
+const REDUCED=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
 const HANGAR={id:"hangar",name:"Hangar",icon:"🛸"};
 const mission=id=>MISSIONS.find(m=>m.id===id)||(id==="scan"?SCAN:id==="hangar"?HANGAR:PARENT);
 const YAY=["Nice! 🎉","You got it! ✅","Awesome! ⭐","Nailed it! 💪","Great job! 🙌","Boom! 💥"];
@@ -626,7 +637,7 @@ function award(n){
 }
 function showRankUp(i){
   const r=RANKS[i];const o=document.createElement("div");o.className="overlay rankup";
-  o.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ru-t"><p class="mc-kicker" style="margin:0">Rank up!</p><div class="badge"><span class="be">${r[2]}</span><img class="b-img" src="img/rank-${i}.png" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"></div>
+  o.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ru-t"><p class="mc-kicker" style="margin:0">Rank up!</p><div class="badge"><span class="be">${r[2]}</span><img class="b-img" src="img/rank-${i}.webp" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"></div>
     <h2 id="ru-t" style="margin:0">You're now a ${esc(r[0])}!</h2>
     <p class="muted" style="margin:0">${RANKS[i+1]?`Next rank: ${esc(RANKS[i+1][0])} at ${RANKS[i+1][1]} fuel.`:"That's the top rank in the fleet. Legendary."}</p>
     <button class="btn go big" id="ru-ok">Awesome! ▶</button></div>`;
@@ -881,7 +892,7 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 15</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 16</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -895,7 +906,7 @@ function home(){
   const rk=rankInfo();
   app.innerHTML=`<div class="hero mc" style="--m:${next?MCOLOR[next.id]:"var(--mint)"}">
     <div class="mc-top"><div><p class="mc-kicker">Mission control</p><h1 style="margin:0">${done===0?`Ready, ${esc(rk.name)}${curPilot()&&curPilot().name?" "+esc(curPilot().name):""}?`:done===NM?"All planets cleared!":"Keep flying! 🚀"}</h1></div><button class="readme" id="readme">🔊 Read to me</button></div>
-    <img class="mc-ship" src="img/ship.png" alt="" onerror="this.remove()"><div class="rank"><div class="badge" aria-hidden="true"><span class="be">${rk.icon}</span><img class="b-img" src="img/rank-${rk.i}.png" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"></div><div><p class="rank-name">${esc(rk.name)}</p>
+    <img class="mc-ship" src="img/ship.webp" alt="" onerror="this.remove()"><div class="rank"><div class="badge" aria-hidden="true"><span class="be">${rk.icon}</span><img class="b-img" src="img/rank-${rk.i}.webp" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"></div><div><p class="rank-name">${esc(rk.name)}</p>
       <div class="fuel" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${rk.pct}" aria-label="Fuel to next rank"><span style="width:${rk.pct}%"></span></div>
       <small>${rk.next?`⛽ ${S.xp} / ${rk.need} fuel to <b>${esc(rk.next)}</b>`:"⛽ Top rank reached. Legendary!"}</small></div></div>
     <div class="teaser"><span>🏅 Badges ${Object.keys(S.badges).length}/${BADGES.length}</span><span>✨ Stickers ${Object.keys(S.stickers).length}/${STICKERS.length}</span><span>🎁 Clear a planet for a supply drop</span></div>
@@ -910,7 +921,7 @@ function home(){
     const chip=isDone?`<span class="chip done">✓ Cleared</span>`:isF?`<span class="chip focus">🎯 Focus</span>`:`<span class="chip">${m.min}</span>`;
     const desc=m.id==="spell"&&cp>=0?`Your trick right now: ${PATTERNS[cp].name}`:m.desc;
     return `<li><button class="pl${isDone?" done":""}${isNext?" next":""}" style="--m:${MCOLOR[m.id]}" data-go="${m.id}">
-    <span class="orb" aria-hidden="true"><img class="orb-img" src="img/planet-${m.id}.png" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="oe">${m.icon}</span>${isDone?`<span class="flag">✓</span>`:""}${isNext?`<span class="you">🚀</span>`:""}</span>
+    <span class="orb" aria-hidden="true"><img class="orb-img" src="img/planet-${m.id}.webp" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()">${PLANET_VIDS.includes(m.id)&&!REDUCED?`<video class="orb-vid" src="img/planet-${m.id}.mp4" autoplay muted loop playsinline preload="auto" onloadeddata="this.parentNode.classList.add('has-vid')" onerror="this.remove()"></video>`:""}<span class="oe">${m.icon}</span>${isDone?`<span class="flag">✓</span>`:""}${isNext?`<span class="you">🚀</span>`:""}</span>
     <span class="ptxt"><span class="mname">${i+1}. ${esc(m.name)}</span><span class="mdesc">${esc(desc)}</span>${chip}</span></button></li>`;}).join("")}</ol>
   <div class="row" style="justify-content:space-between">
     <button class="link" id="to-settings">⚙️ Settings</button>
@@ -918,9 +929,10 @@ function home(){
     <button class="link" id="to-hangar">🛸 Hangar</button>
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 15</p>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 16</p>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
+  app.querySelectorAll(".orb-vid").forEach(v=>{v.muted=true;const p=v.play();if(p&&p.catch)p.catch(()=>{});});
   $("#to-hangar").onclick=hangar;if($("#resume-scan"))$("#resume-scan").onclick=scanIntro;
   if(due)$("#rescan").onclick=scanIntro;
   if(!scan)$("#scan-link").onclick=scanIntro;
@@ -1496,7 +1508,7 @@ function settings(){
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 15 (pilots, scan progress, rewards)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 16 (new artwork + animated planets)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
@@ -1633,7 +1645,7 @@ function openCrate(gold){
   save();return {i,dup};
 }
 function crateHTML(gold){
-  return `<div class="crate" id="crate${gold?"-gold":""}"><img class="crate-img" src="img/crate${gold?"-gold":""}.png" alt="" onerror="this.remove()">
+  return `<div class="crate" id="crate${gold?"-gold":""}"><img class="crate-img" src="img/crate${gold?"-gold":""}.webp" alt="" onerror="this.remove()">
     <p style="margin:0;font-weight:800">${gold?"🌟 Golden supply drop! You cleared every planet today.":"🎁 Supply drop incoming!"}</p>
     <button class="btn gold" id="open-crate${gold?"-gold":""}">${gold?"✨ Open golden drop":"🎁 Open supply drop"}</button></div>`;
 }
@@ -1862,7 +1874,7 @@ function switchTo(id){
   document.querySelector(".hud").style.visibility="";applySettings();renderHud();home();
 }
 function startApp(){const pc=curPilot();if(PROF.list.length===1&&pc&&pc.name)return switchTo(pc.id);signIn();}
-(()=>{const bg=new Image();bg.onload=()=>document.body.classList.add("has-bg");bg.src="img/space-bg.jpg";})();
+(()=>{const bg=new Image();bg.onload=()=>document.body.classList.add("has-bg");bg.src="img/space-bg.webp";})();
 $("#hud-pilot").onclick=()=>{if(P&&!confirmLeave())return;signIn();};
 applySettings();renderHud();startApp();
 
