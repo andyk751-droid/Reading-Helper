@@ -288,6 +288,64 @@ h2{font-size:1.35rem}
 .rankup .modal{border-top-color:var(--sun)}
 .rankup .badge{width:5.5rem;height:5.5rem;font-size:3rem;margin:0 auto;animation:pop .5s ease-out both}
 @media (prefers-reduced-motion: reduce){body::before{animation:none}}
+/* Sign in */
+.signin{display:flex;flex-direction:column;gap:1rem}
+.pilots{display:grid;grid-template-columns:repeat(auto-fill,minmax(9rem,1fr));gap:.8rem}
+.pwrap{position:relative}
+.pilot{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:1rem .6rem;border-radius:18px;border:1px solid rgba(140,160,255,.25);background:linear-gradient(180deg,rgba(28,37,82,.88),rgba(18,24,56,.9));color:var(--ink);box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.pilot:hover{border-color:var(--c-lab);box-shadow:0 0 20px rgba(34,211,238,.25)}
+.pilot .av{font-size:2.6rem;line-height:1}
+.pilot .pn{font-family:var(--pix);font-weight:800;font-size:1.05rem}
+.pilot .pr{font-size:.8rem;color:var(--sun)}
+.pilot.add{border-style:dashed;color:var(--muted)}
+.pwrap .mini{position:absolute;z-index:2;top:.35rem;background:rgba(255,255,255,.08);border:1px solid rgba(140,160,255,.3);border-radius:999px;width:2rem;height:2rem;display:grid;place-items:center;font-size:.9rem;color:var(--ink)}
+.pwrap .mini.ed{left:.35rem}.pwrap .mini.del{right:.35rem}
+.avatars{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.avatars button{font-size:2rem;width:3.4rem;height:3.4rem;border-radius:14px;border:1px solid rgba(140,160,255,.3);background:rgba(255,255,255,.05)}
+.avatars button[aria-pressed="true"]{border:2px solid var(--c-lab);box-shadow:0 0 16px rgba(34,211,238,.4);background:rgba(34,211,238,.12)}
+.name-in{font-size:1.4rem;font-weight:700;padding:.6rem .9rem;border-radius:14px;border:1px solid rgba(140,160,255,.35);background:rgba(10,15,36,.7);color:var(--ink);text-align:center;width:100%}
+.name-in:focus{outline:none;border-color:var(--c-lab)}
+.privacy{font-size:.85rem;color:var(--muted);text-align:center;margin:0}
+.pill.pilotchip{cursor:pointer;color:var(--ink)}
+.hud{flex-wrap:wrap;justify-content:flex-end}
+.hud .pill{white-space:nowrap}
+@media (max-width:440px){.hud{gap:.35rem}.hud .pill{font-size:.78rem;padding:.2rem .55rem}#hud-streak-l{display:none}}
+/* Scan progress + cheers */
+.scanbar{background:rgba(10,15,36,.55);border:1px solid rgba(140,160,255,.22);border-radius:16px;padding:.6rem .8rem;margin-bottom:.9rem}
+.sb-top{display:flex;justify-content:space-between;gap:.5rem;font-size:.85rem;font-weight:700;margin-bottom:.45rem}
+.sb-top span:last-child{color:var(--c-lab)}
+.sb-track{position:relative;height:.6rem;border-radius:999px;background:rgba(10,15,36,.9);border:1px solid rgba(140,160,255,.2)}
+.sb-track span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#22D3EE,#A78BFA);box-shadow:0 0 10px rgba(34,211,238,.5);transition:width .4s}
+.sb-ship{position:absolute;top:50%;transform:translate(-50%,-55%) rotate(45deg);font-style:normal;font-size:1.15rem;transition:left .4s}
+.sb-steps{display:flex;justify-content:space-between;margin-top:.5rem}
+.sb-steps b{width:1.9rem;height:1.9rem;border-radius:50%;display:grid;place-items:center;font-size:.95rem;background:rgba(255,255,255,.05);border:1px solid rgba(140,160,255,.25);opacity:.6}
+.sb-steps b.now{opacity:1;border-color:var(--c-lab);box-shadow:0 0 12px rgba(34,211,238,.45)}
+.sb-steps b.done{opacity:1;background:rgba(46,230,166,.2);border-color:var(--mint);color:var(--mint);font-weight:800}
+.cheer{margin:0;font-weight:800;color:var(--c-lab);font-size:1.05rem}
+/* Rewards */
+.crate{display:flex;flex-direction:column;align-items:center;gap:.5rem;width:100%;padding:.8rem;border-radius:16px;background:rgba(255,200,61,.08);border:1px dashed rgba(255,200,61,.55)}
+.btn.gold{background:linear-gradient(180deg,#FFE07A,#FFB020);color:#2A1A00;box-shadow:0 6px 20px rgba(255,200,61,.35),inset 0 1px 0 rgba(255,255,255,.4)}
+.sticker-big{font-size:3.4rem;line-height:1;animation:pop .5s ease-out both;filter:drop-shadow(0 0 16px rgba(255,255,255,.35))}
+.crate-img{width:6rem;height:auto}
+.newbadges{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.newbadges span{background:rgba(255,200,61,.14);border:1px solid rgba(255,200,61,.5);color:var(--sun);border-radius:999px;padding:.25rem .7rem;font-weight:700;font-size:.9rem}
+.grid-badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(7.2rem,1fr));gap:.6rem}
+.bdg{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.2rem;padding:.7rem .5rem;border-radius:14px;background:rgba(10,15,36,.5);border:1px solid rgba(140,160,255,.2)}
+.bdg .bi{font-size:2rem}.bdg b{font-size:.9rem}.bdg small{color:var(--muted);font-size:.75rem;line-height:1.3}
+.bdg.off{opacity:.45;filter:grayscale(1)}
+.bdg.on{border-color:rgba(255,200,61,.55);box-shadow:0 0 14px rgba(255,200,61,.15)}
+.grid-stickers{display:grid;grid-template-columns:repeat(auto-fill,minmax(3.6rem,1fr));gap:.5rem}
+.stk{aspect-ratio:1;display:grid;place-items:center;font-size:1.9rem;border-radius:14px;background:rgba(10,15,36,.5);border:1px solid rgba(140,160,255,.2)}
+.stk.off{font-size:1.2rem;color:var(--muted);font-weight:800}
+.teaser{display:flex;gap:.5rem;flex-wrap:wrap}
+.teaser span{font-size:.85rem;background:rgba(255,255,255,.06);border:1px solid rgba(140,160,255,.22);border-radius:999px;padding:.25rem .65rem}
+/* Optional artwork (img/ folder) */
+.orb .orb-img{position:absolute;inset:-14%;width:128%;height:128%;object-fit:contain;pointer-events:none}
+.orb.has-img{background:none;box-shadow:none}.orb.has-img .oe{display:none}.orb.has-img::after{display:none}
+.badge .b-img{width:100%;height:100%;object-fit:contain;border-radius:inherit}.badge.has-img .be{display:none}
+.mc-ship{position:absolute;right:-.6rem;top:-1.6rem;width:7.5rem;height:auto;pointer-events:none;filter:drop-shadow(0 8px 18px rgba(0,0,0,.5))}
+.mc{position:relative}
+body.has-bg{background-image:linear-gradient(rgba(10,15,36,.55),rgba(10,15,36,.75)),url(img/space-bg.jpg);background-size:cover;background-position:center}
 
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:440px){.word{font-size:2.4rem}.tile{font-size:1.6rem;min-width:2rem}h1{font-size:1.6rem}.chip{display:none}.answer-row{flex-direction:column}}
@@ -372,6 +430,7 @@ h2{font-size:1.35rem}
   <header>
     <button class="brand" id="brand" aria-label="Decode home"><span>D</span><span>E</span><span>C</span><span>O</span><span>D</span><span>E</span></button>
     <div class="hud">
+      <button class="pill pilotchip" id="hud-pilot" title="Switch pilot">🧑‍🚀 Sign in</button>
       <span class="pill" title="Days in a row">🔥 <b id="hud-streak">0</b> <span id="hud-streak-l">days</span></span>
       <span class="pill" title="Fuel points">⛽ <b id="hud-xp">0</b></span>
       <span class="pill rk" title="Your rank" id="hud-rank">🔰 Cadet</span>
@@ -506,8 +565,9 @@ const MISSIONS=[
 ];
 const SCAN={id:"scan",name:"Level Scan",icon:"🔍"};
 const PARENT={id:"parent",name:"Grown-up view",icon:"📊"};
-const MCOLOR={lab:"var(--c-lab)",swap:"var(--c-swap)",spell:"var(--c-spell)",flip:"var(--c-flip)",forge:"var(--c-forge)",speed:"var(--c-speed)",scan:"var(--c-swap)",parent:"var(--cobalt)"};
-const mission=id=>MISSIONS.find(m=>m.id===id)||(id==="scan"?SCAN:PARENT);
+const MCOLOR={lab:"var(--c-lab)",swap:"var(--c-swap)",spell:"var(--c-spell)",flip:"var(--c-flip)",forge:"var(--c-forge)",speed:"var(--c-speed)",scan:"var(--c-swap)",parent:"var(--cobalt)",hangar:"var(--c-lab)"};
+const HANGAR={id:"hangar",name:"Hangar",icon:"🛸"};
+const mission=id=>MISSIONS.find(m=>m.id===id)||(id==="scan"?SCAN:id==="hangar"?HANGAR:PARENT);
 const YAY=["Nice! 🎉","You got it! ✅","Awesome! ⭐","Nailed it! 💪","Great job! 🙌","Boom! 💥"];
 const yay=()=>YAY[Math.floor(Math.random()*YAY.length)];
 const RESCAN_DAYS=21;
@@ -515,18 +575,32 @@ const RESCAN_DAYS=21;
 /* ---------- State ---------- */
 const $=s=>document.querySelector(s);
 const app=$("#app");
-const KEY="decode-space-v1";
-try{if(!localStorage.getItem(KEY)&&localStorage.getItem("decode-v1"))localStorage.setItem(KEY,localStorage.getItem("decode-v1"));}catch(e){}
+/* ---------- Pilots: local sign-in. Everything stays in this browser on this device. ---------- */
+const PKEY="decode-space-profiles";
+function getProfiles(){try{return JSON.parse(localStorage.getItem(PKEY)||"null");}catch(e){return null;}}
+function setProfiles(){try{localStorage.setItem(PKEY,JSON.stringify(PROF));}catch(e){}}
+let PROF=getProfiles();
+if(!PROF||!Array.isArray(PROF.list)){
+  PROF={list:[],last:null};
+  let legacy=null;try{legacy=localStorage.getItem("decode-space-v1")||localStorage.getItem("decode-v1");}catch(e){}
+  if(legacy){PROF.list.push({id:"p1",name:"",avatar:"🧑‍🚀"});PROF.last="p1";try{localStorage.setItem("decode-space-v1:p1",legacy);}catch(e){}}
+  setProfiles();
+}
+let KEY="decode-space-v1:"+(PROF.last||"guest");
+const AVATARS=["🧑‍🚀","👩‍🚀","👨‍🚀","🤖","👽","🦊","🐱","🐉","🦄","🐼","🦖","🐙"];
+function curPilot(){return PROF.list.find(x=>x.id===PROF.last)||null;}
+function pilotSave(id){try{return JSON.parse(localStorage.getItem("decode-space-v1:"+id)||"null")||{};}catch(e){return {};}}
 function dayStr(off=0){const d=new Date();d.setDate(d.getDate()+off);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function niceDate(ds){const [y,m,d]=ds.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:"short",day:"numeric"});}
 function load(){
   let d=null;try{d=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
-  const s=Object.assign({xp:0,streak:0,lastDay:null,day:null,doneToday:{},reads:{},seen:{},scans:[],nextScan:null,skipScan:false,log:{},missed:{},missCount:{},demoSeen:{}},d||{});
-  ["seen","reads","log","missed","missCount","doneToday","demoSeen"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={};});
+  const s=Object.assign({xp:0,streak:0,lastDay:null,day:null,doneToday:{},reads:{},seen:{},scans:[],nextScan:null,skipScan:false,log:{},missed:{},missCount:{},demoSeen:{},badges:{},stickers:{},stats:{}},d||{});
+  ["seen","reads","log","missed","missCount","doneToday","demoSeen","badges","stickers","stats"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={};});
   if(!Array.isArray(s.scans))s.scans=[];
   if(!Array.isArray(s.pat)||s.pat.length!==PATTERNS.length)s.pat=PATTERNS.map((_,i)=>(Array.isArray(s.pat)&&s.pat[i])||{mastered:false,how:null,days:{}});
   s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true,engine:"eleven",demo:"first",talk:"short"},(d&&d.settings)||{});
   if(s.rankSeen===undefined)s.rankSeen=-1;
+  s.stats=Object.assign({planets:0,perfect:0,combo:0,bestCombo:0,locks:0},s.stats);
   if(!s.v8){s.v8=true;s.settings.talk="short";s.settings.demo="first";s.settings.voice=true;}
   if(s.day!==dayStr()){s.day=dayStr();s.doneToday={};}
   if(s.lastDay&&s.lastDay!==dayStr()&&s.lastDay!==dayStr(-1))s.streak=0;
@@ -536,11 +610,11 @@ function load(){
 let S=load();
 let R=null;
 let P=null;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){if(!PROF.last)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const RANKS=[["Cadet",0,"🔰"],["Trooper",500,"🪖"],["Sergeant",2500,"🎖️"],["Commander",7500,"⭐"],["Fleet Admiral",20000,"👑"]];
 function rankIdx(xp){let i=0;RANKS.forEach((r,k)=>{if(xp>=r[1])i=k;});return i;}
 function rankInfo(xp=S.xp){const i=rankIdx(xp),r=RANKS[i],nx=RANKS[i+1];return {i,name:r[0],icon:r[2],next:nx?nx[0]:null,need:nx?nx[1]:null,from:r[1],pct:nx?Math.min(100,Math.round((xp-r[1])/(nx[1]-r[1])*100)):100};}
-function renderHud(){$("#hud-streak").textContent=S.streak;$("#hud-streak-l").textContent=S.streak===1?"day":"days";$("#hud-xp").textContent=S.xp;const r=rankInfo();$("#hud-rank").textContent=`${r.icon} ${r.name}`;}
+function renderHud(){const pc=curPilot();$("#hud-pilot").textContent=pc?`${pc.avatar} ${pc.name||"Pilot"}`:"🧑‍🚀 Sign in";$("#hud-streak").textContent=S.streak;$("#hud-streak-l").textContent=S.streak===1?"day":"days";$("#hud-xp").textContent=S.xp;const r=rankInfo();$("#hud-rank").textContent=`${r.icon} ${r.name}`;}
 let pendingRankUp=null;
 function award(n){
   const before=rankIdx(S.xp);
@@ -552,7 +626,7 @@ function award(n){
 }
 function showRankUp(i){
   const r=RANKS[i];const o=document.createElement("div");o.className="overlay rankup";
-  o.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ru-t"><p class="mc-kicker" style="margin:0">Rank up!</p><div class="badge">${r[2]}</div>
+  o.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ru-t"><p class="mc-kicker" style="margin:0">Rank up!</p><div class="badge"><span class="be">${r[2]}</span><img class="b-img" src="img/rank-${i}.png" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"></div>
     <h2 id="ru-t" style="margin:0">You're now a ${esc(r[0])}!</h2>
     <p class="muted" style="margin:0">${RANKS[i+1]?`Next rank: ${esc(RANKS[i+1][0])} at ${RANKS[i+1][1]} fuel.`:"That's the top rank in the fleet. Legendary."}</p>
     <button class="btn go big" id="ru-ok">Awesome! ▶</button></div>`;
@@ -592,6 +666,7 @@ function logAttempt(mode,ok,p){
 }
 function resolve(it,firstTry){
   if(R){R.res=R.res||[];if(R.res[R.i]===undefined)R.res[R.i]=firstTry?"ok":"bad";}
+  if(R&&!R.test){if(firstTry){S.stats.combo++;if(S.stats.combo>S.stats.bestCombo)S.stats.bestCombo=S.stats.combo;if([3,5,10,15,20].includes(S.stats.combo)){const bonus=S.stats.combo>=10?10:5;award(bonus);R.comboMsg=`🔥 Combo x${S.stats.combo}! +${bonus} bonus fuel`;}}else S.stats.combo=0;}
   if(it._rq)return;logAttempt(R.mode,firstTry,it.p);if(R.mode==="lab"&&it.kind)logAttempt("lab-"+it.kind,firstTry);
   if(firstTry)reviewHit(R.mode,it);else addMissed(R.mode,it);save();
 }
@@ -800,13 +875,13 @@ function home(){
   const scan=lastScan();
   if(!scan&&!S.skipScan){
     app.innerHTML=`<div class="hero" style="--m:var(--c-swap)">
-      <div class="hero-top"><h1>Welcome, Cadet! 👋</h1><button class="readme" id="readme">🔊 Read to me</button></div><div>
+      <div class="hero-top"><h1>Welcome, ${esc((curPilot()&&curPilot().name)||"Cadet")}! 👋</h1><button class="readme" id="readme">🔊 Read to me</button></div><div>
       <p class="muted">Start with a quick <b>Level Scan</b>. It figures out what you're already good at and what to practice first, so you don't waste time on easy stuff.</p></div>
-      <button class="go-big" id="scan-go"><span>🔍</span> Start the Level Scan</button>
+      <button class="go-big" id="scan-go"><span>🔍</span> ${S.scanDraft?`Continue the Level Scan (Part ${S.scanDraft.k+1})`:"Start the Level Scan"}</button>
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 14</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 15</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -819,13 +894,15 @@ function home(){
   const cp=currentPattern();
   const rk=rankInfo();
   app.innerHTML=`<div class="hero mc" style="--m:${next?MCOLOR[next.id]:"var(--mint)"}">
-    <div class="mc-top"><div><p class="mc-kicker">Mission control</p><h1 style="margin:0">${done===0?`Ready, ${esc(rk.name)}?`:done===NM?"All planets cleared!":"Keep flying! 🚀"}</h1></div><button class="readme" id="readme">🔊 Read to me</button></div>
-    <div class="rank"><div class="badge" aria-hidden="true">${rk.icon}</div><div><p class="rank-name">${esc(rk.name)}</p>
+    <div class="mc-top"><div><p class="mc-kicker">Mission control</p><h1 style="margin:0">${done===0?`Ready, ${esc(rk.name)}${curPilot()&&curPilot().name?" "+esc(curPilot().name):""}?`:done===NM?"All planets cleared!":"Keep flying! 🚀"}</h1></div><button class="readme" id="readme">🔊 Read to me</button></div>
+    <img class="mc-ship" src="img/ship.png" alt="" onerror="this.remove()"><div class="rank"><div class="badge" aria-hidden="true"><span class="be">${rk.icon}</span><img class="b-img" src="img/rank-${rk.i}.png" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"></div><div><p class="rank-name">${esc(rk.name)}</p>
       <div class="fuel" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${rk.pct}" aria-label="Fuel to next rank"><span style="width:${rk.pct}%"></span></div>
       <small>${rk.next?`⛽ ${S.xp} / ${rk.need} fuel to <b>${esc(rk.next)}</b>`:"⛽ Top rank reached. Legendary!"}</small></div></div>
+    <div class="teaser"><span>🏅 Badges ${Object.keys(S.badges).length}/${BADGES.length}</span><span>✨ Stickers ${Object.keys(S.stickers).length}/${STICKERS.length}</span><span>🎁 Clear a planet for a supply drop</span></div>
     <p class="muted" style="margin:0">${done===NM?`You cleared all ${NM} planets today. Come back tomorrow to keep your streak alive. 🔥`:`Planets cleared today: <b>${done} of ${NM}</b>.`}</p>
     ${next?`<button class="go-big" id="next-up"><span>${next.icon}</span> Launch: ${esc(next.name)}</button>`:""}
   </div>
+  ${S.scanDraft?`<div class="banner"><span style="font-size:1.6rem">🔍</span><p>Your Level Scan is waiting at Part ${S.scanDraft.k+1} of ${SECTIONS.length}. Pick up where you left off!</p><button class="btn" id="resume-scan">Continue</button></div>`:""}
   ${due?`<div class="banner"><span style="font-size:1.6rem">🔍</span><p>Time for a Level Scan re-check. See how much you've grown!</p><button class="btn" id="rescan">Start</button></div>`:""}
   <p class="map-h">🗺️ ${scan?"Today's flight path":"Star map"}</p>
   <ol class="map">${plan.map((m,i)=>{
@@ -833,16 +910,18 @@ function home(){
     const chip=isDone?`<span class="chip done">✓ Cleared</span>`:isF?`<span class="chip focus">🎯 Focus</span>`:`<span class="chip">${m.min}</span>`;
     const desc=m.id==="spell"&&cp>=0?`Your trick right now: ${PATTERNS[cp].name}`:m.desc;
     return `<li><button class="pl${isDone?" done":""}${isNext?" next":""}" style="--m:${MCOLOR[m.id]}" data-go="${m.id}">
-    <span class="orb" aria-hidden="true">${m.icon}${isDone?`<span class="flag">✓</span>`:""}${isNext?`<span class="you">🚀</span>`:""}</span>
+    <span class="orb" aria-hidden="true"><img class="orb-img" src="img/planet-${m.id}.png" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()"><span class="oe">${m.icon}</span>${isDone?`<span class="flag">✓</span>`:""}${isNext?`<span class="you">🚀</span>`:""}</span>
     <span class="ptxt"><span class="mname">${i+1}. ${esc(m.name)}</span><span class="mdesc">${esc(desc)}</span>${chip}</span></button></li>`;}).join("")}</ol>
   <div class="row" style="justify-content:space-between">
     <button class="link" id="to-settings">⚙️ Settings</button>
     ${!scan?`<button class="link" id="scan-link">🔍 Take the Level Scan</button>`:""}
+    <button class="link" id="to-hangar">🛸 Hangar</button>
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 14</p>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 15</p>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
+  $("#to-hangar").onclick=hangar;if($("#resume-scan"))$("#resume-scan").onclick=scanIntro;
   if(due)$("#rescan").onclick=scanIntro;
   if(!scan)$("#scan-link").onclick=scanIntro;
   $("#to-settings").onclick=settings;$("#to-parent").onclick=parentView;window.scrollTo(0,0);
@@ -860,6 +939,7 @@ function frame(id,body,opts={}){
     const anyDone=R.i>0;prog=`<p class="count">${R.label?esc(R.label)+": ":""}Question ${R.i+1} of ${n}</p><div class="dots" role="img" aria-label="${(R.res||[]).filter(x=>x==="ok").length} right, ${(R.res||[]).filter(x=>x==="bad").length} missed">${Array.from({length:n},(_,k)=>`<i class="${k<R.i?(R.res&&R.res[k]==="bad"?"bad":R.res&&R.res[k]==="two"?"two":"ok"):k===R.i?"now":""}"></i>`).join("")}</div>${anyDone?`<div class="dots-key"><span><i style="background:var(--mint)"></i>Right</span><span><i style="background:var(--sun)"></i>2nd try</span><span><i style="background:var(--coral)"></i>Missed</span></div>`:""}`;
   }
   const canShow=!opts.demo&&R&&!R.test&&R.mode===id&&DEMOS[id];
+  if(id==="scan"&&P&&P.total)prog=scanBar()+prog;
   const helpBtn=`<button class="readme" id="readme">🔊 Read to me</button>`+(canShow?`<button class="help" id="showme">👀 Show me</button>`:"")+(!opts.demo&&MISSIONS.some(x=>x.id===id)?`<button class="help" id="help">❓ How to play</button>`:"");
   app.innerHTML=`<div class="bar"><button class="back" id="back">🏠 Home</button>
     <span class="bar-title"><span class="icon" style="background:${MCOLOR[id]}" aria-hidden="true">${m.icon}</span>${esc(m.name)}</span>${helpBtn}</div>
@@ -871,14 +951,17 @@ function frame(id,body,opts={}){
   window.scrollTo(0,0);
 }
 let leaveArmed=0;
-function confirmLeave(){if(Date.now()-leaveArmed<4000)return true;leaveArmed=Date.now();toast("Leaving stops the scan. Tap Home again to leave.");return false;}
+function confirmLeave(){if(Date.now()-leaveArmed<4000)return true;leaveArmed=Date.now();toast(P&&P.part>0?"Leaving stops this part. Finished parts are saved. Tap again to leave.":"Leaving stops the scan. Tap again to leave.");return false;}
 function startRound(mode,items,view,extra={}){R=Object.assign({mode,items,i:0,tries:0,first:0,total:items.length,xp:0,view},extra);showItem();}
 function showItem(){if(R.i>=R.items.length)return finish();R.tries=0;R.view(R.items[R.i]);}
 function nextItem(){hush();R.i++;showItem();}
 function requeue(it){if(!it._rq)R.items.push(Object.assign({},it,{_rq:true}));}
 function finish(){
   if(R.test){const cb=R.onDone;R=null;cb();return;}
-  S.doneToday[R.mode]=true;save();const r=R;
+  const firstClear=!S.doneToday[R.mode];
+  S.doneToday[R.mode]=true;S.stats.planets++;if(R.first===R.total&&R.total>0)S.stats.perfect++;save();const r=R;
+  const allDone=MISSIONS.every(m=>S.doneToday[m.id]);const goldDrop=allDone&&S.goldDay!==dayStr();if(goldDrop){S.goldDay=dayStr();save();}
+  const nb=checkBadges();
   let mastered="";
   if(r.mode==="spell"&&typeof r.pIdx==="number"&&checkMastery(r.pIdx)){
     const nx=currentPattern();
@@ -889,15 +972,18 @@ function finish(){
   frame(r.mode,`<div class="card finish"><div class="trophy">🪐</div><h2>Planet cleared!</h2>
   <div class="stars" aria-label="${stars} of 3 stars">${"⭐".repeat(stars)}${"☆".repeat(3-stars)}</div>
   <p class="big">You got ${r.first} out of ${r.total}</p>
-  <p class="gain">+${r.xp} points</p>${mastered}
+  <p class="gain">+${r.xp} fuel</p>${mastered}${badgeChips(nb)}
+  ${firstClear?crateHTML(false):""}${goldDrop?crateHTML(true):""}
   <div class="row">${next?`<button class="btn go big" id="nx">${next.icon} Next: ${esc(next.name)}</button>`:`<button class="btn go big" id="nx">🎉 See today's wins</button>`}
   <button class="btn ghost" id="again">🔁 Play again</button></div></div>`);
   $("#nx").onclick=()=>next?GO[next.id]():home();$("#again").onclick=()=>GO[r.mode]();$("#nx").focus();
+  wireCrate(false);wireCrate(true);
   burst($(".trophy"),16);if(pendingRankUp!==null){const i=pendingRankUp;pendingRankUp=null;setTimeout(()=>showRankUp(i),900);}
   narrate(`Planet cleared! You got ${r.first} out of ${r.total}, and earned ${r.xp} points. ${mastered?plain(mastered)+" ":""}${next?`Tap the green button to go to your next mission, ${next.name}.`:"Tap the green button to see today's wins."}`,{short:`Planet cleared! ${r.first} out of ${r.total}.`});
 }
 function endWith(html,disable){
   disable();const fb=$("#fb");
+  if(R&&R.comboMsg){html+=`<p class="cheer">${R.comboMsg}</p>`;R.comboMsg=null;}
   fb.innerHTML=html+`<div class="row"><button class="btn go big" id="next">Next ▶</button></div>`;
   const n=$("#next");n.onclick=nextItem;n.focus();
   speakFb();
@@ -912,7 +998,9 @@ function testRecord(it,ok,v,fixed){
   const body=fixed?`<p class="msg good">✅ Got it on try 2!</p>`+scanRight(sec,it)+(sec==="spell"?meaningHTML(it.w):"")
     :ok?`<p class="msg good">✅ Correct!</p>`+scanRight(sec,it)
     :`<p class="msg bad">🔸 Not quite.</p><div class="miss" style="text-align:left;width:100%"><span aria-hidden="true">💡</span><div>${missItem({sec,it,v})}</div></div>`+SAYK(scanKey(sec,it));
-  endWith(body,()=>{});
+  const fuel=ok?10:fixed?8:5;award(fuel);
+  const ch=scanCheer(ok||fixed);
+  endWith(body+`<p class="gain">+${fuel} fuel</p>`+(ch?`<p class="cheer">${ch.t}</p>`+(ch.say?SAYK(plain(ch.t)):""):""),()=>{});
 }
 function scanRight(sec,it){
   if(sec==="spell"){const p=PATTERNS[it.p];return okTiles(it.w)+(p?`<p class="small" style="margin:0">💡 <b>${esc(p.name)}</b>: ${esc(p.rule)}</p>`:"");}
@@ -939,7 +1027,7 @@ function wireTyped(it,{isRight,rightHTML,wrongHTML,revealHTML,copy}){
   function check(){
     if(over)return;const v=inp.value.trim().toLowerCase();if(!v){toast("Type your answer first 🙂");inp.focus();return;}
     if(copying){
-      if(v===copy){endWith(`<p class="msg good">🔒 Locked in!</p>`+okTiles(copy)+SAYK(`${copy}: ${spellOut(copy)}.`)+COMEBACK,disable);}
+      if(v===copy){S.stats.locks++;save();endWith(`<p class="msg good">🔒 Locked in!</p>`+okTiles(copy)+SAYK(`${copy}: ${spellOut(copy)}.`)+COMEBACK,disable);}
       else{const h=$("#copy-hint");if(h)h.innerHTML=`Not yet: you typed <b>${esc(v)}</b>. Match the green tiles letter by letter.`;inp.select();if(talkMode()!=="quiet")speak("Try again. Match the green tiles.");}
       return;
     }
@@ -1193,25 +1281,68 @@ const SECTIONS=[
 ];
 function scanIntro(){
   R=null;hush();
-  P={results:{sounds:[],spell:[],order:[],parts:[],decode:[]},orderErrs:0,wpm:null};
+  if(S.scanDraft&&!scanIntro.fresh){return scanResume();}
+  scanIntro.fresh=false;
+  P={results:{sounds:[],spell:[],order:[],parts:[],decode:[]},orderErrs:0,wpm:null,done:0,total:SCAN_TOTAL,streak:0,part:0};
   frame("scan",`<div class="card center-text"><span class="icon xl" style="background:var(--c-swap)">🔍</span>
   <h2>Level Scan</h2>
   <p style="margin:0">This helps the app figure out what <b>you</b> need to practice.</p>
   <ol class="modal-like plan" style="text-align:left">${SECTIONS.map(s=>`<li>${s.icon} ${esc(s.name)}</li>`).join("")}</ol>
-  <div class="parent-note"><b>Good to know</b>There's no pass or fail, and no points during the scan. After each answer you'll see if it's right, and if not, the right answer and why. It takes about 15 minutes.</div>
+  <div class="parent-note"><b>Good to know</b>There's no pass or fail. You earn ⛽ fuel for every answer, and you'll see if each one is right. You can take a break between parts, and your progress is saved. About 15 minutes.</div>
   <button class="btn go big" id="begin">🚀 Let's go</button></div>`);
   $("#begin").onclick=()=>runSection(0);
-  narrate("Level Scan. This helps the app figure out what you need to practice. There are 5 parts: sounds, spelling, twin words, word parts, and reading out loud. There's no pass or fail. After each answer, you'll see if it's right, and if not, the right answer and why. Tap Let's go to start.",{short:"Level Scan. Just do your best. Tap Let's go."});
+  narrate("Level Scan. This helps the app figure out what you need to practice. There are 5 parts: sounds, spelling, twin words, word parts, and reading out loud. There's no pass or fail. You earn fuel for every answer, and you can take a break between parts. Tap Let's go to start.",{short:"Level Scan. Just do your best. Tap Let's go."});
 }
-function runSection(k){
+const SCAN_TOTAL=6+12+6+4+11;
+const CHEERS=["Nice focus, pilot! 🛰️","Every answer helps the app learn about you.","You're doing great. Keep going!","Steady and strong! 💪","Your brain is getting a real workout!","Smooth flying! ✨"];
+const SCAN_MILE={25:"🚀 25% done. Great start!",50:"🌗 Halfway there! Keep it up.",75:"🌠 75% done. The finish line is close!",90:"🏁 Almost done. Finish strong!"};
+function scanCheer(ok){
+  P.done++;P.streak=ok?P.streak+1:0;
+  const pct=Math.round(P.done/P.total*100),prev=Math.round((P.done-1)/P.total*100);
+  for(const m of [25,50,75,90])if(prev<m&&pct>=m)return {t:SCAN_MILE[m],say:true};
+  if([3,5,8,12].includes(P.streak))return {t:`🔥 ${P.streak} in a row! You're on fire.`,say:false};
+  if(P.done%4===0)return {t:CHEERS[Math.floor(Math.random()*CHEERS.length)],say:false};
+  return null;
+}
+function scanBar(){
+  if(!P||!P.total)return "";
+  const pct=Math.min(100,Math.round(P.done/P.total*100)),after=SECTIONS.length-(P.part||0)-1;
+  return `<div class="scanbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="Level Scan progress">
+    <div class="sb-top"><span>🔍 Scan ${pct}% done</span><span>${after>0?`${after} more part${after>1?"s":""} after this`:"Last part!"}</span></div>
+    <div class="sb-track"><span style="width:${pct}%"></span><i class="sb-ship" style="left:${Math.max(2,pct)}%">🚀</i></div>
+    <div class="sb-steps">${SECTIONS.map((x,i)=>`<b class="${i<P.part?"done":i===P.part?"now":""}" title="${esc(x.name)}">${i<P.part?"✓":x.icon}</b>`).join("")}</div></div>`;
+}
+function saveDraft(k){S.scanDraft={k,date:dayStr(),P:{results:P.results,orderErrs:P.orderErrs,wpm:P.wpm,done:P.done,total:P.total,streak:0,part:k}};save();}
+function scanResume(){
+  const d=S.scanDraft;
+  frame("scan",`<div class="card center-text"><span class="icon xl" style="background:var(--c-swap)">🔍</span><h2>Welcome back, pilot!</h2>
+    <p style="margin:0">Your Level Scan is saved at <b>Part ${d.k+1} of ${SECTIONS.length}</b>.</p>
+    <button class="btn go big" id="resume">🚀 Keep going</button><button class="link" id="restart">Start the scan over</button></div>`);
+  $("#resume").onclick=()=>{P=JSON.parse(JSON.stringify(d.P));runSection(d.k,true);};
+  $("#restart").onclick=()=>{delete S.scanDraft;save();scanIntro.fresh=true;scanIntro();};
+  narrate(`Welcome back! Your Level Scan is saved at part ${d.k+1}. Tap Keep going.`,{short:"Welcome back! Tap Keep going."});
+}
+function runSection(k,resumed){
   R=null;hush();
   if(k>=SECTIONS.length)return finishScan();
   const sec=SECTIONS[k];
-  frame("scan",`<div class="card center-text"><span class="part-tag">Part ${k+1} of ${SECTIONS.length}</span>
+  let celebrate="",celebrateSay="";
+  if(k>0&&!resumed){
+    const prevSec=SECTIONS[k-1],arr=P.results[prevSec.id]||[],right=arr.filter(x=>x.ok).length,left=SECTIONS.length-k;
+    award(15);saveDraft(k);
+    celebrate=`<div class="card center-text"><div class="trophy">🌟</div><h2 style="margin:0">Part ${k} complete!</h2>
+      <p style="margin:0">${right} of ${arr.length} right on the first try. <span class="gain">+15 fuel bonus</span></p>
+      <p class="cheer">${left===1?"Just one part left. You've got this!":`${left} parts to go. You're doing awesome!`}</p></div>`;
+    celebrateSay=`Part ${k} complete! ${left===1?"Just one part left.":left+" parts to go."}`;
+  }
+  P.part=k;
+  frame("scan",celebrate+`<div class="card center-text"><span class="part-tag">Part ${k+1} of ${SECTIONS.length}</span>
   <span class="icon xl" style="background:var(--c-swap)">${sec.icon}</span>
   <h2>${esc(sec.name)}</h2><p style="margin:0">${esc(sec.intro)}</p>
-  <button class="btn go big" id="startpart">Start part ${k+1} ▶</button></div>`);
-  narrate(`Part ${k+1} of ${SECTIONS.length}: ${sec.name}. ${sec.intro} Tap the green button to start.`,{short:`Part ${k+1}: ${sec.name}.`});
+  <button class="btn go big" id="startpart">Start part ${k+1} ▶</button>${k>0?`<button class="link" id="take-break">☕ Take a break (your progress is saved)</button>`:""}</div>`);
+  if(celebrate)burst($(".trophy"),14);
+  if($("#take-break"))$("#take-break").onclick=()=>{R=null;P=null;home();};
+  narrate(`${celebrateSay} Part ${k+1} of ${SECTIONS.length}: ${sec.name}. ${sec.intro} Tap the green button to start.`,{short:`${celebrateSay} Part ${k+1}: ${sec.name}.`});
   $("#startpart").onclick=()=>{
     if(sec.custom)return decodeIntro(k);
     startRound("scan",sec.build(),sec.view,{test:true,section:sec.id,label:`Part ${k+1}`,onDone:()=>runSection(k+1)});
@@ -1238,11 +1369,11 @@ function decodeWord(i){
   <p class="muted small" style="margin:0">Grown-up: sounds like ${esc(hint)}</p>
   <div class="scorebtns" style="width:100%"><button class="btn go" data-ok="1">✅ Read it right</button><button class="btn no" data-ok="0">🔸 Not quite</button></div></div>`);
   narrate(i===0?"Read this word out loud. Sound it out, one sound at a time.":"Read this word out loud.",{short:i===0?"Read this word out loud.":""});
-  app.querySelectorAll("[data-ok]").forEach(b=>b.onclick=()=>{P.results.decode.push({ok:b.dataset.ok==="1",it:{word:w}});decodeWord(i+1);});
+  app.querySelectorAll("[data-ok]").forEach(b=>b.onclick=()=>{const ok=b.dataset.ok==="1";P.results.decode.push({ok,it:{word:w}});award(5);const ch=scanCheer(ok);if(ch)toast(ch.t);decodeWord(i+1);});
 }
 function decodePassage(){
   const p=PLACE.passage;
-  const tr=timedReader(p,{listen:false,skipLabel:"Skip the story",onSkip:finishScan,onDone:wpm=>{P.wpm=wpm;finishScan();}});
+  const tr=timedReader(p,{listen:false,skipLabel:"Skip the story",onSkip:finishScan,onDone:wpm=>{P.wpm=wpm;P.done++;award(15);finishScan();}});
   frame("scan",`<span class="part-tag">Last step</span><h2>📻 ${esc(p.title)}</h2>
   <p class="muted" style="margin:0">Read this story out loud at your normal speed. Grown-up: tap Start when reading begins and Done when it ends.</p>${tr.html}`);
   tr.wire();
@@ -1250,7 +1381,7 @@ function decodePassage(){
 }
 function pctOf(arr){return arr&&arr.length?Math.round(arr.filter(r=>r.ok).length/arr.length*100):null;}
 function finishScan(){
-  R=null;hush();const r=P.results;
+  R=null;hush();const r=P.results;delete S.scanDraft;
   const spellBy=PATTERNS.map((_,i)=>{const a=r.spell.filter(x=>x.it.p===i);return a.length?{c:a.filter(x=>x.ok).length,t:a.length}:null;});
   const rec={date:dayStr(),scores:{sounds:pctOf(r.sounds),spell:pctOf(r.spell),order:pctOf(r.order),parts:pctOf(r.parts),decode:pctOf(r.decode)},
     spellBy,orderErrs:P.orderErrs,spellWrong:r.spell.filter(x=>!x.ok).length,wpm:P.wpm,
@@ -1307,6 +1438,7 @@ function resultsBody(rec,prev){
   ${rec.missed.length?`<div class="card"><p class="section-h">Words to practice</p><div class="words">${rec.missed.map(w=>`<span>${esc(w)}</span>`).join("")}</div><p class="muted small" style="margin:0">Missed spelling and twin words are added to review automatically.</p></div>`:""}`;
 }
 function resultsScreen(rec,first){
+  const nbS=checkBadges();
   const prev=S.scans.length>1?S.scans[S.scans.length-2]:null;
   const plan=planOrder(),focus=focusMissions(),cp=currentPattern();
   frame("scan",`<div class="card center-text"><div class="trophy">🎉</div><h2>Scan complete!</h2>
@@ -1315,6 +1447,7 @@ function resultsScreen(rec,first){
   <ol class="plan">${plan.map(m=>`<li>${m.icon} ${esc(m.name)}${focus.includes(m.id)?" 🎯":""}</li>`).join("")}</ol>
   ${cp>=0?`<p style="margin:0">✏️ First spelling trick: <b>${esc(PATTERNS[cp].name)}</b></p>`:""}
   <p class="muted small" style="margin:0">🎯 means a focus area. Those come first and get a couple of extra questions. The next re-check is in 3 weeks.</p></div>
+  ${nbS.length?`<div class="card center-text">${badgeChips(nbS)}</div>`:""}
   ${resultsBody(rec,prev)}
   <button class="btn go big" id="train">🚀 Start training</button>`);
   $("#train").onclick=home;
@@ -1363,7 +1496,7 @@ function settings(){
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 14 (orange instead of red)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 15 (pilots, scan progress, rewards)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
@@ -1381,7 +1514,7 @@ function settings(){
   $("#reset").onclick=e=>{
     if(!armed){armed=true;e.currentTarget.textContent="⚠️ Tap again to erase everything, including scans";return;}
     const keep=S.settings;try{localStorage.removeItem(KEY)}catch(x){}
-    S=load();S.settings=keep;save();renderHud();toast("Progress reset.");home();
+    S=load();S.settings=keep;save();renderHud();toast("This pilot's progress was reset.");home();
   };
 }
 
@@ -1470,6 +1603,60 @@ const DEMOS={
   ];}
 };
 
+
+/* ---------- Rewards: combos, supply drops, stickers, badges ---------- */
+const STICKERS=[["🪐","Ringed Planet"],["🌌","Galaxy"],["☄️","Comet"],["🛸","UFO"],["👾","Space Critter"],["🌠","Shooting Star"],["🌙","Moon"],["🛰️","Satellite"],["🔭","Telescope"],["🌍","Earth"],["🌞","Sun"],["🌑","New Moon"],["🚀","Rocket"],["🧑‍🚀","Astronaut"],["🤖","Robot"],["👽","Alien"],["⭐","Star"],["💫","Stardust"],["🌀","Wormhole"],["🔋","Power Cell"],["🦾","Robo Arm"],["🧭","Star Compass"],["💎","Space Gem"],["🏆","Golden Trophy"]];
+const BADGES=[
+ ["scan","Scanner","🔍","Finish a Level Scan",s=>s.scans.length>0],
+ ["liftoff","Liftoff","🚀","Clear your first planet",s=>s.stats.planets>=1],
+ ["orbit","Full Orbit","🪐","Clear every planet in one day",s=>MISSIONS.every(m=>s.doneToday[m.id])],
+ ["fire","On Fire","🔥","Practice 3 days in a row",s=>s.streak>=3],
+ ["comet","Unstoppable","☄️","Practice 7 days in a row",s=>s.streak>=7],
+ ["perfect","Perfect Landing","🎯","Get every answer right in a round",s=>s.stats.perfect>=1],
+ ["combo","Combo Pilot","⚡","Get 5 right in a row",s=>s.stats.bestCombo>=5],
+ ["lock","Word Locksmith","🔒","Lock in 10 words",s=>s.stats.locks>=10],
+ ["reader","Speed Reader","📖","Finish 5 speed reads",s=>Object.values(s.reads).reduce((a,r)=>a+r.length,0)>=5],
+ ["shun","Shun Master","🧪","Master the Ending Lab",s=>labMastered()],
+ ["collector","Collector","💎","Collect 12 stickers",s=>Object.keys(s.stickers).length>=12],
+ ["admiral","Fleet Admiral","👑","Reach the top rank",s=>rankIdx(s.xp)>=4]
+];
+function checkBadges(){const out=[];BADGES.forEach(b=>{if(!S.badges[b[0]]&&b[4](S)){S.badges[b[0]]=dayStr();out.push(b);}});if(out.length)save();return out;}
+function badgeChips(list){return list.length?`<p class="lbl-sm" style="margin:0;color:var(--sun)">🏅 New badge${list.length>1?"s":""}!</p><div class="newbadges">${list.map(b=>`<span>${b[2]} ${esc(b[1])}</span>`).join("")}</div>`:"";}
+function openCrate(gold){
+  const pool=gold?STICKERS.map((_,i)=>i):STICKERS.map((_,i)=>i).slice(0,20);
+  const fresh=pool.filter(i=>!S.stickers[i]);
+  const pickFrom=(gold&&fresh.length)?fresh:pool;
+  const i=pickFrom[Math.floor(Math.random()*pickFrom.length)];
+  const dup=!!S.stickers[i];
+  if(dup)award(20);else S.stickers[i]=dayStr();
+  if(gold)award(50);
+  save();return {i,dup};
+}
+function crateHTML(gold){
+  return `<div class="crate" id="crate${gold?"-gold":""}"><img class="crate-img" src="img/crate${gold?"-gold":""}.png" alt="" onerror="this.remove()">
+    <p style="margin:0;font-weight:800">${gold?"🌟 Golden supply drop! You cleared every planet today.":"🎁 Supply drop incoming!"}</p>
+    <button class="btn gold" id="open-crate${gold?"-gold":""}">${gold?"✨ Open golden drop":"🎁 Open supply drop"}</button></div>`;
+}
+function wireCrate(gold){
+  const b=$("#open-crate"+(gold?"-gold":""));if(!b)return;
+  b.onclick=()=>{const r=openCrate(gold),st=STICKERS[r.i],box=$("#crate"+(gold?"-gold":""));
+    box.innerHTML=`<div class="sticker-big">${st[0]}</div><p style="margin:0;font-weight:800">${r.dup?`${esc(st[1])} again! Duplicate = +20 fuel`:`New sticker: ${esc(st[1])}!`}${gold?" Plus +50 bonus fuel!":""}</p>
+      <p class="muted small" style="margin:0">Stickers: ${Object.keys(S.stickers).length} of ${STICKERS.length} · see them in the 🛸 Hangar</p>`;
+    burst(box.querySelector(".sticker-big"),16);
+    if(talkMode()!=="quiet")speak(r.dup?`${st[1]} again! Plus 20 fuel.`:`New sticker! ${st[1]}!`);
+    const nb=checkBadges();if(nb.length)box.insertAdjacentHTML("beforeend",badgeChips(nb));
+  };
+}
+function hangar(){
+  R=null;P=null;hush();
+  const pc=curPilot(),rk=rankInfo(),nb=Object.keys(S.badges).length,ns=Object.keys(S.stickers).length;
+  frame("hangar",`<div class="card"><div class="rank" style="border:0;background:none;padding:0"><div class="badge">${pc?pc.avatar:"🧑‍🚀"}</div><div><p class="rank-name">${esc(pc?pc.name:"Pilot")}</p><small>${rk.icon} ${esc(rk.name)} · ⛽ ${S.xp} fuel · 🔥 ${S.streak} day streak</small></div></div></div>
+    <div class="card"><p class="section-h">🏅 Badges (${nb} of ${BADGES.length})</p><div class="grid-badges">${BADGES.map(b=>`<div class="bdg ${S.badges[b[0]]?"on":"off"}"><span class="bi">${b[2]}</span><b>${esc(b[1])}</b><small>${esc(b[3])}</small></div>`).join("")}</div></div>
+    <div class="card"><p class="section-h">✨ Sticker collection (${ns} of ${STICKERS.length})</p><div class="grid-stickers">${STICKERS.map((st,i)=>S.stickers[i]?`<div class="stk" title="${esc(st[1])}">${st[0]}</div>`:`<div class="stk off" title="Not found yet">?</div>`).join("")}</div>
+      <p class="muted small" style="margin:0">Clear a planet to get a supply drop. Clear every planet in a day for a golden drop with rare stickers.</p></div>
+    <div class="card"><p class="section-h">📈 Pilot stats</p><ul class="pat-list"><li><span>Planets cleared</span><b>${S.stats.planets}</b></li><li><span>Best answer streak</span><b>${S.stats.bestCombo}</b></li><li><span>Words locked in</span><b>${S.stats.locks}</b></li><li><span>Perfect rounds</span><b>${S.stats.perfect}</b></li></ul></div>`);
+  narrate(`Your hangar. You have ${nb} badges and ${ns} stickers.`,{short:""});
+}
 /* ---------- Ending Lab: -tion / -sion (structured, multisensory) ---------- */
 const LAB=[
  {word:"action",base:"act",stem:"ac",end:"tion",syl:["ac","tion"]},
@@ -1629,7 +1816,55 @@ function backToTyping(){const a=document.getElementById("ans");if(a&&!a.disabled
 document.addEventListener("mousedown",e=>{if(e.target.closest(LISTEN_BTNS)&&document.getElementById("ans"))e.preventDefault();},true);
 document.addEventListener("click",e=>{if(e.target.closest(LISTEN_BTNS))setTimeout(backToTyping,0);},true);
 $("#brand").onclick=()=>{if(P&&!confirmLeave())return;home();};
-applySettings();renderHud();save();home();
+
+function signIn(editId){
+  R=null;P=null;hush();setColor(null);
+  document.querySelector(".hud").style.visibility="hidden";
+  const list=PROF.list;
+  const card=x=>{const d=pilotSave(x.id),rk=rankInfo(d.xp||0);
+    return `<div class="pwrap"><button class="pilot" data-pick="${x.id}"><span class="av">${x.avatar}</span><span class="pn">${esc(x.name||"Name me!")}</span><span class="pr">${rk.icon} ${rk.name} · ⛽ ${d.xp||0}</span></button>
+      <button class="mini ed" data-edit="${x.id}" aria-label="Edit ${esc(x.name||"pilot")}">✏️</button>${list.length>1?`<button class="mini del" data-del="${x.id}" aria-label="Remove ${esc(x.name||"pilot")}">🗑️</button>`:""}</div>`;};
+  if(!list.length||editId!==undefined){return pilotForm(editId||null);}
+  app.innerHTML=`<div class="hero signin"><div><p class="mc-kicker">Pilot sign-in</p><h1 style="margin:0">Who's flying today?</h1></div>
+    <div class="pilots">${list.map(card).join("")}<button class="pilot add" id="add-pilot"><span class="av">➕</span><span class="pn">New pilot</span><span class="pr" style="color:var(--muted)">Add a learner</span></button></div>
+    <p class="privacy">🔒 Progress is saved only on this device, in this browser. No account, email, or password needed.</p></div>`;
+  app.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const x=list.find(y=>y.id===b.dataset.pick);if(!x.name)return pilotForm(x.id);switchTo(x.id);});
+  app.querySelectorAll("[data-edit]").forEach(b=>b.onclick=e=>{e.stopPropagation();pilotForm(b.dataset.edit);});
+  let armed=null;
+  app.querySelectorAll("[data-del]").forEach(b=>b.onclick=e=>{e.stopPropagation();const id=b.dataset.del;
+    if(armed!==id){armed=id;toast("Tap 🗑️ again to remove this pilot and their progress.");return;}
+    PROF.list=PROF.list.filter(y=>y.id!==id);try{localStorage.removeItem("decode-space-v1:"+id);}catch(x){}
+    if(PROF.last===id)PROF.last=null;setProfiles();signIn();});
+  $("#add-pilot").onclick=()=>pilotForm(null);
+  narrate("Who's flying today? Tap your name, or tap New pilot.",{short:"Who's flying today? Tap your name."});
+  window.scrollTo(0,0);
+}
+function pilotForm(id){
+  const x=id?PROF.list.find(y=>y.id===id):null;let av=x?x.avatar:AVATARS[0];
+  app.innerHTML=`<div class="hero signin"><div><p class="mc-kicker">${x&&x.name?"Edit pilot":"New pilot"}</p><h1 style="margin:0">${x&&x.name?"Update your pilot":"Create your pilot"}</h1></div>
+    <label class="lbl-sm" for="pname">Your first name</label>
+    <input id="pname" class="name-in" maxlength="16" autocomplete="off" placeholder="Type your name" value="${x?esc(x.name):""}">
+    <p class="lbl-sm" style="margin:0">Pick your pilot</p>
+    <div class="avatars">${AVATARS.map(a=>`<button data-av="${a}" aria-pressed="${a===av}" aria-label="Avatar ${a}">${a}</button>`).join("")}</div>
+    <div class="row center">${PROF.list.length?`<button class="btn ghost" id="pf-cancel">Back</button>`:""}<button class="btn go big" id="pf-save">🚀 ${x&&x.name?"Save":"Let's fly"}</button></div>
+    <p class="privacy">🔒 Saved only on this device. Use a first name or a nickname.</p></div>`;
+  app.querySelectorAll("[data-av]").forEach(b=>b.onclick=()=>{av=b.dataset.av;app.querySelectorAll("[data-av]").forEach(c=>c.setAttribute("aria-pressed",String(c.dataset.av===av)));});
+  if($("#pf-cancel"))$("#pf-cancel").onclick=()=>signIn();
+  const go=()=>{const name=$("#pname").value.trim().replace(/\s+/g," ").slice(0,16);if(!name){toast("Type your name first 🙂");$("#pname").focus();return;}
+    if(x){x.name=name;x.avatar=av;}else{const nid="p"+Date.now().toString(36);PROF.list.push({id:nid,name,avatar:av});id=nid;}
+    setProfiles();switchTo(x?x.id:id);};
+  $("#pf-save").onclick=go;$("#pname").addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+  setTimeout(()=>$("#pname").focus(),60);
+  narrate("Type your first name, then pick your pilot.",{short:"Type your name, then pick your pilot."});
+}
+function switchTo(id){
+  PROF.last=id;setProfiles();KEY="decode-space-v1:"+id;S=load();save();R=null;P=null;
+  document.querySelector(".hud").style.visibility="";applySettings();renderHud();home();
+}
+function startApp(){const pc=curPilot();if(PROF.list.length===1&&pc&&pc.name)return switchTo(pc.id);signIn();}
+(()=>{const bg=new Image();bg.onload=()=>document.body.classList.add("has-bg");bg.src="img/space-bg.jpg";})();
+$("#hud-pilot").onclick=()=>{if(P&&!confirmLeave())return;signIn();};
+applySettings();renderHud();startApp();
 
 </script>
 </body>
