@@ -293,21 +293,19 @@ h2{font-size:1.35rem}
 .rankup .badge{width:5.5rem;height:5.5rem;font-size:3rem;margin:0 auto;animation:pop .5s ease-out both}
 @media (prefers-reduced-motion: reduce){body::before{animation:none}}
 /* Logo + Akra owl brandmark */
-.logo-mark{position:relative;flex:none;width:3rem;height:3rem;border-radius:50%;display:grid;place-items:center;overflow:hidden;
-  background:radial-gradient(circle at 50% 38%,#33468F,#141C44 72%);border:2px solid rgba(255,200,61,.85);
-  box-shadow:0 0 0 4px rgba(34,211,238,.12),0 0 22px rgba(255,200,61,.35),inset 0 2px 6px rgba(255,255,255,.18)}
-.logo-mark img{width:90%;height:90%;object-fit:contain;margin-top:6%;filter:drop-shadow(0 0 5px rgba(255,255,255,.28))}
+.logo-mark{position:relative;flex:none;width:3.3rem;height:3.3rem;display:grid;place-items:center}
+.logo-mark img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 1px rgba(255,255,255,.55)) drop-shadow(0 0 10px rgba(125,232,255,.35)) drop-shadow(0 0 18px rgba(255,200,61,.25))}
 .logo-mark.nofile::after{content:"🦉";font-size:1.7rem}
 .logo-word{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
 .lw-main{font-family:var(--pix);font-weight:800;font-size:1.75rem;letter-spacing:-.03em;line-height:1;
   background:linear-gradient(95deg,#7DE8FF 0%,#A78BFA 52%,#F472B6 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 0 14px rgba(125,232,255,.25))}
 .lw-sub{font-size:.72rem;font-weight:700;color:var(--sun);letter-spacing:.1em;margin-top:.28rem}
-.brand:hover .logo-mark{box-shadow:0 0 0 4px rgba(34,211,238,.22),0 0 28px rgba(255,200,61,.5),inset 0 2px 6px rgba(255,255,255,.18)}
+.brand:hover .logo-mark img{filter:drop-shadow(0 0 1px rgba(255,255,255,.7)) drop-shadow(0 0 14px rgba(125,232,255,.5)) drop-shadow(0 0 24px rgba(255,200,61,.4))}
 header{gap:.6rem}
 /* Big lockup on sign-in */
 .splash{display:flex;flex-direction:column;align-items:center;gap:.6rem;text-align:center;padding:.4rem 0 .2rem}
-.splash .logo-mark{width:6.5rem;height:6.5rem;border-width:3px}
+.splash .logo-mark{width:8rem;height:8rem}
 .splash .logo-mark.nofile::after{font-size:3.6rem}
 .splash .lw-main{font-size:3rem}
 .splash .lw-sub{font-size:.9rem}
@@ -462,7 +460,7 @@ body.has-bg{background-image:linear-gradient(rgba(10,15,36,.55),rgba(10,15,36,.7
 <div class="wrap">
   <header>
     <button class="brand" id="brand" aria-label="Decode Space Adventure, home">
-      <span class="logo-mark"><img src="img/owl.webp" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span>
+      <span class="logo-mark"><img src="img/owl-512.png" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span>
       <span class="logo-word"><span class="lw-main">Decode</span><span class="lw-sub">Space Adventure</span></span>
     </button>
     <div class="hud">
@@ -919,7 +917,7 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 17</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 18</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -956,7 +954,7 @@ function home(){
     <button class="link" id="to-hangar">🛸 Hangar</button>
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 17</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 18</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   app.querySelectorAll(".orb-vid").forEach(v=>{v.muted=true;const p=v.play();if(p&&p.catch)p.catch(()=>{});});
@@ -1535,7 +1533,7 @@ function settings(){
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 17 (new logo + owl brandmark)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 18 (owl-512 logo)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
@@ -1864,7 +1862,7 @@ function signIn(editId){
     return `<div class="pwrap"><button class="pilot" data-pick="${x.id}"><span class="av">${x.avatar}</span><span class="pn">${esc(x.name||"Name me!")}</span><span class="pr">${rk.icon} ${rk.name} · ⛽ ${d.xp||0}</span></button>
       <button class="mini ed" data-edit="${x.id}" aria-label="Edit ${esc(x.name||"pilot")}">✏️</button>${list.length>1?`<button class="mini del" data-del="${x.id}" aria-label="Remove ${esc(x.name||"pilot")}">🗑️</button>`:""}</div>`;};
   if(!list.length||editId!==undefined){return pilotForm(editId||null);}
-  app.innerHTML=`<div class="hero signin"><div class="splash"><span class="logo-mark"><img src="img/owl.webp" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span><span class="logo-word" style="align-items:center"><span class="lw-main">Decode</span><span class="lw-sub">Space Adventure</span></span></div><div><p class="mc-kicker">Pilot sign-in</p><h1 style="margin:0">Who's flying today?</h1></div>
+  app.innerHTML=`<div class="hero signin"><div class="splash"><span class="logo-mark"><img src="img/owl-512.png" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span><span class="logo-word" style="align-items:center"><span class="lw-main">Decode</span><span class="lw-sub">Space Adventure</span></span></div><div><p class="mc-kicker">Pilot sign-in</p><h1 style="margin:0">Who's flying today?</h1></div>
     <div class="pilots">${list.map(card).join("")}<button class="pilot add" id="add-pilot"><span class="av">➕</span><span class="pn">New pilot</span><span class="pr" style="color:var(--muted)">Add a learner</span></button></div>
     <p class="privacy">🔒 Progress is saved only on this device, in this browser. No account, email, or password needed.</p></div>`;
   app.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const x=list.find(y=>y.id===b.dataset.pick);if(!x.name)return pilotForm(x.id);switchTo(x.id);});
