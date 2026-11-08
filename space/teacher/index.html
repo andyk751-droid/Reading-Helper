@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decode Teacher Dashboard</title>
+<meta name="description" content="Track your learners' progress in Decode Space Adventure.">
+<link rel="icon" href="../img/owl-64.png">
+<link rel="apple-touch-icon" href="../img/owl-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --bg:#F2F5FB;--surface:#FFFFFF;--surface2:#F7F9FD;--ink:#16203A;--muted:#5A6684;--line:#DCE3EF;
+  --accent:#3B5BDB;--accent-ink:#FFFFFF;--accent-soft:#E7ECFD;
+  --good:#12936F;--good-soft:#E3F5EE;--mid:#B07600;--mid-soft:#FCF1D8;--focus:#D2600A;--focus-soft:#FDEBDD;
+  --shadow:0 1px 2px rgba(20,30,60,.06),0 6px 20px rgba(20,30,60,.06);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1226;--surface:#151D38;--surface2:#1A2344;--ink:#E9EEFA;--muted:#A3AFCD;--line:#2B3762;
+  --accent:#7C94FF;--accent-ink:#0C1226;--accent-soft:#232F5C;
+  --good:#3BD3A2;--good-soft:#173A36;--mid:#FFC94A;--mid-soft:#3A3220;--focus:#FF9A4D;--focus-soft:#3D2A1E;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}}
+:root[data-theme="dark"]{
+  --bg:#0C1226;--surface:#151D38;--surface2:#1A2344;--ink:#E9EEFA;--muted:#A3AFCD;--line:#2B3762;
+  --accent:#7C94FF;--accent-ink:#0C1226;--accent-soft:#232F5C;
+  --good:#3BD3A2;--good-soft:#173A36;--mid:#FFC94A;--mid-soft:#3A3220;--focus:#FF9A4D;--focus-soft:#3D2A1E;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Lexend",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Sora",system-ui,sans-serif;line-height:1.2;margin:0}
+h1{font-size:1.5rem}h2{font-size:1.2rem}h3{font-size:1rem}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 48px}
+header.top{display:flex;align-items:center;gap:12px;padding:14px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.brand img{width:40px;height:40px;object-fit:contain}
+.brand b{font-family:Sora;font-weight:800;font-size:1.15rem;background:linear-gradient(90deg,#22B8D8,#7C5CFF,#E2559A);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand small{display:block;color:var(--muted);font-size:.78rem;margin-top:-2px}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.small{padding:5px 10px;font-size:.85rem}
+.btn.link{border:0;background:none;color:var(--accent);padding:4px 6px}
+.btn.warn{color:var(--focus)}
+.btn:disabled{opacity:.55;cursor:default}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.muted{color:var(--muted)}.small{font-size:.85rem}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.field label{font-weight:600;font-size:.9rem}
+input[type=email],input[type=password],input[type=text],select,textarea{border:1px solid var(--line);background:var(--surface2);border-radius:10px;padding:9px 12px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.auth{max-width:420px;margin:6vh auto 0}
+.auth h1{margin-bottom:4px}
+.msg{min-height:1.3em;margin:6px 0 0;font-weight:600;font-size:.92rem;color:var(--focus)}
+.msg.ok{color:var(--good)}
+.classbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:6px 0 16px}
+.classbar select{width:auto;min-width:200px;font-weight:600}
+.codebox{display:flex;align-items:center;gap:10px;background:var(--accent-soft);border-radius:12px;padding:6px 8px 6px 14px}
+.codebox span{font-size:.8rem;color:var(--muted);font-weight:600}
+.codebox b{font-family:Sora;font-size:1.25rem;letter-spacing:.18em}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto}
+.tabs button{border:0;background:none;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.kpi .v{font-family:Sora;font-weight:800;font-size:1.6rem}
+.kpi .l{color:var(--muted);font-size:.85rem}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--surface2);font-weight:700}
+th button{all:unset;cursor:pointer}
+tr:last-child td{border-bottom:0}
+tbody tr.click{cursor:pointer}
+tbody tr.click:hover{background:var(--surface2)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.who{display:flex;align-items:center;gap:8px;font-weight:600}
+.who .av{font-size:1.4rem}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;padding:2px 9px;border-radius:999px}
+.tag.good{background:var(--good-soft);color:var(--good)}
+.tag.mid{background:var(--mid-soft);color:var(--mid)}
+.tag.focus{background:var(--focus-soft);color:var(--focus)}
+.tag.none{background:var(--surface2);color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.bar{display:grid;grid-template-columns:minmax(120px,1fr) 2fr 3.2rem;gap:10px;align-items:center;margin:8px 0;font-size:.92rem}
+.bar .track{height:10px;background:var(--surface2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.bar .fill{height:100%;border-radius:99px}
+.bar b{text-align:right;font-variant-numeric:tabular-nums}
+ul.plain{list-style:none;padding:0;margin:0}
+ul.plain li{padding:8px 0;border-bottom:1px solid var(--line)}
+ul.plain li:last-child{border-bottom:0}
+.recs li{display:flex;gap:10px;align-items:flex-start}
+.words{display:flex;flex-wrap:wrap;gap:6px}
+.words span{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:3px 9px;font-weight:600;font-size:.88rem}
+.words span i{font-style:normal;color:var(--muted);font-weight:500;margin-left:4px}
+.detailhead{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.detailhead .av{font-size:2.6rem}
+.empty{text-align:center;padding:36px 16px}
+.empty .big{font-size:2.4rem}
+.rowflex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pinshow{font-size:1.4rem;letter-spacing:.1em}
+.notice{background:var(--mid-soft);border-radius:12px;padding:10px 14px;font-size:.9rem;margin-bottom:14px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:50;max-width:90vw}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);padding:20px;max-width:440px;width:calc(100% - 32px);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(10,15,35,.45)}
+footer{margin-top:32px;color:var(--muted);font-size:.82rem;text-align:center}
+#print{display:none}
+@media print{
+  body{background:#fff}
+  body>*:not(#print){display:none!important}
+  #print{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pcard{border:2px dashed #999;border-radius:12px;padding:12px 14px;break-inside:avoid;color:#111;font-family:Lexend,sans-serif}
+  .pcard h3{font-family:Sora;font-size:1.1rem;margin:0 0 4px}
+  .pcard .pics{display:flex;gap:10px;font-size:2rem;margin:6px 0}
+  .pcard .pics span{display:flex;flex-direction:column;align-items:center;font-size:2rem}
+  .pcard .pics small{font-size:.6rem;color:#555}
+  .pcard p{margin:2px 0;font-size:.82rem}
+}
+@media (max-width:640px){h1{font-size:1.25rem}.classbar select{min-width:0;flex:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../" title="Open the game"><img src="../img/owl-512.png" alt=""><span><b>Decode</b><small>Teacher Dashboard</small></span></a>
+    <div class="spacer"></div>
+    <div id="who" class="rowflex"></div>
+  </header>
+  <main id="main" aria-live="polite"></main>
+  <footer>Decode Space Adventure · Made by <a href="https://www.akratechnologies.com/" target="_blank" rel="noopener">Akra Technologies</a> · Only first names are stored. Each teacher sees only their own classes.</footer>
+</div>
+<div id="print"></div>
+<dialog id="dlg"></dialog>
+<script>
+const SB_URL="https://atsgfhkzhnzjzylwzmkv.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0c2dmaGt6aG56anp5bHd6bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NjUxNDMsImV4cCI6MjEwMjI0MTE0M30.CobBQSwYd90NC0rninqhhZBv1Qu0zI2TTX5sGri3jv4";
+const GAME_URL="andyk751-droid.github.io/Reading-Helper/space/";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const PICS=[["🚀","rocket"],["🪐","planet"],["⭐","star"],["🌙","moon"],["☄️","comet"],["👽","alien"],["🛸","saucer"],["🌍","Earth"],["🤖","robot"]];
+const MISSIONS={lab:["🧪","Ending Lab"],swap:["🎧","Sound Swap"],spell:["✏️","Spell It"],flip:["🔀","Twin Words"],forge:["🧩","Word Builder"],speed:["⚡","Speed Read"]};
+const AREAS=[["sounds","🎧","Hearing sounds","swap"],["spell","✏️","Spelling patterns","spell"],["order","🔀","Letter order","flip"],["parts","🧩","Word parts","forge"],["decode","🗣️","Sounding out new words","speed"]];
+const SECS={sounds:"Sounds",spell:"Spelling",order:"Twin words",parts:"Word parts",decode:"Reading made-up words"};
+const $=s=>document.querySelector(s);
+const main=$("#main");
+const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let toastT;function toast(m){let t=$(".toast");if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}t.textContent=m;clearTimeout(toastT);toastT=setTimeout(()=>t.remove(),3200);}
+const DAY=864e5;
+const daysAgo=d=>d?Math.floor((Date.now()-new Date(d))/DAY):null;
+function ago(d){if(!d)return "Never";const m=Math.round((Date.now()-new Date(d))/6e4);if(m<2)return "Just now";if(m<60)return m+" min ago";const h=Math.round(m/60);if(h<24)return h+" hr ago";const dd=Math.round(h/24);return dd===1?"Yesterday":dd<14?dd+" days ago":new Date(d).toLocaleDateString(undefined,{month:"short",day:"numeric"});}
+const fmtDate=d=>new Date(d).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+const fmtTime=d=>new Date(d).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+const pct=(a,b)=>b?Math.round(a/b*100):null;
+const lvl=v=>v==null?["none","—"]:v>=85?["good","Strong"]:v>=60?["mid","Getting there"]:["focus","Focus"];
+const colorFor=v=>v>=85?"var(--good)":v>=60?"var(--mid)":"var(--focus)";
+const pinPics=p=>p.split("-").map(i=>PICS[+i][0]).join(" ");
+function newPin(){const a=crypto.getRandomValues(new Uint8Array(4));return [...a].map(x=>x%9).join("-");}
+
+let USER=null,CLASSES=[],CUR=null,D=null,TAB="roster",SORT={k:"name",dir:1},DETAIL=null,refreshT=null;
+
+/* ---------- Auth ---------- */
+function authView(mode="in",note=""){
+  $("#who").innerHTML="";
+  const t={in:["Teacher sign in","Sign in to see your classes."],up:["Create a teacher account","Free. Use your school or personal email."],forgot:["Reset your password","We'll email you a reset link."],reset:["Choose a new password",""]}[mode];
+  main.innerHTML=`<div class="auth card"><h1>${t[0]}</h1><p class="muted" style="margin:0 0 16px">${t[1]}</p>
+    <form id="af">${mode!=="reset"?`<div class="field"><label for="em">Email</label><input id="em" type="email" autocomplete="email" required></div>`:""}
+    ${mode!=="forgot"?`<div class="field"><label for="pw">${mode==="reset"?"New password":"Password"}</label><input id="pw" type="password" minlength="8" autocomplete="${mode==="in"?"current-password":"new-password"}" required>${mode!=="in"?`<span class="muted small">At least 8 characters.</span>`:""}</div>`:""}
+    <button class="btn primary" style="width:100%" type="submit">${{in:"Sign in",up:"Create account",forgot:"Send reset link",reset:"Save password"}[mode]}</button>
+    <p class="msg${note?" ok":""}" id="am" role="status">${esc(note)}</p></form>
+    <div class="rowflex small" style="justify-content:space-between;margin-top:10px">
+      ${mode==="in"?`<button class="btn link" data-m="up">Create an account</button><button class="btn link" data-m="forgot">Forgot password?</button>`:mode!=="reset"?`<button class="btn link" data-m="in">Back to sign in</button>`:""}</div></div>`;
+  main.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>authView(b.dataset.m));
+  $("#af").onsubmit=async e=>{e.preventDefault();const am=$("#am");am.className="msg";am.textContent="One moment…";
+    const em=$("#em")?.value.trim(),pw=$("#pw")?.value,back=location.href.split("#")[0].split("?")[0];let r;
+    if(mode==="in")r=await sb.auth.signInWithPassword({email:em,password:pw});
+    if(mode==="up")r=await sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:back}});
+    if(mode==="forgot")r=await sb.auth.resetPasswordForEmail(em,{redirectTo:back});
+    if(mode==="reset")r=await sb.auth.updateUser({password:pw});
+    if(r.error){am.textContent=r.error.message;return;}
+    if(mode==="up"&&!r.data.session){return authView("in","Check your email for a confirmation link, then sign in.");}
+    if(mode==="forgot"){am.className="msg ok";am.textContent="Check your email for the reset link.";return;}
+    if(mode==="reset")toast("Password saved.");
+    start();};
+  setTimeout(()=>($("#em")||$("#pw")).focus(),50);
+}
+sb.auth.onAuthStateChange((ev)=>{if(ev==="PASSWORD_RECOVERY")authView("reset");});
+
+async function start(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){return authView();}
+  USER=session.user;
+  $("#who").innerHTML=`<span class="muted small">${esc(USER.email)}</span><button class="btn small" id="so">Sign out</button>`;
+  $("#so").onclick=async()=>{await sb.auth.signOut();USER=null;CUR=null;authView();};
+  await loadClasses();
+}
+
+/* ---------- Classes ---------- */
+async function loadClasses(keep){
+  const {data,error}=await sb.from("decode_classes").select("id,name,code,created_at").order("created_at");
+  if(error){main.innerHTML=`<div class="card">Couldn't load classes: ${esc(error.message)}</div>`;return;}
+  CLASSES=data||[];
+  if(!CLASSES.length)return firstClass();
+  let want=keep||(()=>{try{return localStorage.getItem("decode-teacher-class");}catch(e){return null;}})();
+  CUR=CLASSES.find(c=>c.id===want)||CLASSES[0];
+  await loadClass();
+}
+function firstClass(){
+  main.innerHTML=`<div class="card empty" style="max-width:520px;margin:4vh auto"><div class="big">🏫</div><h1>Create your first class</h1>
+    <p class="muted">Each class gets its own 6-letter code. Learners use it once to join from any device.</p>
+    <form id="nc" class="rowflex" style="justify-content:center;margin-top:12px"><input type="text" id="cn" maxlength="60" placeholder="e.g. 3rd period reading" style="max-width:280px" required><button class="btn primary">Create class</button></form>
+    <p class="muted small" style="margin-top:14px">Using this at home? Make a class of one, like “Tristan at home.”</p></div>`;
+  $("#nc").onsubmit=async e=>{e.preventDefault();await createClass($("#cn").value.trim());};
+  $("#cn").focus();
+}
+async function createClass(name){
+  if(!name)return;
+  const {data,error}=await sb.from("decode_classes").insert({name}).select().single();
+  if(error)return toast(error.message);
+  toast(`Class created. Code: ${data.code}`);TAB="manage";await loadClasses(data.id);
+}
+async function loadClass(){
+  try{localStorage.setItem("decode-teacher-class",CUR.id);}catch(e){}
+  const {data:ls}=await sb.from("decode_learners").select("id,name,avatar,pin,last_login,created_at,locked_until").eq("class_id",CUR.id).order("name");
+  const ids=(ls||[]).map(l=>l.id);
+  const since=new Date(Date.now()-60*DAY).toISOString();
+  let snaps=[],rounds=[],scans=[],logins=[];
+  if(ids.length){
+    const q=await Promise.all([
+      sb.from("decode_snapshots").select("learner_id,xp,streak,rank,badges,stickers,mastered,updated_at").in("learner_id",ids),
+      sb.from("decode_rounds").select("learner_id,at,mission,first_try,total,points,missed").in("learner_id",ids).gte("at",since).order("at",{ascending:false}).limit(5000),
+      sb.from("decode_scans").select("learner_id,at,scores,wpm,missed,misses").in("learner_id",ids).order("at",{ascending:false}).limit(1000),
+      sb.from("decode_logins").select("learner_id,at,device").in("learner_id",ids).gte("at",since).order("at",{ascending:false}).limit(5000)]);
+    [snaps,rounds,scans,logins]=q.map(r=>r.data||[]);
+  }
+  D={learners:(ls||[]).map(l=>summarize(l,snaps,rounds,scans,logins)),rounds,scans,logins};
+  render();
+  clearInterval(refreshT);refreshT=setInterval(()=>{if(document.visibilityState==="visible"&&!$("dialog[open]"))loadClass();},60000);
+}
+function summarize(l,snaps,rounds,scans,logins){
+  const snap=snaps.find(s=>s.learner_id===l.id)||{};
+  const r=rounds.filter(x=>x.learner_id===l.id),sc=scans.filter(x=>x.learner_id===l.id),lg=logins.filter(x=>x.learner_id===l.id);
+  const wk=r.filter(x=>daysAgo(x.at)<7),first=wk.reduce((a,x)=>a+x.first_try,0),tot=wk.reduce((a,x)=>a+x.total,0);
+  const latest=sc[0]||null;
+  const vals=latest?AREAS.map(a=>latest.scores?.[a[0]]).filter(v=>v!=null):[];
+  const scanAvg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):null;
+  const lastSeen=[l.last_login,snap.updated_at].filter(Boolean).sort().pop()||null;
+  const why=[];const idle=daysAgo(lastSeen);
+  if(lastSeen==null)why.push("Hasn't signed in yet");else if(idle>=7)why.push(`No practice in ${idle} days`);
+  const acc=pct(first,tot);if(acc!=null&&tot>=8&&acc<60)why.push(`First-try accuracy ${acc}% this week`);
+  if(latest)AREAS.forEach(a=>{const v=latest.scores?.[a[0]];if(v!=null&&v<60)why.push(`${a[2]} ${v}% on scan`);});
+  return Object.assign({},l,{snap,rounds:r,scans:sc,logins:lg,wkRounds:wk.length,acc,latest,scanAvg,lastSeen,why,logins30:lg.filter(x=>daysAgo(x.at)<30).length});
+}
+
+/* ---------- Main render ---------- */
+function render(){
+  if(DETAIL){const l=D.learners.find(x=>x.id===DETAIL);if(l)return detailView(l);DETAIL=null;}
+  main.innerHTML=`<div class="classbar">
+      <select id="cls" aria-label="Class">${CLASSES.map(c=>`<option value="${c.id}"${c.id===CUR.id?" selected":""}>${esc(c.name)}</option>`).join("")}</select>
+      <button class="btn small" id="addc">＋ New class</button>
+      <div class="codebox"><span>Class code</span><b>${esc(CUR.code)}</b><button class="btn small" id="copyc" title="Copy join instructions">Copy</button></div>
+      <div class="spacer"></div><button class="btn small" id="refresh" title="Refresh">↻ Refresh</button></div>
+    <div class="tabs" role="tablist">${[["roster","Roster"],["insights","Class insights"],["manage","Manage learners"]].map(([k,n])=>`<button role="tab" aria-selected="${TAB===k}" data-tab="${k}">${n}</button>`).join("")}</div>
+    <div id="tab"></div>`;
+  $("#cls").onchange=e=>{CUR=CLASSES.find(c=>c.id===e.target.value);DETAIL=null;loadClass();};
+  $("#addc").onclick=()=>promptDlg("New class","Class name","",createClass);
+  $("#copyc").onclick=()=>{const t=`Join our Decode class:\n1. Go to ${GAME_URL}\n2. Tap "Join my class"\n3. Type the code ${CUR.code}\n4. Tap your name and your 4 secret pictures`;navigator.clipboard?.writeText(t).then(()=>toast("Join instructions copied."),()=>toast(t));};
+  $("#refresh").onclick=()=>loadClass().then(()=>toast("Up to date."));
+  main.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{TAB=b.dataset.tab;render();});
+  ({roster:rosterView,insights:insightsView,manage:manageView})[TAB]();
+}
+function noLearners(){return `<div class="card empty"><div class="big">🧑‍🚀</div><h2>No learners yet</h2><p class="muted">Add your learners' first names, then print their sign-in cards.</p><button class="btn primary" onclick="TAB='manage';render()">Add learners</button></div>`;}
+
+/* Roster */
+function rosterView(){
+  const L=D.learners,el=$("#tab");if(!L.length){el.innerHTML=noLearners();return;}
+  const active=L.filter(l=>daysAgo(l.lastSeen)!=null&&daysAgo(l.lastSeen)<7).length;
+  const wkR=L.reduce((a,l)=>a+l.wkRounds,0);
+  const accs=L.map(l=>l.acc).filter(v=>v!=null);const avgAcc=accs.length?Math.round(accs.reduce((a,b)=>a+b,0)/accs.length):null;
+  const help=L.filter(l=>l.why.length).length;
+  const key={name:l=>l.name.toLowerCase(),last:l=>l.lastSeen?-new Date(l.lastSeen):Infinity,streak:l=>-(l.snap.streak||0),xp:l=>-(l.snap.xp||0),wk:l=>-l.wkRounds,acc:l=>l.acc==null?999:l.acc,scan:l=>l.scanAvg==null?999:l.scanAvg,help:l=>-l.why.length};
+  const rows=[...L].sort((a,b)=>{const ka=key[SORT.k](a),kb=key[SORT.k](b);return (ka>kb?1:ka<kb?-1:0)*SORT.dir;});
+  const th=(k,n,c="")=>`<th class="${c}"><button data-sort="${k}">${n}${SORT.k===k?(SORT.dir>0?" ▲":" ▼"):""}</button></th>`;
+  el.innerHTML=`<div class="kpis">
+      <div class="kpi"><div class="v">${active} / ${L.length}</div><div class="l">Practiced in the last 7 days</div></div>
+      <div class="kpi"><div class="v">${wkR}</div><div class="l">Missions finished this week</div></div>
+      <div class="kpi"><div class="v">${avgAcc==null?"—":avgAcc+"%"}</div><div class="l">Average first-try accuracy (7 days)</div></div>
+      <div class="kpi"><div class="v" style="color:${help?"var(--focus)":"var(--good)"}">${help}</div><div class="l">Learners who may need help</div></div></div>
+    <div class="tablewrap"><table><thead><tr>${th("name","Learner")}${th("last","Last practice")}${th("streak","Streak","num")}${th("xp","Rank · Fuel")}${th("wk","Missions (7d)","num")}${th("acc","First-try (7d)","num")}${th("scan","Latest scan")}${th("help","Needs help?")}</tr></thead>
+    <tbody>${rows.map(l=>{const [c,t]=lvl(l.scanAvg);return `<tr class="click" data-l="${l.id}" tabindex="0">
+      <td><span class="who"><span class="av">${esc(l.avatar)}</span>${esc(l.name)}</span></td>
+      <td>${ago(l.lastSeen)}</td><td class="num">${l.snap.streak?`🔥 ${l.snap.streak}`:"—"}</td>
+      <td>${l.snap.rank?esc(l.snap.rank)+" · ⛽ "+(l.snap.xp||0):"—"}</td><td class="num">${l.wkRounds||"—"}</td>
+      <td class="num">${l.acc==null?"—":l.acc+"%"}</td>
+      <td>${l.latest?`<span class="tag ${c}">${l.scanAvg}% ${t}</span> <span class="muted small">${ago(l.latest.at)}</span>`:`<span class="tag none">Not taken</span>`}</td>
+      <td>${l.why.length?`<span class="tag focus" title="${esc(l.why.join("; "))}">🔸 ${esc(l.why[0])}${l.why.length>1?` +${l.why.length-1}`:""}</span>`:`<span class="tag good">On track</span>`}</td></tr>`;}).join("")}</tbody></table></div>
+    <div class="rowflex" style="margin-top:12px"><button class="btn small" id="csv">⬇ Export CSV</button><span class="muted small">Click a learner for details. Updates every minute.</span></div>`;
+  el.querySelectorAll("[data-sort]").forEach(b=>b.onclick=()=>{const k=b.dataset.sort;SORT=SORT.k===k?{k,dir:-SORT.dir}:{k,dir:1};rosterView();});
+  el.querySelectorAll("[data-l]").forEach(r=>{const go=()=>{DETAIL=r.dataset.l;render();window.scrollTo(0,0);};r.onclick=go;r.onkeydown=e=>{if(e.key==="Enter")go();};});
+  $("#csv").onclick=exportCSV;
+}
+
+/* Learner detail */
+function missedWords(l){
+  const m={};l.rounds.forEach(r=>(r.missed||[]).forEach(w=>m[w]=(m[w]||0)+1));
+  (l.scans[0]?.missed||[]).forEach(w=>m[w]=(m[w]||0)+1);
+  return Object.entries(m).sort((a,b)=>b[1]-a[1]);
+}
+function missionAcc(rounds){
+  const by={};rounds.forEach(r=>{const b=by[r.mission]=by[r.mission]||{f:0,t:0,n:0};b.f+=r.first_try;b.t+=r.total;b.n++;});
+  return Object.keys(MISSIONS).filter(k=>by[k]).map(k=>({k,n:by[k].n,acc:pct(by[k].f,by[k].t)}));
+}
+function recommendations(l){
+  const out=[],latest=l.latest;
+  const idle=daysAgo(l.lastSeen);
+  if(l.lastSeen==null)out.push(["👋","Hasn't signed in yet. Give them their sign-in card and help them join once."]);
+  else if(idle>=7)out.push(["⏰",`No practice in ${idle} days. A quick check-in or a 10-minute session in class can restart the habit.`]);
+  if(!latest)out.push(["🔍","Hasn't taken the Level Scan yet. It sets their practice plan, so start there."]);
+  else{
+    if(daysAgo(latest.at)>=21)out.push(["🔍",`Last Level Scan was ${daysAgo(latest.at)} days ago. Time for a new one to measure growth.`]);
+    const weak=AREAS.map(a=>({a,v:latest.scores?.[a[0]]})).filter(x=>x.v!=null).sort((a,b)=>a.v-b.v);
+    weak.filter(x=>x.v<60).forEach(x=>out.push(["🎯",`Focus on ${x.a[2].toLowerCase()} (${x.v}% on the scan). Assign ${MISSIONS[x.a[3]][1]} daily.`]));
+    weak.filter(x=>x.v>=60&&x.v<85).slice(0,2).forEach(x=>out.push(["👍",`${x.a[2]} is getting there (${x.v}%). Keep ${MISSIONS[x.a[3]][1]} in the rotation.`]));
+    const orderMiss=(latest.misses||[]).filter(m=>m.sec==="order").length;
+    if(orderMiss>=2)out.push(["🔀",`Mixed up ${orderMiss} twin words (like form/from). Practice reading these slowly with a finger under each letter.`]);
+  }
+  missionAcc(l.rounds.filter(r=>daysAgo(r.at)<30)).filter(m=>m.n>=2&&m.acc!=null&&m.acc<70).forEach(m=>out.push(["📉",`First-try accuracy in ${MISSIONS[m.k][1]} is ${m.acc}% over the last 30 days. Review the missed words below together.`]));
+  const mw=missedWords(l).slice(0,6).map(x=>x[0]);
+  if(mw.length)out.push(["📝",`Words to practice: ${mw.join(", ")}.`]);
+  if(!out.length)out.push(["🌟","On track. Keep up the daily practice and celebrate the streak."]);
+  return out;
+}
+function detailView(l){
+  const ma=missionAcc(l.rounds.filter(r=>daysAgo(r.at)<30));
+  const mw=missedWords(l).slice(0,24);
+  main.innerHTML=`<button class="btn small" id="back">← Back to ${esc(CUR.name)}</button>
+    <div class="detailhead" style="margin-top:14px"><span class="av">${esc(l.avatar)}</span><div><h1>${esc(l.name)}</h1>
+      <div class="muted small">Last practice: ${ago(l.lastSeen)} · ${l.logins30} sign-ins in 30 days</div></div>
+      <div class="spacer"></div>${l.why.length?`<span class="tag focus">🔸 May need help</span>`:`<span class="tag good">On track</span>`}</div>
+    <div class="kpis">
+      <div class="kpi"><div class="v">${esc(l.snap.rank||"—")}</div><div class="l">Rank · ⛽ ${l.snap.xp||0} fuel</div></div>
+      <div class="kpi"><div class="v">${l.snap.streak||0}</div><div class="l">Day streak</div></div>
+      <div class="kpi"><div class="v">${l.wkRounds}</div><div class="l">Missions this week</div></div>
+      <div class="kpi"><div class="v">${l.acc==null?"—":l.acc+"%"}</div><div class="l">First-try accuracy (7 days)</div></div>
+      <div class="kpi"><div class="v">${l.snap.mastered??0} / 6</div><div class="l">Spelling patterns mastered</div></div>
+      <div class="kpi"><div class="v">${l.snap.badges??0}</div><div class="l">Badges · ${l.snap.stickers??0} stickers</div></div></div>
+    <div class="grid2">
+      <div class="card"><h2>Recommended next steps</h2><ul class="plain recs" style="margin-top:8px">${recommendations(l).map(r=>`<li><span aria-hidden="true">${r[0]}</span><span>${esc(r[1])}</span></li>`).join("")}</ul></div>
+      <div class="card"><h2>Skills on the latest Level Scan</h2>${l.latest?`<p class="muted small" style="margin:4px 0 6px">${fmtDate(l.latest.at)}${l.latest.wpm?` · Reading speed ${l.latest.wpm} words/min`:""}</p>
+        ${AREAS.map(a=>{const v=l.latest.scores?.[a[0]],p=l.scans[1]?.scores?.[a[0]],d=v!=null&&p!=null?v-p:null;return `<div class="bar"><span>${a[1]} ${a[2]}</span><span class="track">${v!=null?`<span class="fill" style="display:block;width:${Math.max(3,v)}%;background:${colorFor(v)}"></span>`:""}</span><b>${v==null?"—":v+"%"}${d?` <span class="small" style="color:${d>0?"var(--good)":"var(--focus)"}">${d>0?"+":""}${d}</span>`:""}</b></div>`;}).join("")}`
+        :`<p class="muted">No Level Scan yet.</p>`}</div>
+      <div class="card"><h2>Accuracy by mission (30 days)</h2>${ma.length?ma.map(m=>`<div class="bar"><span>${MISSIONS[m.k][0]} ${MISSIONS[m.k][1]} <span class="muted small">(${m.n})</span></span><span class="track"><span class="fill" style="display:block;width:${Math.max(3,m.acc||0)}%;background:${colorFor(m.acc||0)}"></span></span><b>${m.acc??"—"}%</b></div>`).join(""):`<p class="muted">No missions finished in the last 30 days.</p>`}
+        <p class="muted small" style="margin:8px 0 0">First-try accuracy: answers right on the first attempt.</p></div>
+      <div class="card"><h2>Most-missed words</h2>${mw.length?`<div class="words" style="margin-top:8px">${mw.map(([w,n])=>`<span>${esc(w)}${n>1?`<i>×${n}</i>`:""}</span>`).join("")}</div>`:`<p class="muted">Nothing missed recently.</p>`}</div>
+    </div>
+    ${l.latest&&(l.latest.misses||[]).length?`<div class="card" style="margin-top:16px"><h2>What they missed on the latest scan</h2><div class="tablewrap" style="margin-top:10px"><table><thead><tr><th>Part</th><th>Item</th><th>Their answer</th><th>Fixed on 2nd try?</th></tr></thead><tbody>
+      ${l.latest.misses.map(m=>{const it=m.it||{};const item=it.w||it.word||it.a||it.say||it.def||"";return `<tr><td>${esc(SECS[m.sec]||m.sec)}</td><td><b>${esc(item)}</b></td><td>${esc(m.v??"—")}</td><td>${m.fixed?`<span class="tag mid">Yes</span>`:`<span class="tag focus">No</span>`}</td></tr>`;}).join("")}</tbody></table></div></div>`:""}
+    <div class="grid2" style="margin-top:16px">
+      <div class="card"><h2>Scan history</h2>${l.scans.length?`<div class="tablewrap" style="margin-top:10px"><table><thead><tr><th>Date</th>${AREAS.map(a=>`<th class="num" title="${a[2]}">${a[1]}</th>`).join("")}<th class="num">WPM</th></tr></thead><tbody>${l.scans.map(s=>`<tr><td>${fmtDate(s.at)}</td>${AREAS.map(a=>`<td class="num">${s.scores?.[a[0]]??"—"}</td>`).join("")}<td class="num">${s.wpm??"—"}</td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">No scans yet.</p>`}</div>
+      <div class="card"><h2>Recent sign-ins & missions</h2><ul class="plain small" style="margin-top:8px;max-height:320px;overflow:auto">${[...l.logins.map(x=>({at:x.at,t:`🔑 Signed in${x.device?" on "+esc(x.device):""}`})),...l.rounds.map(r=>({at:r.at,t:`${MISSIONS[r.mission]?.[0]||"🪐"} ${esc(MISSIONS[r.mission]?.[1]||r.mission)}: ${r.first_try}/${r.total} first try`}))].sort((a,b)=>b.at<a.at?-1:1).slice(0,40).map(e=>`<li>${e.t} <span class="muted">· ${fmtTime(e.at)}</span></li>`).join("")||`<li class="muted">No activity yet.</li>`}</ul></div>
+    </div>`;
+  $("#back").onclick=()=>{DETAIL=null;render();};
+}
+
+/* Class insights */
+function insightsView(){
+  const L=D.learners,el=$("#tab");if(!L.length){el.innerHTML=noLearners();return;}
+  const latest=L.map(l=>l.latest).filter(Boolean);
+  const areaAvg=AREAS.map(a=>{const v=latest.map(s=>s.scores?.[a[0]]).filter(x=>x!=null);return {a,v:v.length?Math.round(v.reduce((x,y)=>x+y,0)/v.length):null,n:v.length};});
+  const ma=missionAcc(D.rounds.filter(r=>daysAgo(r.at)<30));
+  const words={};L.forEach(l=>{const seen=new Set();missedWords(l).forEach(([w])=>{if(!seen.has(w)){seen.add(w);words[w]=(words[w]||0)+1;}});});
+  const top=Object.entries(words).sort((a,b)=>b[1]-a[1]).slice(0,30);
+  const help=L.filter(l=>l.why.length);
+  el.innerHTML=`<div class="grid2">
+    <div class="card"><h2>Weakest skills (latest scans)</h2><p class="muted small" style="margin:4px 0 6px">${latest.length} of ${L.length} learners have taken the Level Scan.</p>
+      ${areaAvg.map(x=>`<div class="bar"><span>${x.a[1]} ${x.a[2]}</span><span class="track">${x.v!=null?`<span class="fill" style="display:block;width:${Math.max(3,x.v)}%;background:${colorFor(x.v)}"></span>`:""}</span><b>${x.v==null?"—":x.v+"%"}</b></div>`).join("")}
+      ${(()=>{const w=areaAvg.filter(x=>x.v!=null).sort((a,b)=>a.v-b.v)[0];return w&&w.v<85?`<p class="notice" style="margin:12px 0 0">🎯 Reteach idea: <b>${esc(w.a[2])}</b> is the class's weakest area. ${esc(MISSIONS[w.a[3]][1])} practices it.</p>`:"";})()}</div>
+    <div class="card"><h2>Words the class misses most</h2><p class="muted small" style="margin:4px 0 8px">Number = how many learners missed it.</p>${top.length?`<div class="words">${top.map(([w,n])=>`<span>${esc(w)}<i>${n}</i></span>`).join("")}</div>`:`<p class="muted">No missed words yet.</p>`}</div>
+    <div class="card"><h2>Accuracy by mission (30 days)</h2>${ma.length?ma.map(m=>`<div class="bar"><span>${MISSIONS[m.k][0]} ${MISSIONS[m.k][1]} <span class="muted small">(${m.n})</span></span><span class="track"><span class="fill" style="display:block;width:${Math.max(3,m.acc||0)}%;background:${colorFor(m.acc||0)}"></span></span><b>${m.acc??"—"}%</b></div>`).join(""):`<p class="muted">No missions finished yet.</p>`}</div>
+    <div class="card"><h2>Who may need help</h2>${help.length?`<ul class="plain" style="margin-top:6px">${help.map(l=>`<li><button class="btn link" data-l="${l.id}" style="padding:0">${esc(l.avatar)} ${esc(l.name)}</button><div class="muted small">${esc(l.why.join(" · "))}</div></li>`).join("")}</ul>`:`<p class="muted">Everyone is on track. 🎉</p>`}</div></div>`;
+  el.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{DETAIL=b.dataset.l;render();window.scrollTo(0,0);});
+}
+
+/* Manage */
+function manageView(){
+  const L=D.learners,el=$("#tab");
+  el.innerHTML=`<div class="grid2">
+    <div class="card"><h2>Add learners</h2><p class="muted small" style="margin:4px 0 10px">One first name or nickname per line. Each learner gets 4 secret pictures automatically.</p>
+      <textarea id="names" rows="5" placeholder="Tristan&#10;Maya&#10;Leo"></textarea>
+      <div class="rowflex" style="margin-top:10px"><button class="btn primary" id="addl">Add learners</button><span class="muted small">First names only. No last names, emails, or photos.</span></div></div>
+    <div class="card"><h2>Sign-in cards</h2><p class="muted small" style="margin:4px 0 10px">Print one card per learner with the class code and their 4 secret pictures. Cut them apart and hand them out.</p>
+      <div class="rowflex"><button class="btn" id="printall" ${L.length?"":"disabled"}>🖨 Print all cards</button><button class="btn" id="csv2" ${L.length?"":"disabled"}>⬇ Export CSV</button></div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+      <h3>Class settings</h3><div class="rowflex" style="margin-top:8px"><button class="btn small" id="rnc">Rename class</button><button class="btn small warn" id="delc">Delete class</button></div></div></div>
+    ${L.length?`<div class="tablewrap" style="margin-top:16px"><table><thead><tr><th>Learner</th><th>Secret pictures</th><th>Joined</th><th></th></tr></thead><tbody>
+      ${L.map(l=>`<tr><td><span class="who"><span class="av">${esc(l.avatar)}</span>${esc(l.name)}</span>${l.locked_until&&new Date(l.locked_until)>new Date()?` <span class="tag mid">Locked (too many tries)</span>`:""}</td>
+        <td><span class="pinshow" title="${l.pin.split("-").map(i=>PICS[+i][1]).join(", ")}">${pinPics(l.pin)}</span></td><td>${fmtDate(l.created_at)}</td>
+        <td class="num"><button class="btn small" data-act="card" data-id="${l.id}">Card</button> <button class="btn small" data-act="ren" data-id="${l.id}">Rename</button> <button class="btn small" data-act="pin" data-id="${l.id}">New pictures</button> <button class="btn small warn" data-act="del" data-id="${l.id}">Remove</button></td></tr>`).join("")}</tbody></table></div>`:""}`;
+  $("#addl").onclick=async()=>{
+    const names=[...new Set($("#names").value.split(/\n|,/).map(s=>s.trim().replace(/\s+/g," ").slice(0,24)).filter(Boolean))];
+    if(!names.length)return toast("Type at least one name.");
+    const {error}=await sb.from("decode_learners").insert(names.map(name=>({class_id:CUR.id,name,pin:newPin()})));
+    if(error)return toast(error.message);
+    toast(`Added ${names.length} learner${names.length>1?"s":""}.`);await loadClass();
+  };
+  if(L.length){$("#printall").onclick=()=>printCards(L);$("#csv2").onclick=exportCSV;}
+  $("#rnc").onclick=()=>promptDlg("Rename class","Class name",CUR.name,async v=>{const {error}=await sb.from("decode_classes").update({name:v}).eq("id",CUR.id);if(error)return toast(error.message);CUR.name=v;await loadClasses(CUR.id);});
+  $("#delc").onclick=()=>confirmDlg(`Delete “${CUR.name}”?`,`This permanently removes the class, its ${L.length} learner${L.length===1?"":"s"}, and all their progress. Learners keep their progress on their own devices.`,"Delete class",async()=>{const {error}=await sb.from("decode_classes").delete().eq("id",CUR.id);if(error)return toast(error.message);try{localStorage.removeItem("decode-teacher-class");}catch(e){}toast("Class deleted.");TAB="roster";await loadClasses();});
+  el.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{const l=L.find(x=>x.id===b.dataset.id);const a=b.dataset.act;
+    if(a==="card")printCards([l]);
+    if(a==="ren")promptDlg("Rename learner","First name or nickname",l.name,async v=>{const {error}=await sb.from("decode_learners").update({name:v.slice(0,24)}).eq("id",l.id);if(error)return toast(error.message);await loadClass();});
+    if(a==="pin")confirmDlg(`New pictures for ${l.name}?`,"They'll need a new sign-in card. Devices they're already signed in on keep working until they sign in with the new pictures.","Make new pictures",async()=>{const {error}=await sb.from("decode_learners").update({pin:newPin(),failed:0,locked_until:null}).eq("id",l.id);if(error)return toast(error.message);toast("New pictures made. Print a new card.");await loadClass();});
+    if(a==="del")confirmDlg(`Remove ${l.name}?`,"This permanently deletes their class progress from the dashboard. Their progress stays on their own device.","Remove learner",async()=>{const {error}=await sb.from("decode_learners").delete().eq("id",l.id);if(error)return toast(error.message);toast(`${l.name} removed.`);await loadClass();});
+  });
+}
+
+/* Print, CSV, dialogs */
+function printCards(list){
+  $("#print").innerHTML=list.map(l=>`<div class="pcard"><h3>${esc(l.avatar)} ${esc(l.name)}</h3>
+    <p>1. Go to <b>${GAME_URL}</b></p><p>2. Tap <b>Join my class</b> and type: <b style="font-size:1.1rem;letter-spacing:.15em">${esc(CUR.code)}</b></p>
+    <p>3. Tap your name, then your secret pictures:</p>
+    <div class="pics">${l.pin.split("-").map(i=>`<span>${PICS[+i][0]}<small>${PICS[+i][1]}</small></span>`).join("")}</div>
+    <p style="color:#666">${esc(CUR.name)} · Keep this card private.</p></div>`).join("");
+  setTimeout(()=>window.print(),50);
+}
+function exportCSV(){
+  const head=["Learner","Class","Last practice","Sign-ins (30 days)","Streak","Rank","Fuel","Missions (7 days)","First-try accuracy % (7 days)","Latest scan date",...AREAS.map(a=>a[2]+" %"),"Reading speed (wpm)","Needs help"];
+  const q=v=>{const s=String(v??"");return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};
+  const rows=D.learners.map(l=>[l.name,CUR.name,l.lastSeen?new Date(l.lastSeen).toLocaleDateString():"Never",l.logins30,l.snap.streak||0,l.snap.rank||"",l.snap.xp||0,l.wkRounds,l.acc??"",l.latest?new Date(l.latest.at).toLocaleDateString():"",...AREAS.map(a=>l.latest?.scores?.[a[0]]??""),l.latest?.wpm??"",l.why.join("; ")]);
+  const csv=[head,...rows].map(r=>r.map(q).join(",")).join("\r\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"}));a.download=`${CUR.name.replace(/[^\w -]/g,"")} - Decode progress ${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function promptDlg(title,label,val,cb){
+  const d=$("#dlg");d.innerHTML=`<form method="dialog" id="pf"><h2>${esc(title)}</h2><div class="field" style="margin-top:12px"><label for="pv">${esc(label)}</label><input id="pv" type="text" maxlength="60" value="${esc(val)}" required></div><div class="rowflex" style="justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save</button></div></form>`;
+  d.showModal();$("#pv").select();
+  d.onclose=()=>{if(d.returnValue==="ok"){const v=$("#pv").value.trim();if(v)cb(v);}};
+}
+function confirmDlg(title,body,ok,cb){
+  const d=$("#dlg");d.innerHTML=`<form method="dialog"><h2>${esc(title)}</h2><p class="muted">${esc(body)}</p><div class="rowflex" style="justify-content:flex-end"><button class="btn" value="cancel">Cancel</button><button class="btn primary" value="ok" style="background:var(--focus);border-color:var(--focus)">${esc(ok)}</button></div></form>`;
+  d.showModal();d.onclose=()=>{if(d.returnValue==="ok")cb();};
+}
+start();
+</script>
+</body>
+</html>

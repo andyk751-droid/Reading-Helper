@@ -330,6 +330,19 @@ header{gap:.6rem}
 .name-in{font-size:1.4rem;font-weight:700;padding:.6rem .9rem;border-radius:14px;border:1px solid rgba(140,160,255,.35);background:rgba(10,15,36,.7);color:var(--ink);text-align:center;width:100%}
 .name-in:focus{outline:none;border-color:var(--c-lab)}
 .privacy{font-size:.85rem;color:var(--muted);text-align:center;margin:0}
+.pilot.join{border-style:dashed;border-color:rgba(255,200,61,.55)}
+.pilot .pc{font-size:.72rem;color:var(--c-lab);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.code-in{font-family:var(--pix);font-size:2rem;letter-spacing:.35em;text-transform:uppercase;padding:.6rem .9rem .6rem 1.25rem;border-radius:16px;border:2px solid rgba(140,160,255,.4);background:rgba(10,15,36,.75);color:var(--ink);text-align:center;width:100%;max-width:20rem;margin:0 auto}
+.code-in:focus{outline:none;border-color:var(--c-lab);box-shadow:0 0 18px rgba(34,211,238,.35)}
+.pinslots{display:flex;gap:.6rem;justify-content:center}
+.pinslots span{width:3.6rem;height:3.6rem;border-radius:16px;border:2px dashed rgba(140,160,255,.4);display:grid;place-items:center;font-size:2rem;background:rgba(255,255,255,.04)}
+.pinslots span.on{border-style:solid;border-color:var(--c-lab);background:rgba(34,211,238,.1)}
+.pinpad{display:grid;grid-template-columns:repeat(3,minmax(0,5.2rem));gap:.7rem;justify-content:center}
+.pinpad button{font-size:2.4rem;height:5.2rem;border-radius:20px;border:1px solid rgba(140,160,255,.35);background:linear-gradient(180deg,rgba(40,52,110,.9),rgba(22,30,70,.9));box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.pinpad button:active{transform:scale(.94)}
+.pinmsg{min-height:1.4rem;text-align:center;margin:0;font-weight:700;color:var(--coral)}
+.pinmsg.ok{color:var(--mint)}
+.classname{color:var(--c-lab);font-weight:700}
 .pill.pilotchip{cursor:pointer;color:var(--ink)}
 .hud{flex-wrap:wrap;justify-content:flex-end}
 .hud .pill{white-space:nowrap}
@@ -646,7 +659,7 @@ function load(){
 let S=load();
 let R=null;
 let P=null;
-function save(){if(!PROF.last)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){if(!PROF.last)return;S.savedAt=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(typeof syncSoon==="function")syncSoon();}
 const RANKS=[["Cadet",0,"🔰"],["Trooper",500,"🪖"],["Sergeant",2500,"🎖️"],["Commander",7500,"⭐"],["Fleet Admiral",20000,"👑"]];
 function rankIdx(xp){let i=0;RANKS.forEach((r,k)=>{if(xp>=r[1])i=k;});return i;}
 function rankInfo(xp=S.xp){const i=rankIdx(xp),r=RANKS[i],nx=RANKS[i+1];return {i,name:r[0],icon:r[2],next:nx?nx[0]:null,need:nx?nx[1]:null,from:r[1],pct:nx?Math.min(100,Math.round((xp-r[1])/(nx[1]-r[1])*100)):100};}
@@ -689,6 +702,7 @@ function keyOf(it){return String(it.w||it.s||it.def||it.say||it.word);}
 function labelOf(mode,it){return mode==="flip"?`${it.a} / ${it.b}`:mode==="swap"?(it.kind==="count"?it.word:`${it.say} to ${it.ans[0]}`):(it.w||it.word||"");}
 function clean(it){const c=Object.assign({},it);delete c._rq;delete c._rev;return c;}
 function addMissed(mode,it){
+  if(R&&!R.test){(R.missList=R.missList||[]).push(labelOf(mode,it));}
   const k=keyOf(it);S.missed[mode]=S.missed[mode]||{};S.missed[mode][k]={it:clean(it),hits:0};
   const mk=mode+":"+k;const cur=S.missCount[mk]||{label:labelOf(mode,it),mode,n:0};cur.n++;S.missCount[mk]=cur;
 }
@@ -917,7 +931,7 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 18</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 19</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -954,7 +968,7 @@ function home(){
     <button class="link" id="to-hangar">🛸 Hangar</button>
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 18</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 19</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   app.querySelectorAll(".orb-vid").forEach(v=>{v.muted=true;const p=v.play();if(p&&p.catch)p.catch(()=>{});});
@@ -996,7 +1010,9 @@ function requeue(it){if(!it._rq)R.items.push(Object.assign({},it,{_rq:true}));}
 function finish(){
   if(R.test){const cb=R.onDone;R=null;cb();return;}
   const firstClear=!S.doneToday[R.mode];
-  S.doneToday[R.mode]=true;S.stats.planets++;if(R.first===R.total&&R.total>0)S.stats.perfect++;save();const r=R;
+  S.doneToday[R.mode]=true;S.stats.planets++;if(R.first===R.total&&R.total>0)S.stats.perfect++;
+  queueEvent({type:"round",mission:R.mode,first:R.first,total:R.total,points:R.xp,missed:[...new Set(R.missList||[])]});
+  save();syncNow();const r=R;
   const allDone=MISSIONS.every(m=>S.doneToday[m.id]);const goldDrop=allDone&&S.goldDay!==dayStr();if(goldDrop){S.goldDay=dayStr();save();}
   const nb=checkBadges();
   let mastered="";
@@ -1429,7 +1445,8 @@ function finishScan(){
   spellBy.forEach((v,i)=>{if(v&&v.c===v.t&&!S.pat[i].mastered){S.pat[i].mastered=true;S.pat[i].how="scan";}});
   r.spell.filter(x=>!x.ok).forEach(x=>addMissed("spell",x.it));
   r.order.filter(x=>!x.ok).forEach(x=>addMissed("flip",x.it));
-  S.nextScan=dayStr(RESCAN_DAYS);S.skipScan=false;P=null;save();
+  queueEvent({type:"scan",scores:rec.scores,wpm:rec.wpm||null,missed:rec.missed,misses:rec.misses});
+  S.nextScan=dayStr(RESCAN_DAYS);S.skipScan=false;P=null;save();syncNow();
   resultsScreen(rec,first);
 }
 function level(v){if(v==null)return ["skip","Skipped"];if(v>=85)return ["strong","💪 Strong"];if(v>=60)return ["mid","👍 Getting there"];return ["focus","🎯 Focus here"];}
@@ -1533,7 +1550,7 @@ function settings(){
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 18 (owl-512 logo)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 19 (class sign-in + teacher sync)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
@@ -1859,13 +1876,14 @@ function signIn(editId){
   document.querySelector(".hud").style.visibility="hidden";document.querySelector("header").style.visibility="hidden";
   const list=PROF.list;
   const card=x=>{const d=pilotSave(x.id),rk=rankInfo(d.xp||0);
-    return `<div class="pwrap"><button class="pilot" data-pick="${x.id}"><span class="av">${x.avatar}</span><span class="pn">${esc(x.name||"Name me!")}</span><span class="pr">${rk.icon} ${rk.name} · ⛽ ${d.xp||0}</span></button>
+    return `<div class="pwrap"><button class="pilot" data-pick="${x.id}"><span class="av">${x.avatar}</span><span class="pn">${esc(x.name||"Name me!")}</span><span class="pr">${rk.icon} ${rk.name} · ⛽ ${d.xp||0}</span>${x.cls?`<span class="pc">🏫 ${esc(x.cls.className)}</span>`:""}</button>
       <button class="mini ed" data-edit="${x.id}" aria-label="Edit ${esc(x.name||"pilot")}">✏️</button>${list.length>1?`<button class="mini del" data-del="${x.id}" aria-label="Remove ${esc(x.name||"pilot")}">🗑️</button>`:""}</div>`;};
-  if(!list.length||editId!==undefined){return pilotForm(editId||null);}
+  if(editId!==undefined){return pilotForm(editId||null);}
   app.innerHTML=`<div class="hero signin"><div class="splash"><span class="logo-mark"><img src="img/owl-512.png" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span><span class="logo-word" style="align-items:center"><span class="lw-main">Decode</span><span class="lw-sub">Space Adventure</span></span></div><div><p class="mc-kicker">Pilot sign-in</p><h1 style="margin:0">Who's flying today?</h1></div>
-    <div class="pilots">${list.map(card).join("")}<button class="pilot add" id="add-pilot"><span class="av">➕</span><span class="pn">New pilot</span><span class="pr" style="color:var(--muted)">Add a learner</span></button></div>
-    <p class="privacy">🔒 Progress is saved only on this device, in this browser. No account, email, or password needed.</p></div>`;
-  app.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const x=list.find(y=>y.id===b.dataset.pick);if(!x.name)return pilotForm(x.id);switchTo(x.id);});
+    <div class="pilots">${list.map(card).join("")}<button class="pilot add" id="add-pilot"><span class="av">➕</span><span class="pn">New pilot</span><span class="pr" style="color:var(--muted)">Add a learner</span></button><button class="pilot join" id="join-class"><span class="av">🏫</span><span class="pn">Join my class</span><span class="pr" style="color:var(--muted)">Use a class code</span></button></div>
+    <p class="privacy">🔒 Progress is saved on this device. Class pilots also share their progress with their teacher. No email or password needed.</p><p class="privacy"><a href="teacher/" style="color:var(--muted)">Teacher or parent? Open the dashboard</a></p></div>`;
+  app.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const x=list.find(y=>y.id===b.dataset.pick);if(x.cls)return pinScreen({pilot:x});if(!x.name)return pilotForm(x.id);switchTo(x.id);});
+  $("#join-class").onclick=()=>joinClass();
   app.querySelectorAll("[data-edit]").forEach(b=>b.onclick=e=>{e.stopPropagation();pilotForm(b.dataset.edit);});
   let armed=null;
   app.querySelectorAll("[data-del]").forEach(b=>b.onclick=e=>{e.stopPropagation();const id=b.dataset.del;
@@ -1873,22 +1891,22 @@ function signIn(editId){
     PROF.list=PROF.list.filter(y=>y.id!==id);try{localStorage.removeItem("decode-space-v1:"+id);}catch(x){}
     if(PROF.last===id)PROF.last=null;setProfiles();signIn();});
   $("#add-pilot").onclick=()=>pilotForm(null);
-  narrate("Who's flying today? Tap your name, or tap New pilot.",{short:"Who's flying today? Tap your name."});
+  narrate(list.length?"Who's flying today? Tap your name, or tap New pilot.":"Welcome, pilot! Tap New pilot, or Join my class if your teacher gave you a code.",{short:list.length?"Who's flying today? Tap your name.":"Tap New pilot, or Join my class."});
   window.scrollTo(0,0);
 }
 function pilotForm(id){
   const x=id?PROF.list.find(y=>y.id===id):null;let av=x?x.avatar:AVATARS[0];
-  app.innerHTML=`<div class="hero signin"><div><p class="mc-kicker">${x&&x.name?"Edit pilot":"New pilot"}</p><h1 style="margin:0">${x&&x.name?"Update your pilot":"Create your pilot"}</h1></div>
+  app.innerHTML=`<div class="hero signin"><div><p class="mc-kicker">${x&&x.cls?"🏫 "+esc(x.cls.className):x&&x.name?"Edit pilot":"New pilot"}</p><h1 style="margin:0">${x&&x.cls?"Pick your pilot":x&&x.name?"Update your pilot":"Create your pilot"}</h1></div>
     <label class="lbl-sm" for="pname">Your first name</label>
-    <input id="pname" class="name-in" maxlength="16" autocomplete="off" placeholder="Type your name" value="${x?esc(x.name):""}">
+    <input id="pname" class="name-in" maxlength="16" autocomplete="off" placeholder="Type your name" value="${x?esc(x.name):""}"${x&&x.cls?" readonly":""}>${x&&x.cls?`<p class="privacy" style="margin-top:-.5rem">🏫 Your teacher sets your name. You pick your pilot!</p>`:""}
     <p class="lbl-sm" style="margin:0">Pick your pilot</p>
     <div class="avatars">${AVATARS.map(a=>`<button data-av="${a}" aria-pressed="${a===av}" aria-label="Avatar ${a}">${a}</button>`).join("")}</div>
     <div class="row center">${PROF.list.length?`<button class="btn ghost" id="pf-cancel">Back</button>`:""}<button class="btn go big" id="pf-save">🚀 ${x&&x.name?"Save":"Let's fly"}</button></div>
-    <p class="privacy">🔒 Saved only on this device. Use a first name or a nickname.</p></div>`;
+    <p class="privacy">${x&&x.cls?"🔒 Your progress is shared only with your teacher.":"🔒 Saved only on this device. Use a first name or a nickname."}</p></div>`;
   app.querySelectorAll("[data-av]").forEach(b=>b.onclick=()=>{av=b.dataset.av;app.querySelectorAll("[data-av]").forEach(c=>c.setAttribute("aria-pressed",String(c.dataset.av===av)));});
   if($("#pf-cancel"))$("#pf-cancel").onclick=()=>signIn();
   const go=()=>{const name=$("#pname").value.trim().replace(/\s+/g," ").slice(0,16);if(!name){toast("Type your name first 🙂");$("#pname").focus();return;}
-    if(x){x.name=name;x.avatar=av;}else{const nid="p"+Date.now().toString(36);PROF.list.push({id:nid,name,avatar:av});id=nid;}
+    if(x){if(!x.cls)x.name=name;if(x.cls&&x.avatar!==av)x.cls.avatarDirty=true;x.avatar=av;}else{const nid="p"+Date.now().toString(36);PROF.list.push({id:nid,name,avatar:av});id=nid;}
     setProfiles();switchTo(x?x.id:id);};
   $("#pf-save").onclick=go;$("#pname").addEventListener("keydown",e=>{if(e.key==="Enter")go();});
   setTimeout(()=>$("#pname").focus(),60);
@@ -1897,6 +1915,122 @@ function pilotForm(id){
 function switchTo(id){
   PROF.last=id;setProfiles();KEY="decode-space-v1:"+id;S=load();save();R=null;P=null;
   document.querySelector(".hud").style.visibility="";document.querySelector("header").style.visibility="";applySettings();renderHud();home();
+}
+/* ---------- Class sign-in + sync to the teacher dashboard ---------- */
+const CLASS_URL="https://atsgfhkzhnzjzylwzmkv.supabase.co/functions/v1/decode-class";
+const PICS=[["🚀","rocket"],["🪐","planet"],["⭐","star"],["🌙","moon"],["☄️","comet"],["👽","alien"],["🛸","flying saucer"],["🌍","Earth"],["🤖","robot"]];
+function deviceName(){const u=navigator.userAgent||"";return /iPad|Macintosh.*Mobile/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1)?"iPad":/iPhone/.test(u)?"iPhone":/CrOS/.test(u)?"Chromebook":/Android/.test(u)?"Android":/Mac/.test(u)?"Mac":/Windows/.test(u)?"Windows":"Other";}
+async function classApi(body){
+  const r=await fetch(CLASS_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+TTS_ANON,apikey:TTS_ANON},body:JSON.stringify(body)});
+  let j={};try{j=await r.json();}catch(e){}j._status=r.status;return j;
+}
+async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+const OBX=id=>"decode-space-outbox:"+id;
+function getOutbox(id){try{return JSON.parse(localStorage.getItem(OBX(id))||"[]")||[];}catch(e){return [];}}
+function setOutbox(id,a){try{localStorage.setItem(OBX(id),JSON.stringify(a.slice(-200)));}catch(e){}}
+function queueEvent(e,id=PROF.last){const x=PROF.list.find(y=>y.id===id);if(!x||!x.cls)return;const a=getOutbox(id);a.push(Object.assign({at:new Date().toISOString()},e));setOutbox(id,a);}
+let syncT=null,syncing=false;
+function syncSoon(){const x=curPilot();if(!x||!x.cls)return;clearTimeout(syncT);syncT=setTimeout(syncNow,15000);}
+async function syncNow(){
+  clearTimeout(syncT);const x=curPilot();if(!x||!x.cls||syncing||navigator.onLine===false)return;
+  syncing=true;const id=x.id,events=getOutbox(id).slice(0,50);
+  try{
+    const ri=rankInfo();
+    const body={action:"sync",token:x.cls.token,events,snap:{xp:S.xp,streak:S.streak,rank:ri.name,badges:Object.keys(S.badges||{}).length,stickers:Object.keys(S.stickers||{}).length,mastered:(S.pat||[]).filter(p=>p.mastered).length,state:S}};
+    if(x.cls.avatarDirty)body.avatar=x.avatar;
+    const j=await classApi(body);
+    if(j._status===401&&j.error==="unlinked"){delete x.cls;setProfiles();setOutbox(id,[]);toast("You're no longer in that class. Your progress stays on this device.");return;}
+    if(j.ok){
+      setOutbox(id,getOutbox(id).slice(events.length));
+      if(body.avatar){delete x.cls.avatarDirty;setProfiles();}
+      if(j.restore&&j.restore.savedAt&&(!S.savedAt||j.restore.savedAt>S.savedAt)&&PROF.last===id&&!R&&!P){
+        try{localStorage.setItem(KEY,JSON.stringify(j.restore));}catch(e){}S=load();renderHud();
+      }
+      if(getOutbox(id).length)syncSoon();
+    }
+  }catch(e){}finally{syncing=false;}
+}
+addEventListener("online",()=>syncNow());
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")syncNow();});
+
+function classShell(kicker,title,body){
+  R=null;P=null;hush();
+  document.querySelector(".hud").style.visibility="hidden";document.querySelector("header").style.visibility="hidden";
+  app.innerHTML=`<div class="hero signin"><div><p class="mc-kicker">${kicker}</p><h1 style="margin:0">${title}</h1></div>${body}</div>`;window.scrollTo(0,0);
+}
+function joinClass(prefill){
+  classShell("Join my class","Type your class code",`
+    <p class="muted" style="margin:0;text-align:center">Your teacher has a 6-letter code.</p>
+    <input id="ccode" class="code-in" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Class code" value="${esc(prefill||"")}">
+    <p class="pinmsg" id="cmsg" role="status"></p>
+    <div class="row center"><button class="btn ghost" id="cc-back">Back</button><button class="btn go big" id="cc-go">Next ▶</button></div>`);
+  const inp=$("#ccode");inp.addEventListener("input",()=>{inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);});
+  $("#cc-back").onclick=()=>signIn();
+  const go=async()=>{const code=inp.value;if(code.length!==6){$("#cmsg").textContent="The code has 6 letters and numbers.";inp.focus();return;}
+    $("#cc-go").disabled=true;$("#cmsg").className="pinmsg";$("#cmsg").textContent="Checking…";
+    let j;try{j=await classApi({action:"lookup",code});}catch(e){j={error:"offline"};}
+    $("#cc-go").disabled=false;
+    if(j.learners){return pickName(code,j);}
+    $("#cmsg").textContent=j.error==="school_network_only"?"Class sign-in only works on your school's network.":j.error==="offline"?"No internet right now. Try again in a moment.":j.error==="slow_down"?"Too many tries. Wait a few minutes.":"Hmm, that code didn't work. Check it with your teacher.";inp.focus();};
+  $("#cc-go").onclick=go;inp.addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+  setTimeout(()=>inp.focus(),60);
+  narrate("Type your class code. Your teacher has it.",{short:"Type your class code."});
+}
+function pickName(code,j){
+  const ls=j.learners;
+  classShell(`🏫 <span class="classname">${esc(j.className)}</span>`,"Tap your name",
+    ls.length?`<div class="pilots">${ls.map(l=>`<button class="pilot" data-lid="${l.id}"><span class="av">${esc(l.avatar||"🧑‍🚀")}</span><span class="pn">${esc(l.name)}</span></button>`).join("")}</div>
+      <div class="row center"><button class="btn ghost" id="pn-back">Back</button></div>`
+    :`<p style="text-align:center">No names in this class yet. Ask your teacher to add you.</p><div class="row center"><button class="btn ghost" id="pn-back">Back</button></div>`);
+  $("#pn-back").onclick=()=>joinClass(code);
+  app.querySelectorAll("[data-lid]").forEach(b=>b.onclick=()=>{const l=ls.find(y=>y.id===b.dataset.lid);pinScreen({code,learner:l,className:j.className});});
+  narrate("Tap your name.",{short:"Tap your name."});
+}
+/* Picture PIN: used to join on a new device, and every time a class pilot signs in on a shared device */
+function pinScreen(o){
+  const x=o.pilot,name=x?x.name:o.learner.name,av=x?x.avatar:(o.learner.avatar||"🧑‍🚀");let pin=[],busy=false;
+  classShell(`${esc(av)} ${esc(name)}`,"Tap your 4 secret pictures",`
+    <div class="pinslots" aria-live="polite">${[0,1,2,3].map(()=>"<span></span>").join("")}</div>
+    <p class="pinmsg" id="pmsg" role="status"></p>
+    <div class="pinpad">${PICS.map((p,i)=>`<button data-pic="${i}" aria-label="${p[1]}">${p[0]}</button>`).join("")}</div>
+    <div class="row center"><button class="btn ghost" id="pp-back">Back</button><button class="btn ghost" id="pp-undo">⌫ Undo</button></div>
+    <p class="privacy">Forgot your pictures? Ask your teacher.</p>`);
+  const slots=[...app.querySelectorAll(".pinslots span")],msg=$("#pmsg");
+  const draw=()=>slots.forEach((s,i)=>{s.textContent=pin[i]!=null?PICS[pin[i]][0]:"";s.classList.toggle("on",pin[i]!=null);});
+  $("#pp-back").onclick=()=>signIn();
+  $("#pp-undo").onclick=()=>{if(busy)return;pin.pop();draw();};
+  app.querySelectorAll("[data-pic]").forEach(b=>b.onclick=()=>{if(busy||pin.length>=4)return;pin.push(+b.dataset.pic);draw();if(pin.length===4)check();});
+  async function check(){
+    busy=true;msg.className="pinmsg";msg.textContent="Checking…";const code=pin.join("-");
+    const cls=x?x.cls:null,lid=x?cls.lid:o.learner.id,ccode=x?cls.code:o.code;
+    // Same device, same pictures as last time: let them in even without internet.
+    if(cls&&cls.pinHash&&cls.pinHash===await sha(lid+":"+code)){queueEvent({type:"login",device:deviceName()},x.id);return enter(x);}
+    let j;try{j=await classApi({action:"login",code:ccode,learnerId:lid,pin:code,device:deviceName()});}catch(e){j={error:"offline"};}
+    if(j.token){
+      const hash=await sha(lid+":"+code);
+      let p=x||PROF.list.find(y=>y.cls&&y.cls.lid===lid);
+      const isNew=!p;
+      if(!p){ // link a same-name pilot on this device that isn't in a class yet, so home progress carries over
+        p=!j.state&&PROF.list.find(y=>!y.cls&&y.name&&y.name.toLowerCase()===j.learner.name.toLowerCase());
+        if(!p){p={id:"p"+Date.now().toString(36),name:j.learner.name,avatar:j.learner.avatar||AVATARS[0]};PROF.list.push(p);}
+      }
+      p.name=j.learner.name;
+      p.cls={code:ccode,lid,token:j.token,className:j.className,pinHash:hash};
+      if(j.state){const cur=pilotSave(p.id);if(!cur.savedAt||j.state.savedAt>cur.savedAt){try{localStorage.setItem("decode-space-v1:"+p.id,JSON.stringify(j.state));}catch(e){}}}
+      setProfiles();
+      msg.className="pinmsg ok";msg.textContent="✅ Welcome aboard!";
+      if(isNew&&(!j.learner.avatar||j.learner.avatar==="🧑‍🚀")&&!j.state){p.cls.avatarDirty=true;setProfiles();PROF.last=p.id;setProfiles();KEY="decode-space-v1:"+p.id;S=load();return setTimeout(()=>pilotForm(p.id),500);}
+      return setTimeout(()=>enter(p),400);
+    }
+    busy=false;pin=[];draw();
+    msg.textContent=j.error==="school_network_only"?"Class sign-in only works on your school's network.":j.error==="offline"?"No internet right now, and those pictures don't match. Try again.":
+      j.error==="locked"?`Too many tries. Wait ${j.minutes||5} minutes, or ask your teacher.`:
+      j.error==="wrong_pin"?`Not quite. Try again${j.left?` (${j.left} ${j.left===1?"try":"tries"} left)`:""}.`:
+      j.error==="no_learner"||j._status===404?"You're not in this class anymore. Ask your teacher.":"Something went wrong. Try again.";
+    if(talkMode()!=="quiet")speak(j.error==="wrong_pin"?"Not quite. Try again.":msg.textContent);
+  }
+  function enter(p){switchTo(p.id);syncNow();}
+  narrate("Tap your 4 secret pictures.",{short:"Tap your 4 secret pictures."});
 }
 function startApp(){const pc=curPilot();if(PROF.list.length===1&&pc&&pc.name)return switchTo(pc.id);signIn();}
 (()=>{const bg=new Image();bg.onload=()=>document.body.classList.add("has-bg");bg.src="img/space-bg.webp";})();
