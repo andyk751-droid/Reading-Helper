@@ -26,7 +26,8 @@ Animated planets: add the planet's name to PLANET_VIDS in index.html.
 | orbit-wave.webp | Fallback if the video can't play |
 | orbit-point.webp | Next to the Launch button; after a missed answer (pointing at the right one) |
 | orbit-think.webp | "One more try" moments |
-| orbit-cheer.webp | Correct answers, Planet cleared, Part complete, Scan complete |
+| orbit-cheer.mp4 + orbit-cheer-poster.webp | Animated comms screen on Planet cleared and Scan complete |
+| orbit-cheer.webp | Correct answers, Part complete, and fallback for the video |
 | orbit-main.webp | Spare (not used yet) |
 | crate.webp, crate-gold.webp | Supply drops |
 | space-bg.webp | Page background |
