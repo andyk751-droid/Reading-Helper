@@ -589,7 +589,7 @@ const FLIP=[
 const FORGE=[
  {def:"To break in while someone is talking",word:"interrupt",parts:[["inter","between"],["rupt","break"]]},
  {def:"Easy to carry around",word:"portable",parts:[["port","carry"],["able","can be"]]},
- {def:"The act of building something",word:"construction",parts:[["con","together"],["struct","build"],["ion","act of"]]},
+ {def:"The act of building something",word:"construction",parts:[["con","together"],["struc","build"],["tion","act of"]]},
  {def:"To pull something out",word:"extract",parts:[["ex","out"],["tract","pull"]]},
  {def:"To say what will happen before it happens",word:"predict",parts:[["pre","before"],["dict","say"]]},
  {def:"To carry things from one place to another",word:"transport",parts:[["trans","across"],["port","carry"]]},
@@ -796,7 +796,9 @@ function silentWav(){const n=800,b=new ArrayBuffer(44+n),v=new DataView(b),w=(o,
 function unlockAudio(){try{player.src=silentWav();const p=player.play();if(p)p.catch(()=>{});}catch(e){}}
 document.addEventListener("pointerdown",unlockAudio,{once:true,capture:true});
 function useEleven(){return S.settings.engine==="eleven"&&ONLINE_HOST&&!elevenOff;}
-function normTTS(t){return String(t).replace(/\s+/g," ").trim();}
+// Word parts spoken on their own: say the sound, not the letters ("tion" -> "shun", not "tee-eye-on" or "eye-on").
+const PART_SOUNDS={tion:"shun",sion:"shun",ion:"yun",cian:"shun",ture:"cher"};
+function normTTS(t){return String(t).replace(/\s+/g," ").trim().replace(/(^|[\s"“(])-?(tion|sion|ion|cian|ture)(?=$|[\s.,!?;:"”)])/gi,(m,a,w)=>a+PART_SOUNDS[w.toLowerCase()]);}
 function saveTtsCache(){try{const k=Object.keys(ttsCache);if(k.length>1500)k.slice(0,k.length-1500).forEach(x=>delete ttsCache[x]);localStorage.setItem(TTS_CACHE_KEY,JSON.stringify(ttsCache));}catch(e){}}
 function elevenFailed(code){
   if(["not_configured","daily_limit","origin_not_allowed","elevenlabs_error","network"].includes(code))elevenOff=true;
