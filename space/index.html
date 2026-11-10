@@ -408,8 +408,9 @@ header{gap:.6rem}
 .pl .chip{margin-top:.25rem;font-size:.7rem;padding:.15rem .5rem}
 .map li:nth-child(3n+2) .orb::after{width:8.4rem;height:2rem}
 .orb .orb-vid{width:178%}
-.orb .orb-cv{position:absolute;left:50%;top:50%;width:178%;height:auto;transform:translate(-50%,-50%);pointer-events:none;display:none}
-.orb.cv-on .orb-cv{display:block}.orb.cv-on .orb-vid{opacity:0}
+/* A filter/transform/animation on .orb would isolate the video from the page behind it, so "screen" blending
+   would show a black box. Keep those effects off the .orb when it has a video; dim the video itself instead. */
+.pl.done .orb.has-vid{filter:none}.pl.done .orb-vid{filter:saturate(.55) brightness(.85)}
 @media (min-width:700px){.pl{justify-content:center;gap:2.2rem}.orb{width:8rem;height:8rem}.pl .ptxt{width:15rem;max-width:none}.map::before{top:3rem;bottom:3rem}}
 .badge.has-img{background:none;border:0;box-shadow:none}
 .pl.next .orb.has-img:not(.has-vid){animation:none;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--m) 70%,transparent))}
@@ -642,7 +643,7 @@ const MISSIONS=[
 const SCAN={id:"scan",name:"Level Scan",icon:"🔍"};
 const PARENT={id:"parent",name:"Grown-up view",icon:"📊"};
 const MCOLOR={lab:"var(--c-lab)",swap:"var(--c-swap)",spell:"var(--c-spell)",flip:"var(--c-flip)",forge:"var(--c-forge)",speed:"var(--c-speed)",scan:"var(--c-swap)",parent:"var(--cobalt)",hangar:"var(--c-lab)"};
-const PLANET_VIDS=["flip","spell","swap","lab"];
+const PLANET_VIDS=["flip","spell","swap","lab","forge","speed"];
 const REDUCED=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
 const HANGAR={id:"hangar",name:"Hangar",icon:"🛸"};
 const mission=id=>MISSIONS.find(m=>m.id===id)||(id==="scan"?SCAN:id==="hangar"?HANGAR:PARENT);
@@ -676,7 +677,7 @@ function load(){
   ["seen","reads","log","missed","missCount","doneToday","demoSeen","badges","stickers","stats"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={};});
   if(!Array.isArray(s.scans))s.scans=[];
   if(!Array.isArray(s.pat)||s.pat.length!==PATTERNS.length)s.pat=PATTERNS.map((_,i)=>(Array.isArray(s.pat)&&s.pat[i])||{mastered:false,how:null,days:{}});
-  s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true,engine:"eleven",demo:"first",talk:"short"},(d&&d.settings)||{});
+  s.settings=Object.assign({size:"m",spaced:false,rate:0.85,voice:true,engine:"eleven",demo:"first",talk:"short",anim:true},(d&&d.settings)||{});
   if(s.rankSeen===undefined)s.rankSeen=-1;
   s.stats=Object.assign({planets:0,perfect:0,combo:0,bestCombo:0,locks:0},s.stats);
   if(!s.v8){s.v8=true;s.settings.talk="short";s.settings.demo="first";s.settings.voice=true;}
@@ -923,28 +924,24 @@ function orbitCheer(e){
   return `<span class="orbit-comm wide"><video src="img/orbit-cheer.mp4" poster="img/orbit-cheer-poster.webp" muted loop playsinline ${REDUCED?"":"autoplay"} aria-hidden="true"
     onerror="const t=this.closest('.trophy');t.innerHTML=orbitTrophy(t.dataset.e)"></video><span class="comm-tag">ORBIT</span></span>`;
 }
-/* Planet videos are on black. Some browsers (notably Safari) ignore mix-blend-mode on video and show a black box,
-   so draw each frame to a canvas and turn black into transparency (brightness = alpha). Falls back to the blend if anything fails. */
-function unscreenVideo(v){
-  const orb=v.parentNode;if(!orb||!document.createElement("canvas").getContext)return;
-  const cv=document.createElement("canvas");cv.className="orb-cv";cv.width=480;cv.height=270;orb.insertBefore(cv,v.nextSibling);
-  let ctx;try{ctx=cv.getContext("2d",{willReadFrequently:true});}catch(e){}
-  if(!ctx){cv.remove();return;}
-  let last=0,dead=false;
-  const step=now=>{
-    if(dead||!cv.isConnected)return;
-    if(!document.hidden&&v.readyState>=2&&now-last>45){last=now;
-      try{
-        ctx.drawImage(v,0,0,480,270);const img=ctx.getImageData(0,0,480,270),d=img.data;
-        for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2];const m=r>g?(r>b?r:b):(g>b?g:b);
-          if(m<6){d[i+3]=0;continue;}const k=255/m;d[i]=r*k;d[i+1]=g*k;d[i+2]=b*k;d[i+3]=m;}
-        ctx.putImageData(img,0,0);if(!orb.classList.contains("cv-on"))orb.classList.add("cv-on","has-vid");
-      }catch(e){dead=true;orb.classList.remove("cv-on");cv.remove();return;}
-    }
-    requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
+/* Planet animations: only the planets on screen play, everything pauses when the tab is hidden,
+   and a setting turns them off for slower devices. */
+function animOn(){return !REDUCED&&S.settings.anim!==false;}
+let vidObs=null;
+function wirePlanetVids(){
+  const vids=[...app.querySelectorAll(".orb-vid")];if(!vids.length)return;
+  const play=v=>{v.muted=true;if(document.hidden)return;const p=v.play();if(p&&p.catch)p.catch(()=>{});};
+  if(vidObs)vidObs.disconnect();
+  if("IntersectionObserver" in window){
+    vidObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)play(e.target);else e.target.pause();}),{rootMargin:"80px 0px"});
+    vids.forEach(v=>vidObs.observe(v));
+  }else vids.forEach(play);
 }
+document.addEventListener("visibilitychange",()=>{
+  const vids=document.querySelectorAll(".orb-vid,.orbit-comm video");
+  if(document.hidden)vids.forEach(v=>v.pause());
+  else if(vidObs){vids.forEach(v=>{if(v.classList.contains("orb-vid")){vidObs.unobserve(v);vidObs.observe(v);}else if(!REDUCED){const p=v.play();if(p&&p.catch)p.catch(()=>{});}});}
+});
 function orbitFb(){
   const fb=document.getElementById("fb");if(!fb||fb.querySelector(".orbit-fb"))return;
   const good=fb.querySelector(".msg.good"),m=fb.querySelector(".msg");if(!good&&!m)return;
@@ -1005,7 +1002,7 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 20</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 21</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -1034,7 +1031,7 @@ function home(){
     const chip=isDone?`<span class="chip done">✓ Cleared</span>`:isF?`<span class="chip focus">🎯 Focus</span>`:`<span class="chip">${m.min}</span>`;
     const desc=m.id==="spell"&&cp>=0?`Your trick right now: ${PATTERNS[cp].name}`:m.desc;
     return `<li><button class="pl${isDone?" done":""}${isNext?" next":""}" style="--m:${MCOLOR[m.id]}" data-go="${m.id}">
-    <span class="orb" aria-hidden="true"><img class="orb-img" src="img/planet-${m.id}.webp" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()">${PLANET_VIDS.includes(m.id)&&!REDUCED?`<video class="orb-vid" src="img/planet-${m.id}.mp4" autoplay muted loop playsinline preload="auto" onloadeddata="this.parentNode.classList.add('has-vid')" onerror="this.remove()"></video>`:""}<span class="oe">${m.icon}</span>${isDone?`<span class="flag">✓</span>`:""}${isNext?`<span class="you">🚀</span>`:""}</span>
+    <span class="orb" aria-hidden="true"><img class="orb-img" src="img/planet-${m.id}.webp" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()">${PLANET_VIDS.includes(m.id)&&animOn()?`<video class="orb-vid" src="img/planet-${m.id}.mp4" muted loop playsinline preload="metadata" onloadeddata="this.parentNode.classList.add('has-vid')" onerror="this.remove()"></video>`:""}<span class="oe">${m.icon}</span>${isDone?`<span class="flag">✓</span>`:""}${isNext?`<span class="you">🚀</span>`:""}</span>
     <span class="ptxt"><span class="mname">${i+1}. ${esc(m.name)}</span><span class="mdesc">${esc(desc)}</span>${chip}</span></button></li>`;}).join("")}</ol>
   <div class="row" style="justify-content:space-between">
     <button class="link" id="to-settings">⚙️ Settings</button>
@@ -1042,10 +1039,10 @@ function home(){
     <button class="link" id="to-hangar">🛸 Hangar</button>
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 20</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 21</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
-  app.querySelectorAll(".orb-vid").forEach(v=>{v.muted=true;const p=v.play();if(p&&p.catch)p.catch(()=>{});unscreenVideo(v);});
+  wirePlanetVids();
   $("#to-hangar").onclick=hangar;if($("#resume-scan"))$("#resume-scan").onclick=scanIntro;
   if(due)$("#rescan").onclick=scanIntro;
   if(!scan)$("#scan-link").onclick=scanIntro;
@@ -1618,16 +1615,17 @@ function settings(){
   <div class="set"><span>↔️ Space between letters</span>${seg("spaced",[[false,"Normal"],[true,"Extra"]])}</div>
   <div class="set"><span>🔊 How much it talks</span>${seg("talk",[["short","Short"],["full","Everything"],["quiet","Words only"]])}</div>
   <p class="muted small" style="margin:.3rem 0 0">Short: quick spoken instructions and the practice words. Everything: reads the whole screen. Words only: just the practice words. 🔊 Read to me always reads the whole screen.</p>
+  <div class="set"><span>✨ Planet animations</span>${seg("anim",[[true,"On"],[false,"Off (faster)"]])}</div>
   <div class="set"><span>👀 Show an example first</span>${seg("demo",[["first","First time only"],["daily","Once a day"],["off","Off"]])}</div>
   <div class="set"><span>🎙️ Voice</span>${seg("engine",[["eleven","ElevenLabs"],["browser","Built-in"]])}</div>
   <p class="muted small" id="voice-status" style="margin:.4rem 0 0"></p>
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 20 (Orbit co-pilot + new art)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 21 (all planets animated, faster)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
-    const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
+    const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice"||k==="anim")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
     save();applySettings();settings();
   });
   $("#test").onclick=()=>speak("Ready for today's missions!");
