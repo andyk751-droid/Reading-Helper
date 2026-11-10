@@ -347,6 +347,23 @@ header{gap:.6rem}
 .orbit-comm.static{border:0;background:none;box-shadow:none;overflow:visible}.orbit-comm.static .comm-tag{display:none}
 @keyframes orbit-hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @media (prefers-reduced-motion: reduce){.orbit{animation:none!important}}
+.fb-card{display:flex;align-items:center;gap:.8rem;width:100%;margin-top:1rem;padding:.8rem 1rem;border-radius:18px;border:1px dashed rgba(255,200,61,.55);background:rgba(255,200,61,.06);color:var(--ink);text-align:left;font-weight:600}
+.fb-card .orbit{width:3.6rem;height:3.6rem;flex:none}.fb-card small{display:block;color:var(--muted);font-weight:500}
+.fb-form{display:grid;gap:1rem}
+.fb-sec{display:grid;gap:.5rem}
+.fb-sec h2{font-size:1.05rem;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chips button{padding:.55rem .9rem;border-radius:999px;border:1px solid rgba(140,160,255,.35);background:rgba(255,255,255,.05);color:var(--ink);font-weight:600}
+.chips button[aria-pressed="true"]{background:var(--c-lab);color:#071022;border-color:var(--c-lab)}
+.rate-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.45rem .6rem;border-radius:14px;background:rgba(255,255,255,.04);flex-wrap:wrap}
+.rate-row>span{font-weight:600;font-size:.95rem}
+.faces{display:flex;gap:.25rem}
+.faces button{font-size:1.55rem;width:2.6rem;height:2.6rem;border-radius:12px;border:1px solid transparent;background:none;filter:grayscale(1);opacity:.55;transition:transform .12s}
+.faces button[aria-pressed="true"]{filter:none;opacity:1;background:rgba(255,200,61,.15);border-color:rgba(255,200,61,.6);transform:scale(1.12)}
+.fb-text{width:100%;min-height:7rem;font:inherit;font-size:1.05rem;padding:.7rem .85rem;border-radius:14px;border:1px solid rgba(140,160,255,.35);background:rgba(10,15,36,.7);color:var(--ink);resize:vertical}
+.fb-in{width:100%;font:inherit;padding:.6rem .85rem;border-radius:12px;border:1px solid rgba(140,160,255,.35);background:rgba(10,15,36,.7);color:var(--ink)}
+.fb-text:focus,.fb-in:focus{outline:none;border-color:var(--c-lab);box-shadow:0 0 14px rgba(34,211,238,.3)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .pilot.join{border-style:dashed;border-color:rgba(255,200,61,.55)}
 .pilot .pc{font-size:.72rem;color:var(--c-lab);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .code-in{font-family:var(--pix);font-size:2rem;letter-spacing:.35em;text-transform:uppercase;padding:.6rem .9rem .6rem 1.25rem;border-radius:16px;border:2px solid rgba(140,160,255,.4);background:rgba(10,15,36,.75);color:var(--ink);text-align:center;width:100%;max-width:20rem;margin:0 auto}
@@ -1002,7 +1019,7 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 21</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 22</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -1039,14 +1056,15 @@ function home(){
     <button class="link" id="to-hangar">🛸 Hangar</button>
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 21</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
+  <button class="fb-card" id="to-feedback">${orbitImg("point")}<span>💬 Tell us what you think<small>Rate the game and send your ideas</small></span></button>
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 22</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   wirePlanetVids();
   $("#to-hangar").onclick=hangar;if($("#resume-scan"))$("#resume-scan").onclick=scanIntro;
   if(due)$("#rescan").onclick=scanIntro;
   if(!scan)$("#scan-link").onclick=scanIntro;
-  $("#to-settings").onclick=settings;$("#to-parent").onclick=parentView;window.scrollTo(0,0);
+  $("#to-settings").onclick=settings;$("#to-parent").onclick=parentView;$("#to-feedback").onclick=feedbackView;window.scrollTo(0,0);
   if(S.rankSeen===-1){S.rankSeen=rk.i;save();}
   narrate(done===NM?`All done for today! You finished all ${NM} missions. Come back tomorrow to keep your streak going.`
     :`Hi! You've done ${done} of ${NM} missions today. Tap the big button to start ${next.name}.${due?" It's also time for a Level Scan re-check. Tap Start in the purple box when you're ready.":""}`,{short:""});
@@ -1622,7 +1640,7 @@ function settings(){
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 21 (all planets animated, faster)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 22 (feedback form)</p></div>`;
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice"||k==="anim")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
@@ -2103,6 +2121,65 @@ function pinScreen(o){
   }
   function enter(p){switchTo(p.id);syncNow();}
   narrate("Tap your 4 secret pictures.",{short:"Tap your 4 secret pictures."});
+}
+/* ---------- Feedback form: saved in the database and emailed to Akra Technologies ---------- */
+const FEEDBACK_URL="https://atsgfhkzhnzjzylwzmkv.supabase.co/functions/v1/decode-feedback";
+const APP_VERSION="22";
+const FB_FEATURES=[["overall","⭐","The whole game"],["missions","🪐","The missions (games)"],["voice","🤖","Orbit's voice and directions"],["scan","🔍","The Level Scan"],["rewards","🏅","Ranks, badges, and crates"],["look","✨","How it looks"],["speed","⚡","How fast it runs"]];
+const FACES=[["😞","Really bad"],["🙁","Not good"],["😐","OK"],["🙂","Good"],["😍","Awesome"]];
+function feedbackView(){
+  R=null;P=null;hush();setColor("lab");
+  const pc=curPilot(),st={role:"student",kind:"",ratings:{}};
+  let draft={};try{draft=JSON.parse(localStorage.getItem("decode-space-fbdraft")||"{}");}catch(e){}
+  app.innerHTML=`<div class="hero"><button class="back" id="fb-back">← Home</button>
+    <div class="orbit-hi" style="margin:.6rem 0 1rem">${orbitImg("point")}<div><p class="mc-kicker">💬 Feedback</p><h1 style="margin:0">Tell us what you think!</h1><p class="muted" style="margin:.2rem 0 0">Your ideas help make Decode better.</p></div></div>
+    <form class="fb-form" id="fbf" novalidate>
+      <div class="fb-sec"><h2>1. I am a…</h2><div class="chips" data-group="role">
+        ${[["student","🧑‍🚀 Student"],["parent","👪 Parent"],["teacher","🍎 Teacher"],["other","🙂 Other"]].map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="${v===st.role}">${l}</button>`).join("")}</div></div>
+      <div class="fb-sec"><h2>2. Tap a face for each part</h2><p class="muted small" style="margin:-.3rem 0 0">Skip any part you haven't tried.</p>
+        ${FB_FEATURES.map(([k,e,l])=>`<div class="rate-row"><span>${e} ${l}</span><div class="faces" role="group" aria-label="${l}" data-rate="${k}">${FACES.map(([f,t],i)=>`<button type="button" data-n="${i+1}" aria-label="${t}" aria-pressed="false">${f}</button>`).join("")}</div></div>`).join("")}</div>
+      <div class="fb-sec"><h2>3. What do you want to tell us?</h2><div class="chips" data-group="kind">
+        ${[["love","💚 I love something"],["idea","💡 I have an idea"],["broken","🔧 Something isn't working"],["other","💬 Something else"]].map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="false">${l}</button>`).join("")}</div>
+        <textarea class="fb-text" id="fb-msg" maxlength="1500" placeholder="Type your comment here…">${esc(draft.message||"")}</textarea>
+        <p class="muted small" style="margin:-.2rem 0 0">🎤 Tip: tap the microphone on your keyboard to talk instead of typing.</p></div>
+      <div class="fb-sec"><h2>4. Your first name <span class="muted small">(optional)</span></h2><input class="fb-in" id="fb-name" maxlength="40" autocomplete="off" value="${esc(pc&&pc.name||"")}"></div>
+      <div class="fb-sec" id="fb-email-sec" hidden><h2>5. Your email <span class="muted small">(only if you'd like a reply)</span></h2><input class="fb-in" id="fb-email" type="email" maxlength="120" autocomplete="email"></div>
+      <div class="hp" aria-hidden="true"><label>Leave this empty<input id="fb-hp" tabindex="-1" autocomplete="off"></label></div>
+      <p class="pinmsg" id="fb-status" role="status"></p>
+      <div class="row center"><button class="btn go big" id="fb-send" type="submit">Send ▶</button></div>
+      <p class="privacy">🔒 Students: please don't type your last name, address, or phone number.</p>
+    </form></div>`;
+  window.scrollTo(0,0);
+  $("#fb-back").onclick=home;
+  const msg=$("#fb-msg"),status=$("#fb-status");
+  msg.addEventListener("input",()=>{if(status.textContent&&!status.classList.contains("ok"))status.textContent="";try{localStorage.setItem("decode-space-fbdraft",JSON.stringify({message:msg.value}));}catch(e){}});
+  app.querySelectorAll("[data-group]").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));st[g.dataset.group]=b.dataset.v;
+    if(g.dataset.group==="role")$("#fb-email-sec").hidden=b.dataset.v==="student";
+  }));
+  app.querySelectorAll("[data-rate]").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    const on=b.getAttribute("aria-pressed")!=="true";
+    g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false"));
+    if(on){b.setAttribute("aria-pressed","true");st.ratings[g.dataset.rate]=+b.dataset.n;}else delete st.ratings[g.dataset.rate];
+  }));
+  $("#fbf").onsubmit=async e=>{
+    e.preventDefault();const text=msg.value.trim();
+    if(!text){status.className="pinmsg";status.textContent="Please type a comment first. A few words is fine!";msg.focus();return;}
+    const btn=$("#fb-send");btn.disabled=true;status.className="pinmsg ok";status.textContent="Sending…";
+    const body={source:"game",role:st.role,kind:st.kind||"other",ratings:st.ratings,message:text,name:$("#fb-name").value.trim(),
+      reply_email:st.role==="student"?"":$("#fb-email").value.trim(),version:APP_VERSION,device:deviceName(),website:$("#fb-hp").value};
+    let ok=false,err="";
+    try{const r=await fetch(FEEDBACK_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+TTS_ANON,apikey:TTS_ANON},body:JSON.stringify(body)});
+      const j=await r.json().catch(()=>({}));ok=r.ok&&j.ok;err=j.error||"";}catch(x){err="offline";}
+    if(ok){
+      try{localStorage.removeItem("decode-space-fbdraft");}catch(x){}
+      app.innerHTML=`<div class="hero" style="text-align:center"><div class="trophy has-img">${orbitTrophy("💚")}</div><h1 style="margin:.4rem 0">Thank you!</h1><p class="muted">Your feedback was sent. Orbit is passing it to the team.</p><div class="row center"><button class="btn go big" id="fb-home">Back to base ▶</button></div></div>`;
+      $("#fb-home").onclick=home;narrate("Thank you! Your feedback was sent.",{short:"Thank you!"});return;
+    }
+    btn.disabled=false;status.className="pinmsg";
+    status.textContent=err==="offline"?"No internet right now. Your comment is saved here, so try again later.":err==="slow_down"?"That's a lot of messages! Please wait a few minutes.":"Something went wrong. Your comment is saved here, so try again later.";
+  };
+  narrate("Tell us what you think! Tap a face for each part of the game, then type your comment and tap Send.",{short:"Tap a face for each part, then type your comment."});
 }
 function startApp(){const pc=curPilot();if(PROF.list.length===1&&pc&&pc.name)return switchTo(pc.id);signIn();}
 (()=>{const bg=new Image();bg.onload=()=>document.body.classList.add("has-bg");bg.src="img/space-bg.webp";})();

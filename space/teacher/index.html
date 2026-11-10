@@ -110,6 +110,16 @@ ul.plain li:last-child{border-bottom:0}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:50;max-width:90vw}
 dialog{border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);padding:20px;max-width:440px;width:calc(100% - 32px);box-shadow:var(--shadow)}
 dialog::backdrop{background:rgba(10,15,35,.45)}
+dialog.wide{max-width:580px}
+.stars{display:flex;gap:2px}
+.stars button{border:0;background:none;font-size:1.5rem;line-height:1;padding:2px 3px;color:var(--line);cursor:pointer}
+.stars button.on{color:#E0A800}
+.ratelist{display:grid;gap:4px;margin:6px 0 4px}
+.ratelist>div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 8px;border-radius:10px;background:var(--surface2);flex-wrap:wrap}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pills button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-weight:600;font-size:.88rem;cursor:pointer}
+.pills button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 footer{margin-top:32px;color:var(--muted);font-size:.82rem;text-align:center}
 #print{display:none}
 @media print{
@@ -131,6 +141,7 @@ footer{margin-top:32px;color:var(--muted);font-size:.82rem;text-align:center}
   <header class="top">
     <a class="brand" href="../" title="Open the game"><img src="../img/owl-512.png" alt=""><span><b>Decode</b><small>Teacher Dashboard</small></span></a>
     <div class="spacer"></div>
+    <button class="btn small" id="fb-open" title="Send feedback about Decode">💬 Feedback</button>
     <div id="who" class="rowflex"></div>
   </header>
   <main id="main" aria-live="polite"></main>
@@ -444,6 +455,39 @@ function confirmDlg(title,body,ok,cb){
   const d=$("#dlg");d.innerHTML=`<form method="dialog"><h2>${esc(title)}</h2><p class="muted">${esc(body)}</p><div class="rowflex" style="justify-content:flex-end"><button class="btn" value="cancel">Cancel</button><button class="btn primary" value="ok" style="background:var(--focus);border-color:var(--focus)">${esc(ok)}</button></div></form>`;
   d.showModal();d.onclose=()=>{if(d.returnValue==="ok")cb();};
 }
+/* Feedback: saved in the database and emailed to Akra Technologies */
+const FEEDBACK_URL=SB_URL+"/functions/v1/decode-feedback";
+const FB_FEATURES=[["overall","Overall"],["setup","Easy to set up"],["roster","Roster & needs-help flags"],["detail","Learner detail & next steps"],["insights","Class insights"],["cards","Sign-in cards & CSV export"],["missions","The student game"]];
+function feedbackDlg(){
+  const d=$("#dlg");d.classList.add("wide");const st={role:"teacher",kind:"other",ratings:{}};
+  d.innerHTML=`<form method="dialog" id="fbf" novalidate><h2>Send feedback</h2><p class="muted small" style="margin:4px 0 12px">Rate what you've used, then tell us more. It goes straight to the developer.</p>
+    <div class="field"><label>I am a</label><div class="pills" data-g="role">${[["teacher","Teacher"],["parent","Parent"],["other","Other"]].map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="${v==="teacher"}">${l}</button>`).join("")}</div></div>
+    <div class="field"><label>Rate each part <span class="muted small">(skip any you haven't used)</span></label><div class="ratelist">
+      ${FB_FEATURES.map(([k,l])=>`<div><span class="small">${l}</span><span class="stars" role="group" aria-label="${l}" data-r="${k}">${[1,2,3,4,5].map(n=>`<button type="button" data-n="${n}" aria-label="${n} star${n>1?"s":""}">★</button>`).join("")}</span></div>`).join("")}</div></div>
+    <div class="field"><label>What kind of feedback?</label><div class="pills" data-g="kind">${[["love","💚 Something I love"],["idea","💡 An idea"],["broken","🔧 Something isn't working"],["other","💬 Other"]].map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="${v==="other"}">${l}</button>`).join("")}</div></div>
+    <div class="field"><label for="fb-msg">Comment</label><textarea id="fb-msg" rows="5" maxlength="1500" placeholder="What's working, what isn't, what would help your class?"></textarea></div>
+    <div class="rowflex" style="align-items:flex-start"><div class="field" style="flex:1;min-width:160px"><label for="fb-name">Name <span class="muted small">(optional)</span></label><input type="text" id="fb-name" maxlength="40"></div>
+      <div class="field" style="flex:1.4;min-width:200px"><label for="fb-email">Email for a reply <span class="muted small">(optional)</span></label><input type="email" id="fb-email" maxlength="120" value="${esc(USER?.email||"")}"></div></div>
+    <div class="hp" aria-hidden="true"><input id="fb-hp" tabindex="-1" autocomplete="off"></div>
+    <p class="msg" id="fb-status" role="status"></p>
+    <div class="rowflex" style="justify-content:flex-end"><button class="btn" type="button" id="fb-cancel">Cancel</button><button class="btn primary" type="submit" id="fb-send">Send feedback</button></div></form>`;
+  d.querySelectorAll("[data-g]").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));st[g.dataset.g]=b.dataset.v;}));
+  d.querySelectorAll("[data-r]").forEach(g=>{const bs=[...g.querySelectorAll("button")];const paint=n=>bs.forEach((x,i)=>x.classList.toggle("on",i<n));
+    bs.forEach(b=>b.onclick=()=>{const n=+b.dataset.n;if(st.ratings[g.dataset.r]===n){delete st.ratings[g.dataset.r];paint(0);}else{st.ratings[g.dataset.r]=n;paint(n);}});});
+  d.onclose=()=>d.classList.remove("wide");
+  $("#fb-cancel").onclick=()=>d.close();
+  $("#fbf").onsubmit=async e=>{e.preventDefault();const text=$("#fb-msg").value.trim(),m=$("#fb-status");
+    if(!text){m.className="msg";m.textContent="Please add a short comment.";$("#fb-msg").focus();return;}
+    $("#fb-send").disabled=true;m.className="msg ok";m.textContent="Sending…";
+    let ok=false,err="";
+    try{const r=await fetch(FEEDBACK_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+SB_KEY,apikey:SB_KEY},
+      body:JSON.stringify({source:"dashboard",role:st.role,kind:st.kind,ratings:st.ratings,message:text,name:$("#fb-name").value.trim(),reply_email:$("#fb-email").value.trim(),version:"dash-22",device:navigator.platform||"",website:$("#fb-hp").value})});
+      const j=await r.json().catch(()=>({}));ok=r.ok&&j.ok;err=j.error||"";}catch(x){err="offline";}
+    if(ok){d.close();toast("Thank you! Your feedback was sent.");return;}
+    $("#fb-send").disabled=false;m.className="msg";m.textContent=err==="offline"?"No internet connection. Please try again.":err==="slow_down"?"Too many messages. Please wait a few minutes.":"Something went wrong. Please try again.";};
+  d.showModal();
+}
+$("#fb-open").onclick=feedbackDlg;
 start();
 </script>
 </body>
