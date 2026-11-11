@@ -20,6 +20,7 @@ const KINDS: Record<string, string> = { love: "ðŸ’š Something I love", idea: "ðŸ
 const ROLES = ["student", "parent", "teacher", "other"];
 
 function originAllowed(o: string) {
+  if (o === "null") return true; // the downloaded (offline) version runs from a file
   if (!o) return false;
   if (ALLOWED.length) return ALLOWED.includes(o);
   return /^https:\/\/[a-z0-9-]+\.github\.io$/i.test(o) || /^https:\/\/(www\.)?akratechnologies\.com$/i.test(o) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);

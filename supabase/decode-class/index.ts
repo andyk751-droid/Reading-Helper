@@ -47,6 +47,33 @@ function tooMany(ip: string) {
   h.n++; return h.n > 30;
 }
 
+// Pilot pass: approved teachers' classes get the full game content.
+const ADMIN_EMAILS = (Deno.env.get("ADMIN_EMAILS") ?? "andyk751@gmail.com,kray1075@hotmail.com").split(",").map((s) => s.trim().toLowerCase());
+const approvedCache = new Map<string, { ok: boolean; t: number }>();
+async function classApproved(classId: string): Promise<boolean> {
+  const hit = approvedCache.get(classId);
+  if (hit && Date.now() - hit.t < 60_000) return hit.ok;
+  let ok = false;
+  const { data: c } = await db.from("decode_classes").select("owner").eq("id", classId).maybeSingle();
+  if (c?.owner) {
+    const { data: st } = await db.from("decode_teacher_status").select("approved").eq("owner", c.owner).maybeSingle();
+    ok = !!st?.approved;
+    if (!ok) {
+      const { data: u } = await db.auth.admin.getUserById(c.owner);
+      ok = !!u?.user?.email && ADMIN_EMAILS.includes(u.user.email.toLowerCase());
+    }
+  }
+  approvedCache.set(classId, { ok, t: Date.now() });
+  return ok;
+}
+let contentCache: { v: string; data: unknown; t: number } | null = null;
+async function fullContent() {
+  if (contentCache && Date.now() - contentCache.t < 300_000) return contentCache;
+  const { data } = await db.from("decode_content").select("version,data").eq("id", "main").maybeSingle();
+  contentCache = data ? { v: data.version, data: data.data, t: Date.now() } : null;
+  return contentCache;
+}
+
 async function learnerFromToken(token: unknown) {
   const t = String(token ?? "");
   if (t.length < 20) return null;
@@ -101,7 +128,9 @@ Deno.serve(async (req) => {
       await db.from("decode_learners").update({ failed: 0, locked_until: null, last_login: now }).eq("id", id);
       await db.from("decode_logins").insert({ learner_id: id, at: now, device: String(b.device ?? "").slice(0, 20) || null });
       const { data: snap } = await db.from("decode_snapshots").select("state").eq("learner_id", id).maybeSingle();
-      return json({ token, learner: { id: l.id, name: l.name, avatar: l.avatar }, className: cls.name, state: snap?.state ?? null }, 200, o);
+      const full = await classApproved(l.class_id);
+      const content = full ? (await fullContent())?.data ?? null : null;
+      return json({ token, learner: { id: l.id, name: l.name, avatar: l.avatar }, className: cls.name, state: snap?.state ?? null, full, content }, 200, o);
     }
 
     // 3) Progress sync (rounds, scans, logins, and a snapshot of the save).
@@ -140,7 +169,11 @@ Deno.serve(async (req) => {
           });
         } else restore = cur.state; // another device has newer progress
       }
-      return json({ ok: true, restore }, 200, o);
+      const { data: lr } = await db.from("decode_learners").select("class_id").eq("id", lid).maybeSingle();
+      const full = lr ? await classApproved(lr.class_id) : false;
+      let content = null;
+      if (full && typeof b.content_v === "string") { const fc = await fullContent(); if (fc && fc.v !== b.content_v) content = fc.data; }
+      return json({ ok: true, restore, full, content }, 200, o);
     }
     return json({ error: "unknown_action" }, 400, o);
   } catch (e) {

@@ -1,6 +1,6 @@
 // Decode Space Adventure: lets the installed app open and play offline.
 // The page itself is fetched fresh whenever there's internet, so updates show up right away.
-const VERSION = "decode-v24";
+const VERSION = "decode-v25";
 const CORE = ["./", "index.html", "manifest.webmanifest",
   "img/icon-192.png", "img/icon-512.png", "img/owl-64.png", "img/owl-180.png", "img/owl-512.png",
   "img/crate-gold.webp", "img/crate.webp", "img/orbit-cheer-poster.webp", "img/orbit-cheer.webp", "img/orbit-main.webp",

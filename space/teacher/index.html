@@ -50,6 +50,7 @@ header.top{display:flex;align-items:center;gap:12px;padding:14px 0;flex-wrap:wra
 .btn.link{border:0;background:none;color:var(--accent);padding:4px 6px}
 .btn.warn{color:var(--focus)}
 .btn:disabled{opacity:.55;cursor:default}
+.card.passbar{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin:0 0 14px;border-left:5px solid #C9A227;background:color-mix(in srgb,#C9A227 12%,var(--surface))}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
 .muted{color:var(--muted)}.small{font-size:.85rem}
 .field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
@@ -173,7 +174,7 @@ const colorFor=v=>v>=85?"var(--good)":v>=60?"var(--mid)":"var(--focus)";
 const pinPics=p=>p.split("-").map(i=>PICS[+i][0]).join(" ");
 function newPin(){const a=crypto.getRandomValues(new Uint8Array(4));return [...a].map(x=>x%9).join("-");}
 
-let USER=null,CLASSES=[],CUR=null,D=null,TAB="roster",SORT={k:"name",dir:1},DETAIL=null,refreshT=null;
+let PASS=null,USER=null,CLASSES=[],CUR=null,D=null,TAB="roster",SORT={k:"name",dir:1},DETAIL=null,refreshT=null;
 
 /* ---------- Auth ---------- */
 function authView(mode="in",note=""){
@@ -207,8 +208,26 @@ async function start(){
   if(!session){return authView();}
   USER=session.user;
   $("#who").innerHTML=`<span class="muted small">${esc(USER.email)}</span><button class="btn small" id="so">Sign out</button>`;
-  $("#so").onclick=async()=>{await sb.auth.signOut();USER=null;CUR=null;authView();};
+  $("#so").onclick=async()=>{await sb.auth.signOut();USER=null;CUR=null;PASS=null;authView();};
+  await loadPass();
   await loadClasses();
+}
+
+/* ---------- Pilot pass (full game for approved teachers) ---------- */
+const ADMINS=["andyk751@gmail.com","kray1075@hotmail.com"];
+async function loadPass(){
+  if(ADMINS.includes((USER.email||"").toLowerCase())){PASS="ok";return;}
+  const {data}=await sb.from("decode_teacher_status").select("approved").eq("owner",USER.id).maybeSingle();
+  if(data){PASS=data.approved?"ok":"pending";return;}
+  const {error}=await sb.from("decode_teacher_status").insert({owner:USER.id,approved:false});
+  PASS="pending";
+  if(!error){try{await fetch(SB_URL+"/functions/v1/decode-feedback",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+SB_KEY,apikey:SB_KEY},
+    body:JSON.stringify({source:"dashboard",kind:"other",role:"teacher",reply_email:USER.email,version:"pilot-request",
+      message:`Pilot pass request\nTeacher: ${USER.email}\nApprove in Supabase: Table Editor > decode_teacher_status > set approved = true for this teacher.`})});}catch(e){}}
+}
+function passBanner(){
+  if(PASS!=="pending")return "";
+  return `<div class="card passbar" role="status"><b>🎟️ Pilot pass requested</b><span>Your learners can play the free missions now. The full game unlocks for all your classes once Akra Technologies approves your pass, usually within a day. No need to do anything else.</span></div>`;
 }
 
 /* ---------- Classes ---------- */
@@ -276,6 +295,7 @@ function render(){
       <button class="btn small" id="addc">＋ New class</button>
       <div class="codebox"><span>Class code</span><b>${esc(CUR.code)}</b><button class="btn small" id="copyc" title="Copy join instructions">Copy</button></div>
       <div class="spacer"></div><button class="btn small" id="refresh" title="Refresh">↻ Refresh</button></div>
+    ${passBanner()}
     <div class="tabs" role="tablist">${[["roster","Roster"],["insights","Class insights"],["manage","Manage learners"]].map(([k,n])=>`<button role="tab" aria-selected="${TAB===k}" data-tab="${k}">${n}</button>`).join("")}</div>
     <div id="tab"></div>`;
   $("#cls").onchange=e=>{CUR=CLASSES.find(c=>c.id===e.target.value);DETAIL=null;loadClass();};

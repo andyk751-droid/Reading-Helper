@@ -552,51 +552,16 @@ body.has-bg{background-image:linear-gradient(rgba(10,15,36,.55),rgba(10,15,36,.7
   <main id="app"></main>
 </div>
 <script>
-const SWAPS=[
- {say:"slip",ask:"Change /i/ to /a/.",ans:["slap"]},
- {say:"trap",ask:"Change /a/ to /i/.",ans:["trip"]},
- {say:"flame",ask:"Change /f/ to /b/.",ans:["blame"]},
- {say:"crust",ask:"Change /k/ to /t/.",ans:["trust"]},
- {say:"black",ask:"Change /a/ to /o/.",ans:["block"]},
- {say:"sting",ask:"Change /i/ to /u/.",ans:["stung"]},
- {say:"grip",ask:"Change /p/ to /n/.",ans:["grin"]},
- {say:"chop",ask:"Change /ch/ to /sh/.",ans:["shop"]},
- {say:"thick",ask:"Change /th/ to /ch/.",ans:["chick"]},
- {say:"stone",ask:"Change /n/ to /l/.",ans:["stole"]},
- {say:"stack",ask:"Take away the /t/ sound.",ans:["sack"]},
- {say:"blend",ask:"Take away the /l/ sound.",ans:["bend"]},
- {say:"swing",ask:"Take away the /w/ sound.",ans:["sing"]},
- {say:"plant",ask:"Take away the /l/ sound.",ans:["pant"]},
- {say:"lip",ask:"Add /s/ to the start.",ans:["slip"]},
- {say:"rain",ask:"Add /t/ to the start.",ans:["train"]},
- {say:"lamp",ask:"Add /k/ to the start.",ans:["clamp"]}
-];
-const COUNTS=[
- {word:"shrimp",sounds:["sh","r","i","m","p"]},
- {word:"thick",sounds:["th","i","ck"],note:"th and ck each make one sound."},
- {word:"splash",sounds:["s","p","l","a","sh"]},
- {word:"knight",sounds:["n","igh","t"],note:"The k is silent, and igh makes one sound."},
- {word:"fox",sounds:["f","o","k","s"],note:"Tricky one: x makes two sounds, /k/ and /s/."},
- {word:"stretch",sounds:["s","t","r","e","tch"],note:"tch makes one sound."},
- {word:"bright",sounds:["b","r","igh","t"]},
- {word:"cheese",sounds:["ch","ee","se"],note:"The se at the end says /z/."},
- {word:"strong",sounds:["s","t","r","o","ng"],note:"ng makes one sound."},
- {word:"phone",sounds:["ph","o","n"],note:"ph says /f/, and the silent e makes no sound."}
-];
-const PATTERNS=[
- {name:"Consonant blends",eg:"strand, crisp, frost",rule:"When consonants team up, each one still says its own sound. Say every sound.",words:[
-  ["strand","A strand of hair fell in her eyes."],["crisp","The chips were crisp and salty."],["thrust","He thrust his hand into the air."],["clamp","Use a clamp to hold the wood still."],["splint","The nurse put a splint on my finger."],["blend","Blend the fruit to make a smoothie."],["script","The actors read the script out loud."],["frost","Frost covered the car this morning."]]},
- {name:"Silent e",eg:"stripe, flame, globe",rule:"An e at the end makes no sound, but it makes the vowel say its name. Rip becomes ripe.",words:[
-  ["stripe","The flag has a red stripe."],["flame","The candle flame flickered."],["spoke","She spoke to the whole class."],["prune","We prune the bushes every spring."],["theme","The party had a space theme."],["shine","The sun began to shine."],["globe","Spin the globe and pick a country."],["crate","The puppy slept in its crate."]]},
- {name:"Vowel teams",eg:"stream, float, train",rule:"Two vowels team up to make one sound: ai, ea, oa, ee.",words:[
-  ["stream","We waded across the stream."],["float","Wood will float on water."],["train","The train was late again."],["bleach","Bleach can take the color out of a shirt."],["coast","We drove up the coast."],["speech","He gave a speech at the meeting."],["paint","The paint is still wet."],["cheap","That game was cheap on sale."]]},
- {name:"Bossy r",eg:"storm, thirst, burst",rule:"When r comes after a vowel, it changes the vowel's sound: ar, or, er, ir, ur.",words:[
-  ["storm","The storm knocked out the power."],["thirst","Cold water fixed my thirst."],["charge","Plug in the phone to charge it."],["burst","The balloon burst with a pop."],["sharp","Be careful, that knife is sharp."],["first","I was first in line."],["north","Birds fly north in the spring."],["curve","The road has a sharp curve."]]},
- {name:"The -tion ending",eg:"action, station, motion",rule:"The ending -tion sounds like \"shun.\" Spell the first part, then add -tion.",words:[
-  ["action","That movie had a lot of action."],["station","Meet me at the train station."],["motion","The boat's motion made me dizzy."],["fraction","One half is a fraction."],["section","Read the first section of the chapter."],["caption","Write a caption for the photo."],["lotion","Put lotion on your dry hands."],["nation","The whole nation watched the game."]]},
- {name:"Doubling rule",eg:"running, stopped, grabbed",rule:"Short vowel and one consonant at the end? Double that consonant before adding -ing or -ed. Run becomes running.",words:[
-  ["running","He was running late for school."],["stopped","The bus stopped at the corner."],["planning","We are planning a trip."],["hopping","The frog kept hopping away."],["grabbed","She grabbed her backpack."],["swimming","We went swimming at the lake."],["dropped","I dropped my phone again."],["shipping","Shipping is free this week."]]}
-];
+/* ---------- Editions ----------
+   full: everything (development master). trial: public website; paid planets unlock for approved class pilots.
+   offline: the downloadable version sold on Ko-fi (no class sign-in). The build script sets these. */
+const EDITION="trial";
+const BUY_URL="https://ko-fi.com/akratechnologies";
+const FREE_MISSIONS=["flip"];
+let CONTENT_FULL=EDITION!=="trial";
+const SWAPS=[{"say":"slip","ask":"Change /i/ to /a/.","ans":["slap"]},{"say":"trap","ask":"Change /a/ to /i/.","ans":["trip"]},{"say":"flame","ask":"Change /f/ to /b/.","ans":["blame"]},{"say":"crust","ask":"Change /k/ to /t/.","ans":["trust"]}];
+const COUNTS=[{"word":"shrimp","sounds":["sh","r","i","m","p"]},{"word":"thick","sounds":["th","i","ck"],"note":"th and ck each make one sound."},{"word":"splash","sounds":["s","p","l","a","sh"]},{"word":"knight","sounds":["n","igh","t"],"note":"The k is silent, and igh makes one sound."}];
+const PATTERNS=[{"name":"Consonant blends","eg":"strand, crisp, frost","rule":"When consonants team up, each one still says its own sound. Say every sound.","words":[]},{"name":"Silent e","eg":"stripe, flame, globe","rule":"An e at the end makes no sound, but it makes the vowel say its name. Rip becomes ripe.","words":[]},{"name":"Vowel teams","eg":"stream, float, train","rule":"Two vowels team up to make one sound: ai, ea, oa, ee.","words":[]},{"name":"Bossy r","eg":"storm, thirst, burst","rule":"When r comes after a vowel, it changes the vowel's sound: ar, or, er, ir, ur.","words":[]},{"name":"The -tion ending","eg":"action, station, motion","rule":"The ending -tion sounds like \"shun.\" Spell the first part, then add -tion.","words":[]},{"name":"Doubling rule","eg":"running, stopped, grabbed","rule":"Short vowel and one consonant at the end? Double that consonant before adding -ing or -ed. Run becomes running.","words":[]}];
 const FLIP=[
  {s:"I got a letter ___ my cousin.",a:"from",b:"form"},
  {s:"Fill out this ___ to join the team.",a:"form",b:"from"},
@@ -623,26 +588,9 @@ const FLIP=[
  {s:"I ___ my best on the test.",a:"tried",b:"tired"},
  {s:"I'm so ___ after practice.",a:"tired",b:"tried"}
 ];
-const FORGE=[
- {def:"To break in while someone is talking",word:"interrupt",parts:[["inter","between"],["rupt","break"]]},
- {def:"Easy to carry around",word:"portable",parts:[["port","carry"],["able","can be"]]},
- {def:"The act of building something",word:"construction",parts:[["con","together"],["struc","build"],["tion","act of"]]},
- {def:"To pull something out",word:"extract",parts:[["ex","out"],["tract","pull"]]},
- {def:"To say what will happen before it happens",word:"predict",parts:[["pre","before"],["dict","say"]]},
- {def:"To carry things from one place to another",word:"transport",parts:[["trans","across"],["port","carry"]]},
- {def:"A person who looks into things to check them",word:"inspector",parts:[["in","into"],["spect","look"],["or","one who"]]},
- {def:"To break out suddenly, like a volcano",word:"erupt",parts:[["e","out"],["rupt","break"]]},
- {def:"To pull someone's attention away",word:"distract",parts:[["dis","away"],["tract","pull"]]},
- {def:"To say the opposite of what someone said",word:"contradict",parts:[["contra","against"],["dict","say"]]},
- {def:"Not able to be seen",word:"invisible",parts:[["in","not"],["vis","see"],["ible","can be"]]},
- {def:"To carry goods into a country",word:"import",parts:[["im","into"],["port","carry"]]}
-];
-const POOL=[["re","again"],["pre","before"],["ex","out"],["con","together"],["trans","across"],["dis","away"],["port","carry"],["rupt","break"],["dict","say"],["struct","build"],["tract","pull"],["spect","look"],["vis","see"],["able","can be"],["ion","act of"],["or","one who"],["er","one who"],["ive","tending to"],["sub","under"],["mis","wrong"]];
-const PASSAGES=[
- {id:"level",title:"The Last Level",text:"Maya had been stuck on the last level for three days. The boss had two shields, and every time she broke one, the other grew back. Her brother said the game was broken. Maya did not think so.\nShe grabbed a notebook and wrote down every move the boss made. Jump, spin, shield, charge. Jump, spin, shield, charge. It was a pattern. The shields only dropped for one second after the charge.\nOn her next try, she waited. She dodged the charge, then struck fast. The first shield cracked. Then the second. The screen flashed gold. Maya did not cheer. She just smiled and closed the notebook. Patterns, she thought, are everywhere."},
- {id:"deep",title:"Lights in the Deep",text:"Far below the waves, the sea is dark and cold. Sunlight fades as you go down, and deep enough there is no light at all. Yet the deep sea is not empty.\nSome fish make their own light. They glow blue or green to find food, trick enemies, or signal each other. The anglerfish dangles a glowing lure in front of its mouth like a fishing pole. Small fish swim toward the light and get snapped up.\nScientists explore these depths with robot subs built to handle the crushing weight of the water. On almost every trip down, they find something new. Much of the deep ocean has still never been seen by anyone."},
- {id:"skate",title:"The Skate Park Plan",text:"The town wanted to tear down the old tennis courts. Jalen had a better idea. He walked the courts and drew a map of where ramps, rails, and a small bowl could go.\nThen he counted how many kids skated in the parking lot behind the store. On Monday, there were fourteen. On Friday, there were twenty-two. He put the numbers on a poster and brought it to the town meeting.\nHis hands shook when he stood up to speak. He read his plan slowly and clearly. When he finished, the room was quiet. Then the mayor asked a question. How much would it cost? Jalen flipped the poster over. He had already done the math."}
-];
+const FORGE=[{"def":"Easy to carry around","word":"portable","parts":[["port","carry"],["able","can be"]]},{"def":"To break in while someone is talking","word":"interrupt","parts":[["inter","between"],["rupt","break"]]},{"def":"The act of building something","word":"construction","parts":[["con","together"],["struc","build"],["tion","act of"]]},{"def":"To pull something out","word":"extract","parts":[["ex","out"],["tract","pull"]]},{"def":"To say what will happen before it happens","word":"predict","parts":[["pre","before"],["dict","say"]]}];
+const POOL=[["re","again"],["pre","before"],["ex","out"],["con","together"],["trans","across"],["dis","away"],["port","carry"],["rupt","break"],["dict","say"],["struct","build"],["tract","pull"],["spect","look"]];
+const PASSAGES=[];
 /* ---------- Level scan content ---------- */
 const PLACE={
   spell:[["grasp","Grasp the rope with both hands.",0],["scrub","Scrub the pan until it shines.",0],["slope","We sledded down the slope.",1],["brave","The firefighter was brave.",1],["cream","Add cream to the soup.",2],["toast","I ate toast for breakfast.",2],["smart","That was a smart move.",3],["churn","The waves churn in the storm.",3],["option","Pizza is one option for dinner.",4],["mention","Did he mention the test?",4],["tapping","She kept tapping her pencil.",5],["slipped","I slipped on the ice.",5]],
@@ -986,6 +934,7 @@ addEventListener("appinstalled",()=>{installEvt=null;toast("Decode is installed!
 function installUI(){
   const b=document.getElementById("install"),m=document.getElementById("install-msg");if(!b||!m)return;
   const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  if(EDITION==="offline"){b.hidden=true;m.textContent="✅ You're using the downloaded version of Decode. It works without internet.";return;}
   if(isInstalled()){b.hidden=true;m.textContent="✅ You're using the installed app. It works offline and updates itself.";return;}
   if(installEvt){b.hidden=false;m.textContent="Adds a Decode icon to your Start menu, desktop, or home screen. It opens in its own window and works offline.";
     b.onclick=async()=>{installEvt.prompt();const r=await installEvt.userChoice.catch(()=>null);installEvt=null;installUI();if(r&&r.outcome==="accepted")toast("Installing Decode…");};return;}
@@ -1153,6 +1102,34 @@ function blasterPlay(){
   }
   hud();nextWave();G.raf=requestAnimationFrame(loop);
 }
+/* ---------- Trial and full access ---------- */
+function fullAccess(){if(EDITION!=="trial")return true;const x=curPilot();return CONTENT_FULL&&!!(x&&x.cls&&x.cls.full);}
+function missionLocked(id){return EDITION==="trial"&&!FREE_MISSIONS.includes(id)&&!fullAccess();}
+const CONTENT_KEY="decode-space-content";
+function applyContent(c){
+  if(!c||!c.v)return false;
+  const put=(arr,src)=>{if(Array.isArray(src)){arr.length=0;arr.push(...src);}};
+  put(SWAPS,c.SWAPS);put(COUNTS,c.COUNTS);put(FORGE,c.FORGE);put(POOL,c.POOL);put(PASSAGES,c.PASSAGES);put(LAB,c.LAB);
+  if(Array.isArray(c.PATTERN_WORDS))c.PATTERN_WORDS.forEach((w,i)=>{if(PATTERNS[i]&&Array.isArray(w))PATTERNS[i].words=w;});
+  CONTENT_FULL=true;return true;
+}
+function storeContent(c){try{localStorage.setItem(CONTENT_KEY,JSON.stringify(c));}catch(e){}applyContent(c);}
+function contentVersion(){try{return (JSON.parse(localStorage.getItem(CONTENT_KEY)||"{}")||{}).v||"";}catch(e){return "";}}
+/* Saved class content is applied after all word lists are defined (see below LAB). */
+function upsell(id){
+  R=null;P=null;hush();const m=MISSIONS.find(x=>x.id===id)||{name:"This planet",icon:"🪐"};setColor(id);
+  const pc=curPilot(),inClass=!!(pc&&pc.cls);
+  frame(id,`<div class="card" style="text-align:center">${orbitImg("point","")}
+    <p class="mc-kicker" style="margin-top:.4rem">🔒 Full game</p><h2 style="margin:.2rem 0">${m.icon} ${esc(m.name)} is part of the full game</h2>
+    <p class="muted">The free version includes the Level Scan, Twin Words, and Asteroid Blaster.</p>
+    <ul class="pat-list" style="text-align:left;margin:.8rem 0"><li><span>🪐 All 6 planets</span><b>Ending Lab, Sound Swap, Spell It, Twin Words, Word Builder, Speed Read</b></li>
+      <li><span>🏅 Ranks, badges, and stickers</span><b>Cadet to Fleet Admiral</b></li><li><span>💾 Plays offline</span><b>Windows, Mac, and Chromebook</b></li></ul>
+    <div class="row center"><a class="btn go big" id="buy" href="${BUY_URL}" target="_blank" rel="noopener">⭐ Get the full game: $4.99</a></div>
+    ${inClass?(pc.cls.full===false?`<p class="muted small">Your class is waiting for approval. Ask your teacher.</p>`:""):`<div class="row center"><button class="btn ghost" id="up-join">🏫 In a class? Join my class</button></div>`}
+    <div class="row center"><button class="btn ghost" id="up-back">← Back to base</button></div></div>`);
+  if($("#up-join"))$("#up-join").onclick=()=>joinClass();$("#up-back").onclick=home;
+  narrate(`${m.name} is part of the full game. Ask a grown-up about getting it.`,{short:`${m.name} is part of the full game.`});
+}
 function orbitFb(){
   const fb=document.getElementById("fb");if(!fb||fb.querySelector(".orbit-fb"))return;
   const good=fb.querySelector(".msg.good"),m=fb.querySelector(".msg");if(!good&&!m)return;
@@ -1221,7 +1198,7 @@ function home(){
   }
   const plan=planOrder(),focus=focusMissions();
   const done=MISSIONS.filter(m=>S.doneToday[m.id]).length;
-  const next=plan.find(m=>!S.doneToday[m.id]);const NM=MISSIONS.length;
+  const next=plan.find(m=>!S.doneToday[m.id]&&!missionLocked(m.id))||plan.find(m=>!S.doneToday[m.id]);const NM=MISSIONS.length;
   const due=scan&&S.nextScan&&dayStr()>=S.nextScan;
   const cp=currentPattern();
   const rk=rankInfo();
@@ -1239,7 +1216,7 @@ function home(){
   <p class="map-h">🗺️ ${scan?"Today's flight path":"Star map"}</p>
   <ol class="map">${plan.map((m,i)=>{
     const isF=focus.includes(m.id),isDone=!!S.doneToday[m.id],isNext=next&&next.id===m.id;
-    const chip=isDone?`<span class="chip done">✓ Cleared</span>`:isF?`<span class="chip focus">🎯 Focus</span>`:`<span class="chip">${m.min}</span>`;
+    const chip=missionLocked(m.id)?`<span class="chip">🔒 Full game</span>`:isDone?`<span class="chip done">✓ Cleared</span>`:isF?`<span class="chip focus">🎯 Focus</span>`:`<span class="chip">${m.min}</span>`;
     const desc=m.id==="spell"&&cp>=0?`Your trick right now: ${PATTERNS[cp].name}`:m.desc;
     return `<li><button class="pl${isDone?" done":""}${isNext?" next":""}" style="--m:${MCOLOR[m.id]}" data-go="${m.id}">
     <span class="orb" aria-hidden="true"><img class="orb-img" src="img/planet-${m.id}.webp" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()">${PLANET_VIDS.includes(m.id)&&animOn()?`<video class="orb-vid" src="img/planet-${m.id}.mp4" muted loop playsinline preload="metadata" onloadeddata="this.parentNode.classList.add('has-vid')" onerror="this.remove()"></video>`:""}<span class="oe">${m.icon}</span>${isDone?`<span class="flag">✓</span>`:""}${isNext?`<span class="you">🚀</span>`:""}</span>
@@ -1306,7 +1283,7 @@ function finish(){
     mastered=`<div class="rule" style="--m:var(--mint)"><span class="rule-name">🏅 You mastered ${esc(PATTERNS[r.pIdx].name)}!</span><p>${nx>=0?`Next trick: ${esc(PATTERNS[nx].name)}.`:"That was the last trick. You've mastered them all!"}</p></div>`;
   }
   const pct=r.first/r.total,stars=pct>=.9?3:pct>=.6?2:1;
-  const next=planOrder().find(m=>!S.doneToday[m.id]);
+  const next=planOrder().find(m=>!S.doneToday[m.id]&&!missionLocked(m.id))||planOrder().find(m=>!S.doneToday[m.id]);
   frame(r.mode,`<div class="card finish"><div class="trophy has-img" data-e="🪐">${orbitCheer("🪐")}</div><h2>Planet cleared!</h2>
   <div class="stars" aria-label="${stars} of 3 stars">${"⭐".repeat(stars)}${"☆".repeat(3-stars)}</div>
   <p class="big">You got ${r.first} out of ${r.total}</p>
@@ -1847,7 +1824,8 @@ function settings(){
   });
   $("#test").onclick=()=>speak("Ready for today's missions!");
   const vs=$("#voice-status");
-  if(S.settings.engine!=="eleven")vs.textContent="Using the voice built into this device.";
+  if(EDITION==="offline")vs.textContent="The downloaded version uses the voice built into this computer.";
+  else if(S.settings.engine!=="eleven")vs.textContent="Using the voice built into this device.";
   else if(!ONLINE_HOST)vs.textContent="The ElevenLabs voice works on your GitHub Pages site. Here, the built-in voice is used instead.";
   else{vs.textContent="Checking the ElevenLabs connection…";
     fetch(TTS_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+TTS_ANON,apikey:TTS_ANON},body:JSON.stringify({check:true})})
@@ -2001,40 +1979,8 @@ function hangar(){
   narrate(`Your hangar. You have ${nb} badges and ${ns} stickers.`,{short:""});
 }
 /* ---------- Ending Lab: -tion / -sion (structured, multisensory) ---------- */
-const LAB=[
- {word:"action",base:"act",stem:"ac",end:"tion",syl:["ac","tion"]},
- {word:"invention",base:"invent",stem:"inven",end:"tion",syl:["in","ven","tion"]},
- {word:"direction",base:"direct",stem:"direc",end:"tion",syl:["di","rec","tion"]},
- {word:"collection",base:"collect",stem:"collec",end:"tion",syl:["col","lec","tion"]},
- {word:"protection",base:"protect",stem:"protec",end:"tion",syl:["pro","tec","tion"]},
- {word:"connection",base:"connect",stem:"connec",end:"tion",syl:["con","nec","tion"]},
- {word:"prediction",base:"predict",stem:"predic",end:"tion",syl:["pre","dic","tion"]},
- {word:"completion",base:"complete",stem:"comple",end:"tion",syl:["com","ple","tion"]},
- {word:"education",base:"educate",stem:"educa",end:"tion",syl:["ed","u","ca","tion"]},
- {word:"celebration",base:"celebrate",stem:"celebra",end:"tion",syl:["cel","e","bra","tion"]},
- {word:"location",base:"locate",stem:"loca",end:"tion",syl:["lo","ca","tion"]},
- {word:"creation",base:"create",stem:"crea",end:"tion",syl:["cre","a","tion"]},
- {word:"pollution",base:"pollute",stem:"pollu",end:"tion",syl:["pol","lu","tion"]},
- {word:"subtraction",base:"subtract",stem:"subtrac",end:"tion",syl:["sub","trac","tion"]},
- {word:"decision",base:"decide",stem:"deci",end:"sion",zh:1,syl:["de","ci","sion"]},
- {word:"division",base:"divide",stem:"divi",end:"sion",zh:1,syl:["di","vi","sion"]},
- {word:"explosion",base:"explode",stem:"explo",end:"sion",zh:1,syl:["ex","plo","sion"]},
- {word:"confusion",base:"confuse",stem:"confu",end:"sion",zh:1,syl:["con","fu","sion"]},
- {word:"conclusion",base:"conclude",stem:"conclu",end:"sion",zh:1,syl:["con","clu","sion"]},
- {word:"invasion",base:"invade",stem:"inva",end:"sion",zh:1,syl:["in","va","sion"]},
- {word:"revision",base:"revise",stem:"revi",end:"sion",zh:1,syl:["re","vi","sion"]},
- {word:"television",base:"televise",stem:"televi",end:"sion",zh:1,syl:["tel","e","vi","sion"]},
- {word:"collision",base:"collide",stem:"colli",end:"sion",zh:1,syl:["col","li","sion"]},
- {word:"erosion",base:"erode",stem:"ero",end:"sion",zh:1,syl:["e","ro","sion"]},
- {word:"extension",base:"extend",stem:"exten",end:"sion",syl:["ex","ten","sion"]},
- {word:"expansion",base:"expand",stem:"expan",end:"sion",syl:["ex","pan","sion"]},
- {word:"suspension",base:"suspend",stem:"suspen",end:"sion",syl:["sus","pen","sion"]},
- {word:"discussion",base:"discuss",stem:"discus",end:"sion",syl:["dis","cus","sion"]},
- {word:"expression",base:"express",stem:"expres",end:"sion",syl:["ex","pres","sion"]},
- {word:"confession",base:"confess",stem:"confes",end:"sion",syl:["con","fes","sion"]},
- {word:"permission",base:"permit",stem:"permis",end:"sion",ex:1,syl:["per","mis","sion"]},
- {word:"admission",base:"admit",stem:"admis",end:"sion",ex:1,syl:["ad","mis","sion"]}
-];
+const LAB=[];
+if(EDITION==="trial"){try{const c=JSON.parse(localStorage.getItem(CONTENT_KEY)||"null");if(c)applyContent(c);}catch(e){}}
 const LT=w=>String(w).toUpperCase().split("").join(", ");
 function labClue(it){
   if(it.ex)return `${it.base} is a rule-breaker: the t changes to ss, so it takes -sion.`;
@@ -2153,6 +2099,7 @@ const GO={
   forge:()=>enter("forge",()=>withDemo("forge","forge",()=>DEMOS.forge(),()=>{const n=roundSize("forge",6);startRound("forge",withReview("forge",FORGE.filter(x=>x.word!==DEMO_FORGE.word),n),forgeView);})),
   speed:()=>enter("speed",speedPick)
 };
+Object.keys(GO).forEach(k=>{const f=GO[k];GO[k]=()=>missionLocked(k)?upsell(k):f();});
 /* Keep the cursor in the typing box: listen buttons never steal focus */
 const LISTEN_BTNS="#hear,#hear2,#readme,#showme,.btn.hear";
 function backToTyping(){const a=document.getElementById("ans");if(a&&!a.disabled){a.focus({preventScroll:true});try{const n=a.value.length;a.setSelectionRange(n,n);}catch(e){}}}
@@ -2169,10 +2116,10 @@ function signIn(editId){
       <button class="mini ed" data-edit="${x.id}" aria-label="Edit ${esc(x.name||"pilot")}">✏️</button>${list.length>1?`<button class="mini del" data-del="${x.id}" aria-label="Remove ${esc(x.name||"pilot")}">🗑️</button>`:""}</div>`;};
   if(editId!==undefined){return pilotForm(editId||null);}
   app.innerHTML=`<div class="hero signin"><div class="splash"><span class="logo-mark"><img src="img/owl-512.png" alt="" onerror="this.parentNode.classList.add('nofile');this.remove()"></span><span class="logo-word" style="align-items:center"><span class="lw-main">Decode</span><span class="lw-sub">Space Adventure</span></span></div><div class="orbit-hi">${orbitComm()}<div><p class="mc-kicker">Pilot sign-in</p><h1 style="margin:0">Who's flying today?</h1></div></div>
-    <div class="pilots">${list.map(card).join("")}<button class="pilot add" id="add-pilot"><span class="av">➕</span><span class="pn">New pilot</span><span class="pr" style="color:var(--muted)">Add a learner</span></button><button class="pilot join" id="join-class"><span class="av">🏫</span><span class="pn">Join my class</span><span class="pr" style="color:var(--muted)">Use a class code</span></button></div>
-    <p class="privacy">🔒 Progress is saved on this device. Class pilots also share their progress with their teacher. No email or password needed.</p><p class="privacy"><a href="teacher/" style="color:var(--muted)">Teacher or parent? Open the dashboard</a></p></div>`;
+    <div class="pilots">${list.map(card).join("")}<button class="pilot add" id="add-pilot"><span class="av">➕</span><span class="pn">New pilot</span><span class="pr" style="color:var(--muted)">Add a learner</span></button>${EDITION==="offline"?"":`<button class="pilot join" id="join-class"><span class="av">🏫</span><span class="pn">Join my class</span><span class="pr" style="color:var(--muted)">Use a class code</span></button>`}</div>
+    ${EDITION==="offline"?`<p class="privacy">🔒 Progress is saved only on this computer. No account, email, or password needed.</p>`:`<p class="privacy">🔒 Progress is saved on this device. Class pilots also share their progress with their teacher. No email or password needed.</p><p class="privacy"><a href="teacher/" style="color:var(--muted)">Teacher or parent? Open the dashboard</a></p>`}</div>`;
   app.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const x=list.find(y=>y.id===b.dataset.pick);if(x.cls)return pinScreen({pilot:x});if(!x.name)return pilotForm(x.id);switchTo(x.id);});
-  $("#join-class").onclick=()=>joinClass();
+  if($("#join-class"))$("#join-class").onclick=()=>joinClass();
   app.querySelectorAll("[data-edit]").forEach(b=>b.onclick=e=>{e.stopPropagation();pilotForm(b.dataset.edit);});
   let armed=null;
   app.querySelectorAll("[data-del]").forEach(b=>b.onclick=e=>{e.stopPropagation();const id=b.dataset.del;
@@ -2227,10 +2174,14 @@ async function syncNow(){
     const ri=rankInfo();
     const body={action:"sync",token:x.cls.token,events,snap:{xp:S.xp,streak:S.streak,rank:ri.name,badges:Object.keys(S.badges||{}).length,stickers:Object.keys(S.stickers||{}).length,mastered:(S.pat||[]).filter(p=>p.mastered).length,state:S}};
     if(x.cls.avatarDirty)body.avatar=x.avatar;
+    if(EDITION==="trial")body.content_v=CONTENT_FULL?contentVersion():"";
     const j=await classApi(body);
     if(j._status===401&&j.error==="unlinked"){delete x.cls;setProfiles();setOutbox(id,[]);toast("You're no longer in that class. Your progress stays on this device.");return;}
     if(j.ok){
       setOutbox(id,getOutbox(id).slice(events.length));
+      const onHome=PROF.last===id&&!R&&!P&&document.getElementById("to-arcade");
+      if(typeof j.full==="boolean"&&x.cls.full!==j.full){x.cls.full=j.full;setProfiles();if(onHome)home();}
+      if(j.content){storeContent(j.content);if(onHome)home();}
       if(body.avatar){delete x.cls.avatarDirty;setProfiles();}
       if(j.restore&&j.restore.savedAt&&(!S.savedAt||j.restore.savedAt>S.savedAt)&&PROF.last===id&&!R&&!P){
         try{localStorage.setItem(KEY,JSON.stringify(j.restore));}catch(e){}S=load();renderHud();
@@ -2304,7 +2255,8 @@ function pinScreen(o){
         if(!p){p={id:"p"+Date.now().toString(36),name:j.learner.name,avatar:j.learner.avatar||AVATARS[0]};PROF.list.push(p);}
       }
       p.name=j.learner.name;
-      p.cls={code:ccode,lid,token:j.token,className:j.className,pinHash:hash};
+      p.cls={code:ccode,lid,token:j.token,className:j.className,pinHash:hash,full:!!j.full};
+      if(j.content)storeContent(j.content);
       if(j.state){const cur=pilotSave(p.id);if(!cur.savedAt||j.state.savedAt>cur.savedAt){try{localStorage.setItem("decode-space-v1:"+p.id,JSON.stringify(j.state));}catch(e){}}}
       setProfiles();
       msg.className="pinmsg ok";msg.textContent="✅ Welcome aboard!";
@@ -2323,7 +2275,7 @@ function pinScreen(o){
 }
 /* ---------- Feedback form: saved in the database and emailed to Akra Technologies ---------- */
 const FEEDBACK_URL="https://atsgfhkzhnzjzylwzmkv.supabase.co/functions/v1/decode-feedback";
-const APP_VERSION="24";
+const APP_VERSION="25";
 const FB_FEATURES=[["overall","⭐","The whole game"],["missions","🪐","The missions (games)"],["voice","🤖","Orbit's voice and directions"],["scan","🔍","The Level Scan"],["rewards","🏅","Ranks, badges, and crates"],["look","✨","How it looks"],["speed","⚡","How fast it runs"]];
 const FACES=[["😞","Really bad"],["🙁","Not good"],["😐","OK"],["🙂","Good"],["😍","Awesome"]];
 function feedbackView(){
