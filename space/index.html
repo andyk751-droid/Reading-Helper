@@ -6,6 +6,10 @@
 <title>Decode Space Adventure</title>
 <link rel="icon" type="image/png" href="img/owl-64.png">
 <link rel="apple-touch-icon" href="img/owl-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#121A3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Decode">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -959,6 +963,22 @@ document.addEventListener("visibilitychange",()=>{
   if(document.hidden)vids.forEach(v=>v.pause());
   else if(vidObs){vids.forEach(v=>{if(v.classList.contains("orb-vid")){vidObs.unobserve(v);vidObs.observe(v);}else if(!REDUCED){const p=v.play();if(p&&p.catch)p.catch(()=>{});}});}
 });
+/* ---------- Install as an app (Edge/Chrome on Windows, Mac, Chromebook, Android; Add to Home Screen on iPad/iPhone) ---------- */
+let installEvt=null;
+const isInstalled=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;const b=document.getElementById("install");if(b)installUI();});
+addEventListener("appinstalled",()=>{installEvt=null;toast("Decode is installed! Look for the owl on your Start menu or home screen.");const b=document.getElementById("install");if(b)installUI();});
+function installUI(){
+  const b=document.getElementById("install"),m=document.getElementById("install-msg");if(!b||!m)return;
+  const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  if(isInstalled()){b.hidden=true;m.textContent="✅ You're using the installed app. It works offline and updates itself.";return;}
+  if(installEvt){b.hidden=false;m.textContent="Adds a Decode icon to your Start menu, desktop, or home screen. It opens in its own window and works offline.";
+    b.onclick=async()=>{installEvt.prompt();const r=await installEvt.userChoice.catch(()=>null);installEvt=null;installUI();if(r&&r.outcome==="accepted")toast("Installing Decode…");};return;}
+  b.hidden=true;
+  m.textContent=ios?"On iPad or iPhone: tap the Share button (square with an arrow), then Add to Home Screen."
+    :"In Microsoft Edge or Chrome: click the install icon at the right end of the address bar, or open the ⋯ menu and choose Apps → Install Decode.";
+}
+if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){addEventListener("load",()=>{try{navigator.serviceWorker.register("sw.js").catch(()=>{});}catch(e){}});}
 function orbitFb(){
   const fb=document.getElementById("fb");if(!fb||fb.querySelector(".orbit-fb"))return;
   const good=fb.querySelector(".msg.good"),m=fb.querySelector(".msg");if(!good&&!m)return;
@@ -1019,7 +1039,7 @@ function home(){
       <p class="muted small" style="text-align:center">About 15 minutes. No pass or fail. The last part needs a grown-up.</p>
     </div>
     <div class="row center" style="margin-top:1rem"><button class="link" id="skip">Skip for now and go to missions</button></div>
-    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 22</p>`;
+    <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 23</p>`;
     $("#scan-go").onclick=scanIntro;
     $("#skip").onclick=()=>{S.skipScan=true;save();home();};
     narrate("Welcome to Decode! Start with a quick Level Scan. It figures out what you're already good at, and what to practice first. It takes about 15 minutes, and there's no pass or fail. Tap the big purple button to start.",{short:"Welcome! Tap the purple button to start your Level Scan."});
@@ -1057,7 +1077,7 @@ function home(){
     <button class="link" id="to-parent">📊 Grown-up view</button>
   </div>
   <button class="fb-card" id="to-feedback">${orbitImg("point")}<span>💬 Tell us what you think<small>Rate the game and send your ideas</small></span></button>
-  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 22</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
+  <p class="muted small" style="text-align:center;margin:.6rem 0 0">Version 23</p><a class="made-by" href="https://www.akratechnologies.com/" target="_blank" rel="noopener"><img src="img/owl-64.png" alt="" onerror="this.remove()">Made by Akra Technologies</a>`;
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
   if(next)$("#next-up").onclick=()=>GO[next.id]();
   wirePlanetVids();
@@ -1639,8 +1659,10 @@ function settings(){
   <p class="muted small" id="voice-status" style="margin:.4rem 0 0"></p>
   <div class="set"><span>🗣️ Talking speed</span>${seg("rate",[[0.7,"Slow"],[0.85,"Normal"],[1,"Fast"]])}</div>
   <div class="row"><button class="btn ghost" id="test">🔊 Test the voice</button><button class="btn ghost" id="replay">❓ Show all the how-to screens again</button></div>
+  <div class="set" style="display:block"><span>📲 Install Decode as an app</span><p class="muted small" id="install-msg" style="margin:.35rem 0 .5rem"></p><button class="btn" id="install" hidden>📲 Install Decode</button></div>
   <div class="row"><button class="btn ghost danger" id="reset">🗑️ Reset all progress</button></div>
-  <p class="muted small" style="margin:0">App version: 22 (feedback form)</p></div>`;
+  <p class="muted small" style="margin:0">App version: 23 (installable app)</p></div>`;
+  installUI();
   $("#back").onclick=home;
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k,raw=b.dataset.val;if(k==="talk")S.settings.voice=raw!=="quiet";S.settings[k]=(k==="size"||k==="engine"||k==="demo"||k==="talk")?raw:(k==="spaced"||k==="voice"||k==="anim")?raw==="true":parseFloat(raw);if(k==="engine"){elevenOff=false;elevenWarned=false;}
@@ -2124,7 +2146,7 @@ function pinScreen(o){
 }
 /* ---------- Feedback form: saved in the database and emailed to Akra Technologies ---------- */
 const FEEDBACK_URL="https://atsgfhkzhnzjzylwzmkv.supabase.co/functions/v1/decode-feedback";
-const APP_VERSION="22";
+const APP_VERSION="23";
 const FB_FEATURES=[["overall","⭐","The whole game"],["missions","🪐","The missions (games)"],["voice","🤖","Orbit's voice and directions"],["scan","🔍","The Level Scan"],["rewards","🏅","Ranks, badges, and crates"],["look","✨","How it looks"],["speed","⚡","How fast it runs"]];
 const FACES=[["😞","Really bad"],["🙁","Not good"],["😐","OK"],["🙂","Good"],["😍","Awesome"]];
 function feedbackView(){

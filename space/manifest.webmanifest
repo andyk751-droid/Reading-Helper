@@ -1,0 +1,18 @@
+{
+  "name": "Decode Space Adventure",
+  "short_name": "Decode",
+  "description": "A reading adventure for every learner. Practice sounds, spelling, and reading with Orbit, your robot co-pilot.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0B1030",
+  "theme_color": "#121A3E",
+  "categories": ["education", "kids", "games"],
+  "icons": [
+    { "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "img/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
